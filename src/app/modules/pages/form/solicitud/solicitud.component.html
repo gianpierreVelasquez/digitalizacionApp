@@ -1,0 +1,105 @@
+<div class="row m-2">
+    <div class="col-12">
+        <p class="subtitle">| DATOS DE LA SOLICITUD</p>
+    </div>
+    <div class="col-12">
+        <div class="form-group">
+            <div class="row">
+                <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3">
+                    <label for="tip_solicitud">Tipo Solicitud:</label>
+                    <select type="text" id="tip_solicitud" class="form-control">
+                        <option value="">Seleccione</option>
+                    </select>
+                </div>
+                <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3">
+                    <label for="tip_prestamo">Tipo Prestamo:</label>
+                    <select type="text" id="tip_prestamo" class="form-control">
+                        <option value="">Seleccione</option>
+                    </select>
+                </div>
+                <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3">
+                    <label for="pol_grupo">Poliza Grupo:</label>
+                    <select type="text" id="pol_grupo" class="form-control">
+                        <option value="">Seleccione</option>
+                    </select>
+                </div>
+                <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3">
+                    <label for="tip_moneda">Tipo Moneda:</label>
+                    <select type="text" id="tip_moneda" class="form-control">
+                        <option value="">Seleccione</option>
+                    </select>
+                </div>
+                <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3">
+                    <label for="imp_cumulo">Imp. Cúmulo:</label>
+                    <input type="text" id="imp_cumulo" class="form-control">
+                </div>
+                <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
+                    <label for="desc">Descripción:</label>
+                    <textarea id="desc" cols="30" rows="3" class="form-control"></textarea>
+                    <span class="text-muted">Máximo 200 caracteres</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="divider"></div>
+
+<div class="row m-2">
+    <div class="col-12">
+        <p class="subtitle">| SEGUROS DE VIDA</p>
+    </div>
+    <div class="col-12 text-center">
+        <div class="form-group">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <label>{{cabezera}}</label>
+                </div>
+                <div class="col-12 mb-3 text-center">
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="inlineRadioOptions" value="S">
+                        <label class="form-check-label" for="inlineRadio1">Si</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="inlineRadioOptions" value="N">
+                        <label class="form-check-label" for="inlineRadio2">No</label>
+                    </div>
+                </div>
+                <div class="col-sm-12 col-md-8 col-lg-6 col-xl-4 text-center m-auto">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-sm-6 mb-2">
+                                <div class="card text-center">
+                                    <div class="card-body">
+                                    </div>
+                                    <div class="card-footer text-muted">
+                                    </div>
+                                    <div class="card-body"></div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 mb-2">
+                                <div class="card text-center">
+                                    <div class="card-body">
+                                    </div>
+                                    <div class="card-footer text-muted">
+                                    </div>
+                                    <div class="card-body"></div>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <button class="btn mapfre-color text-white m-2">Confirmar</button>
+                                <button class="btn btn-secondary m-2">No, Gracias</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row m-2">
+    <div class="col-12 text-right">
+        <button type="submit" class="btn mapfre-color text-white" (click)="goTo()">Continuar</button>
+    </div>
+</div>

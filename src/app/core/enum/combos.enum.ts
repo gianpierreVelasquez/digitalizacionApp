@@ -1,0 +1,17 @@
+export enum ROOT_COMBOS {
+    TIPO_MONEDA = "/tipo-monedas",
+    TIPO_PARENTESCO = "/tipo-parentescos",
+    TIPO_DOCUMENTO = "/tipo-documentos",
+    TIPO_GENERO = "/generos",
+    TIPO_ESTADO_CIVIL = "/estados-civiles",
+    TIPO_SOLICITUD = "/tipo-solicitudes",
+    TIPO_PRESTAMO = "/tipo-prestamos",
+    TIPO_GRUPO_POLIZA = "/tipo-poliza-grupos",
+    TIPO_CONFORMACION = "/tipo-conformaciones",
+    TIPO_PLAN_SEGURO_VIDA = "/plan-seguro-vida",
+    OBTENER_PAIS = "/pais",
+    OBTENER_DEPARTAMENTO = "/departamentos",
+    OBTENER_PROVINCIA = "/provincias",
+    OBTENER_DISTRITO = "/distritos",
+    OBTENER_PROFESION = "/profesiones",
+}

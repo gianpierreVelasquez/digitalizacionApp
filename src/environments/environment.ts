@@ -3,7 +3,12 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  BASE_API_URL_COMBOS: 'http://localhost:8080/backend-apis',
+  BASE_API_URL_DIGITAL: '',
+  KEYS: {
+    TOKEN: 'token'
+  }
 };
 
 /*

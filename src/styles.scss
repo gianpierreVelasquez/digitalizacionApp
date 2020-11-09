@@ -1,1 +1,23 @@
 /* You can add global styles to this file, and also import other style files */
+
+// bootstrap
+@import "~bootstrap/scss/bootstrap";
+
+body{
+    background: #faf9fa;
+}
+
+.subtitle{
+    color: #db1b00;
+    font-weight: 700;
+    font-size: 1.2em;
+}
+
+.divider{
+    border-bottom: 1px solid #E9E9E9;
+    margin: 0px 15px;
+}
+
+.mapfre-color{
+    background: #db1b00;
+}

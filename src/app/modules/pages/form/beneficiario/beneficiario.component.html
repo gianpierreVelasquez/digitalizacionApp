@@ -1,0 +1,80 @@
+<div class="row m-2">
+    <div class="col-12">
+        <div class="card shadow border-light mb-3">
+            <div class="row">
+                <div class="col-9">
+                    <p class="subtitle m-3">| DATOS DEL BENEFICIARIO</p>
+                </div>
+                <div class="col-3 text-right">
+                    <button class="btn btn-dark rounded-circle"> <i class="fa fa-times"></i> </button>
+                </div>
+            </div>
+            <div class="card-body p-2">
+                <div class="col-12">
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-sm-12 col-md-6 col-lg-4 col-xl-2">
+                                <label for="parent">Parentesco:</label>
+                                <select id="parent" class="form-control">
+                                    <option value="">Seleccione</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3">
+                                <label for="tip_doc">Tipo de Documento:</label>
+                                <select id="tip_doc" class="form-control">
+                                    <option value="">Seleccione</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3">
+                                <label for="imp_cumulo">Nro Documento:</label>
+                                <input type="text" id="imp_cumulo" class="form-control">
+                            </div>
+                            <div class="col-sm-12 col-md-6 col-lg-4 col-xl-2">
+                                <label for="imp_cumulo">Fecha Nacimiento:</label>
+                                <input type="date" id="imp_cumulo" class="form-control">
+                            </div>
+                            <div class="col-sm-12 col-md-6 col-lg-4 col-xl-2">
+                                <label for="porx_part">(*) Porc. Participación:</label>
+                                <input type="text" id="porx_part" class="form-control">
+                            </div>
+                            <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
+                                <label for="nombre">(*) Nombres:</label>
+                                <input type="text" id="nombre" class="form-control">
+                            </div>
+                            <div class="col-sm-12 col-md-6 col-lg-4 col-xl-2">
+                                <label for="ape_pat">(*) Apellido Paterno:</label>
+                                <input type="text" id="ape_pat" class="form-control">
+                            </div>
+                            <div class="col-sm-12 col-md-6 col-lg-4 col-xl-2">
+                                <label for="ape_mat">(*) Apellido Materno:</label>
+                                <input type="text" id="ape_mat" class="form-control">
+                            </div>
+                            <div class="col-sm-12 col-md-6 col-lg-4 col-xl-2">
+                                <label for="est_civil">Sexo:</label>
+                                <select id="est_civil" class="form-control">
+                                    <option value="">Seleccione</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-12 col-md-6 col-lg-4 col-xl-2">
+                                <label for="est_civil">Estado Civil:</label>
+                                <select id="est_civil" class="form-control">
+                                    <option value="">Seleccione</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer"></div>
+        </div>
+    </div>
+</div>
+
+<div class="row m-2">
+    <div class="col-12 text-right">
+        <button type="button" class="btn btn-outline-warning text-dark ml-1" (click)="goTo()">Agregar
+            Beneficiario</button>
+        <button type="button" class="btn mapfre-color text-white ml-1" (click)="back()">Volver</button>
+        <button type="submit" class="btn mapfre-color text-white ml-1" (click)="goTo()">Continuar</button>
+    </div>
+</div>

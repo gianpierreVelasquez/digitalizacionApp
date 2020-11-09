@@ -28,7 +28,9 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.scss"
+              "node_modules/bootstrap/dist/css/bootstrap.css",
+              "src/styles.scss",
+              "node_modules/font-awesome/css/font-awesome.css"
             ],
             "scripts": []
           },
@@ -56,6 +58,9 @@
                   "maximumError": "5mb"
                 }
               ]
+            },
+            "es5": {
+              "tsConfig": "./tsconfig.es5.json"
             }
           }
         },
@@ -67,6 +72,9 @@
           "configurations": {
             "production": {
               "browserTarget": "digitalizacionAppv2:build:production"
+            },
+            "es5": {
+              "browserTarget": "digitalizacionAppv2:build:es5"
             }
           }
         },
@@ -91,6 +99,11 @@
               "src/styles.scss"
             ],
             "scripts": []
+          },
+          "configurations": {
+            "es5": {
+              "tsConfig": "./tsconfig-es5.spec.json"
+            }
           }
         },
         "lint": {
