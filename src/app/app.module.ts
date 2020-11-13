@@ -1,5 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -11,8 +12,8 @@ import { EntidadComponent } from './modules/layout/formulario/entidad/entidad.co
 import { AngularFontAwesomeModule } from 'angular-font-awesome';
 import { HttpClientModule } from '@angular/common/http';
 import { NgxSpinnerModule } from 'ngx-spinner';
-import { SpinnerComponent } from './shared/components/spinner/spinner.component';
 import { ModalComponent } from './shared/components/modal/modal.component';
+import { SharedModule } from './shared/shared.module';
 
 @NgModule({
   declarations: [
@@ -20,13 +21,15 @@ import { ModalComponent } from './shared/components/modal/modal.component';
     FormularioComponent,
     NavBarComponent,
     EntidadComponent,
-    SpinnerComponent,
     ModalComponent
   ],
+  schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
   imports: [
     BrowserModule,
     AppRoutingModule,
+    BrowserAnimationsModule,
     NgbModule,
+    SharedModule,
     AngularFontAwesomeModule,
     NgxSpinnerModule,
     HttpClientModule,

@@ -21,3 +21,17 @@ body{
 .mapfre-color{
     background: #db1b00;
 }
+
+.mapfre-color:hover{
+    opacity: 0.7;
+}
+
+.error-container {
+    width: 100%;
+    .error-message {
+      display: flex;
+      align-items: center;
+      color: #d81e05;
+      font-size: 14px;
+    }
+}

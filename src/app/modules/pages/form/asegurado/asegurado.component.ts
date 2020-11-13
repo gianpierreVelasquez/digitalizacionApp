@@ -9,9 +9,19 @@ import { Router } from '@angular/router';
 })
 export class AseguradoComponent implements OnInit {
 
+  showExtra: boolean = false;
+
   constructor(private location: Location, private router: Router) { }
 
   ngOnInit() {
+  }
+
+  addExtra(){
+    this.showExtra = true;
+  }
+
+  removeExtra(){
+    this.showExtra = false;
   }
 
   goTo(){

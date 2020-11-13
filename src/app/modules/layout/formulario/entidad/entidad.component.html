@@ -5,31 +5,33 @@
     <div class="col-12">
         <div class="form-group">
             <div class="row">
-                <div class="col-sm-12 col-md-6 col-lg-3 col-xl-2">
+                <div class="col-6 col-sm-6 col-md-6 col-lg-3 col-xl-2">
                     <label for="nro_solicitud">Nro Solicitud Caja:</label>
                     <input type="text" id="nro_solicitud" class="form-control" readonly>
                 </div>
-                <div class="col-sm-12 col-md-6 col-lg-3 col-xl-2">
+                <div class="col-6 col-sm-6 col-md-6 col-lg-3 col-xl-2">
                     <label for="tip_conformacion">Tipo Conformación:</label>
-                    <select type="text" id="tip_conformacion" class="form-control" readonly>
+                    <select type="text" id="tip_conformacion" class="form-control" [(ngModel)]="conformacion" disabled>
                         <option value="">Seleccione</option>
+                        <option *ngFor="let c of conformacionList" [value]="c.codigo">{{c.texto}}</option>
                     </select>
                 </div>
-                <div class="col-sm-12 col-md-6 col-lg-3 col-xl-2">
+                <div class="col-6 col-sm-6 col-md-6 col-lg-3 col-xl-2">
                     <label for="plz_prestamo">Plazo Prestamo:</label>
                     <input type="text" id="plz_prestamo" class="form-control" readonly>
                 </div>
-                <div class="col-sm-12 col-md-6 col-lg-3 col-xl-2">
-                    <label for="tip_moneda">Moneda Prestamo:</label>
-                    <select type="text" id="tip_moneda" class="form-control" readonly>
+                <div class="col-6 col-sm-6 col-md-6 col-lg-3 col-xl-2">
+                    <label for="tip_moneda">Moneda:</label>
+                    <select type="text" id="tip_moneda" class="form-control" [(ngModel)]="moneda" disabled>
                         <option value="">Seleccione</option>
+                        <option *ngFor="let m of monedaList" [value]="m.codigo">{{m.texto}}</option>
                     </select>
                 </div>
-                <div class="col-sm-12 col-md-6 col-lg-3 col-xl-2">
+                <div class="col-6 col-sm-6 col-md-6 col-lg-3 col-xl-2">
                     <label for="plz_prestamo">Imp. Prestamo:</label>
                     <input type="text" id="plz_prestamo" class="form-control" readonly>
                 </div>
-                <div class="col-sm-12 col-md-6 col-lg-3 col-xl-2">
+                <div class="col-6 col-sm-6 col-md-6 col-lg-3 col-xl-2">
                     <label for="plz_prestamo">Funcionario Canal:</label>
                     <input type="text" id="plz_prestamo" class="form-control" readonly>
                 </div>

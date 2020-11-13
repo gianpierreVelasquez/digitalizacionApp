@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-spinner',
@@ -7,7 +7,19 @@ import { Component, OnInit } from '@angular/core';
 })
 export class SpinnerComponent implements OnInit {
 
-  constructor() { }
+  @Input() bdColor: string;
+  @Input() size: string;
+  @Input() color: string;
+  @Input() type: string;
+  @Input() spinnerText: string;
+
+  constructor() {
+    this.bdColor = "rgba(51,51,51,0.8)";
+    this.size = "medium";
+    this.color = "#fff";
+    this.type = "ball-spin";
+    this.spinnerText = '';
+  }
 
   ngOnInit() {
   }
