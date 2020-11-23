@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CombosService } from 'src/app/core/services/combos.service';
+import { DigitalService } from 'src/app/core/services/digital.service';
 import { UtilService } from 'src/app/core/services/util.service';
 import { PlanData } from 'src/app/shared/models/Response';
 
@@ -11,6 +12,8 @@ import { PlanData } from 'src/app/shared/models/Response';
   styleUrls: ['./solicitud.component.scss']
 })
 export class SolicitudComponent implements OnInit {
+
+  activeTab = 'solicitud';
 
   solicitudForm: FormGroup;
 
@@ -131,5 +134,19 @@ export class SolicitudComponent implements OnInit {
       this.router.navigate(['form/asegurado']);
     }
   }
+
+  setCoinType(ev: any){
+    if (ev.target.value == 1) {
+      this.amountSign = "S/."
+    }else {
+      this.amountSign = "$"
+    }
+  }
+
+  goTab(activeTab){
+    activeTab.preventDefault();
+    this.activeTab = activeTab;
+  }
+
 
 }

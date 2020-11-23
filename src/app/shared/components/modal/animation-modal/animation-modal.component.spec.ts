@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AseguradoComponent } from './asegurado.component';
+import { AnimationModalComponent } from './animation-modal.component';
 
-describe('AseguradoComponent', () => {
-  let component: AseguradoComponent;
-  let fixture: ComponentFixture<AseguradoComponent>;
+describe('AnimationModalComponent', () => {
+  let component: AnimationModalComponent;
+  let fixture: ComponentFixture<AnimationModalComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ AseguradoComponent ]
+      declarations: [ AnimationModalComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(AseguradoComponent);
+    fixture = TestBed.createComponent(AnimationModalComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

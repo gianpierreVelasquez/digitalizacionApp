@@ -35,6 +35,14 @@ export class CombosService {
     return this.http.get<Response>(`${URI + this.rootEntity.TIPO_GRUPO_POLIZA}`);
   }
 
+  obtenerTipoDocumento() {
+    return this.http.get<Response>(`${URI + this.rootEntity.TIPO_DOCUMENTO}`);
+  }
+
+  obtenerTipoParentesco() {
+    return this.http.get<Response>(`${URI + this.rootEntity.TIPO_PARENTESCO}`);
+  }
+
   obtenerPlanSeguroVida() {
     return this.http.get<Response>(`${URI + this.rootEntity.TIPO_PLAN_SEGURO_VIDA}`);
   }

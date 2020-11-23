@@ -1,0 +1,7 @@
+{
+    "/wsRDesgravamen.svc/*":{
+        "target": "http://spe001001-338.mapfreperu.com/wsrDesgravamen",
+        "secure": false,
+        "changeOrigin": true
+    }
+}

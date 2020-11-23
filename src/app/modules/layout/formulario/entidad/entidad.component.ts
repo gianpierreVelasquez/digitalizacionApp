@@ -9,7 +9,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 export class EntidadComponent implements OnInit {
 
   //Operadores
-  conformacion: string = "";
+  conformacion: any;
   moneda: string = "";
 
   //Listas
@@ -30,6 +30,16 @@ export class EntidadComponent implements OnInit {
     this.util.monedaData.subscribe((data) => {
       this.monedaList = data;
     })
+
+    this.conformacion = 1;
+    sessionStorage.setItem('codTipoConformacion', this.conformacion);
+  }
+
+  setConformacion(ev: any){
+    console.log(ev.target.value);
+    this.conformacion = ev.target.value;
+    this.util.conformacionVar.next(ev.target.value);
+    sessionStorage.setItem('codTipoConformacion', this.conformacion);
   }
 
 }

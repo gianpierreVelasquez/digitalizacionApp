@@ -1,0 +1,174 @@
+<form [formGroup]="beneficiarioForm" (ngSubmit)="onSubmit(beneficiarioForm.value)">
+    <div class="row m-2" *ngFor="let beneficiario of t.controls; let i = index">
+        <div [formGroup]="beneficiario" class="col-12">
+            <div class="card shadow border-light mb-3">
+                <div class="row">
+                    <div class="col-9">
+                        <p class="subtitle m-3">| DATOS DEL BENEFICIARIO</p>
+                    </div>
+                </div>
+                <div class="card-body p-2">
+                    <div class="col-12">
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-sm-12 col-md-6 col-lg-4 col-xl-2">
+                                    <label for="parent">Parentesco (*):</label>
+                                    <select id="parent" class="form-control" formControlName="codParentesco">
+                                        <option value="">Seleccione</option>
+                                        <option *ngFor="let p of parentescoList" [value]="p.codigo">{{p.texto}}</option>
+                                    </select>
+                                    <div class="col-12 form-group error-container p-0">
+                                        <ng-container *ngFor="let validation of validations.codParentesco">
+                                            <div class="error-message"
+                                                *ngIf="beneficiario.get('codParentesco').hasError(validation.type) &&
+                                                 (beneficiario.get('codParentesco').dirty || beneficiario.get('codParentesco').touched)">
+                                                <span>{{ validation.message }}</span>
+                                            </div>
+                                        </ng-container>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3">
+                                    <label for="tip_doc">Tipo de Documento (*):</label>
+                                    <select id="tip_doc" class="form-control" formControlName="tipDocum">
+                                        <option value="">Seleccione</option>
+                                        <option *ngFor="let d of documentoList" [value]="d.codigo">{{d.texto}}</option>
+                                    </select>
+                                    <div class="col-12 form-group error-container p-0">
+                                        <ng-container *ngFor="let validation of validations.tipDocum">
+                                            <div class="error-message"
+                                                *ngIf="beneficiario.get('tipDocum').hasError(validation.type) &&
+                                                 (beneficiario.get('tipDocum').dirty || beneficiario.get('tipDocum').touched)">
+                                                <span>{{ validation.message }}</span>
+                                            </div>
+                                        </ng-container>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3">
+                                    <label for="imp_cumulo">Nro Documento (*):</label>
+                                    <input type="text" id="imp_cumulo" class="form-control" formControlName="codDocum">
+                                    <div class="col-12 form-group error-container p-0">
+                                        <ng-container *ngFor="let validation of validations.codDocum">
+                                            <div class="error-message"
+                                                *ngIf="beneficiario.get('codDocum').hasError(validation.type) &&
+                                                     (beneficiario.get('codDocum').dirty || beneficiario.get('codDocum').touched)">
+                                                <span>{{ validation.message }}</span>
+                                            </div>
+                                        </ng-container>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-6 col-lg-4 col-xl-2">
+                                    <label for="imp_cumulo">Fecha Nacimiento (*):</label>
+                                    <input type="date" id="imp_cumulo" class="form-control"
+                                        formControlName="fecNacimiento">
+                                    <div class="col-12 form-group error-container p-0">
+                                        <ng-container *ngFor="let validation of validations.fecNacimiento">
+                                            <div class="error-message"
+                                                *ngIf="beneficiario.get('fecNacimiento').hasError(validation.type) &&
+                                                         (beneficiario.get('fecNacimiento').dirty || beneficiario.get('fecNacimiento').touched)">
+                                                <span>{{ validation.message }}</span>
+                                            </div>
+                                        </ng-container>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-6 col-lg-4 col-xl-2">
+                                    <label for="porx_part">Porc. Participación (*):</label>
+                                    <input type="number" id="porx_part" class="form-control"
+                                        [min]="minValueDependOfLength" formControlName="porcParticipacion"
+                                        (input)="setParticipacion(i)">
+                                    <div class="col-12 form-group error-container p-0">
+                                        <ng-container *ngFor="let validation of validations.porcParticipacion">
+                                            <div class="error-message"
+                                                *ngIf="beneficiario.get('porcParticipacion').hasError(validation.type) &&
+                                                             (beneficiario.get('porcParticipacion').dirty || beneficiario.get('porcParticipacion').touched)">
+                                                <span>{{ validation.message }}</span>
+                                            </div>
+                                        </ng-container>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
+                                    <label for="name">Nombres (*):</label>
+                                    <input type="text" id="name" class="form-control" formControlName="nombre">
+                                    <div class="col-12 form-group error-container p-0">
+                                        <ng-container *ngFor="let validation of validations.nombre">
+                                            <div class="error-message"
+                                                *ngIf="beneficiario.get('nombre').hasError(validation.type) &&
+                                                                 (beneficiario.get('nombre').dirty || beneficiario.get('nombre').touched)">
+                                                <span>{{ validation.message }}</span>
+                                            </div>
+                                        </ng-container>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-6 col-lg-4 col-xl-2">
+                                    <label for="ape_pat">Apellido Paterno (*):</label>
+                                    <input type="text" id="ape_pat" class="form-control" formControlName="apePaterno">
+                                    <div class="col-12 form-group error-container p-0">
+                                        <ng-container *ngFor="let validation of validations.apePaterno">
+                                            <div class="error-message"
+                                                *ngIf="beneficiario.get('apePaterno').hasError(validation.type) &&
+                                                                 (beneficiario.get('apePaterno').dirty || beneficiario.get('apePaterno').touched)">
+                                                <span>{{ validation.message }}</span>
+                                            </div>
+                                        </ng-container>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-6 col-lg-4 col-xl-2">
+                                    <label for="ape_mat">Apellido Materno (*):</label>
+                                    <input type="text" id="ape_mat" class="form-control" formControlName="apeMaterno">
+                                    <div class="col-12 form-group error-container p-0">
+                                        <ng-container *ngFor="let validation of validations.apeMaterno">
+                                            <div class="error-message"
+                                                *ngIf="beneficiario.get('apeMaterno').hasError(validation.type) &&
+                                                                 (beneficiario.get('apeMaterno').dirty || beneficiario.get('apeMaterno').touched)">
+                                                <span>{{ validation.message }}</span>
+                                            </div>
+                                        </ng-container>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-6 col-lg-4 col-xl-2">
+                                    <label for="est_civil">Sexo (*):</label>
+                                    <select id="est_civil" class="form-control" formControlName="mcaSexo">
+                                        <option value="">Seleccione</option>
+                                    </select>
+                                    <div class="col-12 form-group error-container p-0">
+                                        <ng-container *ngFor="let validation of validations.mcaSexo">
+                                            <div class="error-message"
+                                                *ngIf="beneficiario.get('mcaSexo').hasError(validation.type) &&
+                                                                 (beneficiario.get('mcaSexo').dirty || beneficiario.get('mcaSexo').touched)">
+                                                <span>{{ validation.message }}</span>
+                                            </div>
+                                        </ng-container>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-6 col-lg-4 col-xl-2">
+                                    <label for="est_civil">Estado Civil (*):</label>
+                                    <select id="est_civil" class="form-control" formControlName="estadoCivil">
+                                        <option value="">Seleccione</option>
+                                    </select>
+                                    <div class="col-12 form-group error-container p-0">
+                                        <ng-container *ngFor="let validation of validations.estadoCivil">
+                                            <div class="error-message"
+                                                *ngIf="beneficiario.get('estadoCivil').hasError(validation.type) &&
+                                                                 (beneficiario.get('estadoCivil').dirty || beneficiario.get('estadoCivil').touched)">
+                                                <span>{{ validation.message }}</span>
+                                            </div>
+                                        </ng-container>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer"></div>
+            </div>
+        </div>
+    </div>
+    <div class="row m-2">
+        <div class="col-12 text-right">
+            <button type="button" class="btn btn-outline-warning text-dark ml-1"
+                (click)="addExtraBeneficiario()">Agregar
+                Beneficiario</button>
+            <button type="button" class="btn mapfre-color text-white ml-1" (click)="back()">Volver</button>
+            <button type="submit" class="btn mapfre-color text-white ml-1">Guardar</button>
+        </div>
+    </div>
+</form>

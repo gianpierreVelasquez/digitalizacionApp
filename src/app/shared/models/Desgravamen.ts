@@ -1,10 +1,10 @@
 export interface Desgravamen {
     cabecera?: Cabecera;
     solicitud?: Solicitud;
-    producto?: any;
-    riesgoDesgravamen?: any;
-    asegurados?: any;
-    beneficiarios?: any;
+    producto?: Producto;
+    riesgoDesgravamen?: RiesgoDesgravamen;
+    asegurados?: Asegurados;
+    beneficiarios?: Beneficiario[];
 }
 
 export interface Cabecera {
@@ -35,4 +35,73 @@ export interface RiesgoDesgravamen {
     codMonedaCumulo?: number;
     impCumulo?: number;
     plazoPrestamo?: number;
+}
+
+export interface Asegurados {
+    codParentesco?: string;
+    tipDocum?: string;
+    codDocum?: string;
+    fecNacimiento?: string;
+    estadoCivil?: string;
+    nombre?: string;
+    apePaterno?: string;
+    mcaSexo?: string;
+    nacionalidad?: string;
+    apeMaterno?: string;
+    codOcupacion?: number;
+    tlfNumero?: number;
+    tlfMovil?: string;
+    email?: string;
+    talla?: number;
+    peso?: number;
+    direccion?: Direccion[];
+    cuestionario?: Cuestionario[];
+}
+
+export interface Direccion {
+    codPais?: string;
+    codDepartamento?: number;
+    codProvincia?: number;
+    codDistrito?: number;
+    tipDomicilio?: number;
+    nomDomicilio?: string;
+    refDireccion?: string;
+    codigoPostal?: number;
+}
+
+export interface Cuestionario {
+    preguntas: Pregunta[]
+}
+
+export interface Pregunta {
+    codPregunta?: number;
+    codRespuesta?: string;
+    descRespuesta?: DescripcionRespuesta;
+    observaciones?: Observacion[];
+}
+
+export interface DescripcionRespuesta {
+    cantidad?: number;
+    frecuencia?: string;
+}
+
+export interface Observacion {
+    enfermedad?: string;
+    fecha?: string;
+    duracion?: string;
+    clinica?: string;
+    estado_actual?: string;
+}
+
+export interface Beneficiario {
+    codParentesco?: number;
+    tipDocum?: string;
+    codDocum?: string;
+    fecNacimiento?: string;
+    porcParticipacion?: number;
+    nombre?: string;
+    apePaterno?: string;
+    apeMaterno?: string;
+    mcaSexo?: number;
+    estadoCivil?: string;
 }

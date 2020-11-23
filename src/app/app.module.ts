@@ -1,4 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
+import { ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 
@@ -12,20 +13,22 @@ import { EntidadComponent } from './modules/layout/formulario/entidad/entidad.co
 import { AngularFontAwesomeModule } from 'angular-font-awesome';
 import { HttpClientModule } from '@angular/common/http';
 import { NgxSpinnerModule } from 'ngx-spinner';
-import { ModalComponent } from './shared/components/modal/modal.component';
 import { SharedModule } from './shared/shared.module';
+import { httpInterceptorProvider } from './core/interceptors';
+
+import { NgbButtonsModule, NgbDropdownModule, NgbTabsetModule, NgbTooltipModule, NgbDatepickerModule, NgbTimepickerModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
   declarations: [
     AppComponent,
     FormularioComponent,
     NavBarComponent,
-    EntidadComponent,
-    ModalComponent
+    EntidadComponent
   ],
   schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
   imports: [
     BrowserModule,
+    ReactiveFormsModule,
     AppRoutingModule,
     BrowserAnimationsModule,
     NgbModule,
@@ -33,8 +36,11 @@ import { SharedModule } from './shared/shared.module';
     AngularFontAwesomeModule,
     NgxSpinnerModule,
     HttpClientModule,
+    NgbTabsetModule
   ],
-  providers: [],
+  providers: [
+    httpInterceptorProvider
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

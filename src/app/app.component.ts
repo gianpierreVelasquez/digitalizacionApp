@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CombosService } from './core/services/combos.service';
 import { UtilService } from './core/services/util.service';
-import { PlanData } from './shared/models/Response';
 
 @Component({
   selector: 'app-root',
@@ -11,6 +10,7 @@ import { PlanData } from './shared/models/Response';
 export class AppComponent implements OnInit {
 
   title = 'digitalizacionAppv2';
+  spinnerText = "Cargando información...";
 
   constructor(private combosServ: CombosService, private util: UtilService) { }
 
@@ -26,9 +26,12 @@ export class AppComponent implements OnInit {
       this.obtenerTipoPrestamo(),
       this.obtenerTipoSolicitud(),
       this.obtenerTipoPoliza(),
-      this.obtenerPlanSeguroVida()
-    ]).then(() => {
-        this.util.hideSpinner();
+      this.obtenerPlanSeguroVida(),
+      this.obtenerTipoDocumento(),
+      this.obtenerTipoParentesco()
+    ]).then((value) => {
+      console.log(value);
+      this.util.hideSpinner();
     }).catch(reason => {
       console.log(reason)
       this.util.hideSpinner();
@@ -94,6 +97,28 @@ export class AppComponent implements OnInit {
     return this.combosServ.obtenerPlanSeguroVida().toPromise().then(resp => {
       var data = resp.data;
       this.util.planSeguroData.next(data);
+    },
+      err => {
+        console.log(err);
+      }
+    )
+  }
+
+  obtenerTipoDocumento() {
+    return this.combosServ.obtenerTipoDocumento().toPromise().then(resp => {
+      var data = resp.data;
+      this.util.tipoDocData.next(data);
+    },
+      err => {
+        console.log(err);
+      }
+    )
+  }
+
+  obtenerTipoParentesco() {
+    return this.combosServ.obtenerTipoParentesco().toPromise().then(resp => {
+      var data = resp.data;
+      this.util.parentescoData.next(data);
     },
       err => {
         console.log(err);

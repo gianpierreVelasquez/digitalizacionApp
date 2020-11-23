@@ -1,172 +1,188 @@
-<form [formGroup]="solicitudForm" (ngSubmit)="solicitud(solicitudForm.value)">
-    <div class="row m-2">
-        <div class="col-12">
-            <p class="subtitle">| DATOS DE LA SOLICITUD</p>
-        </div>
-        <div class="col-12">
-            <div class="form-group">
-                <div class="row">
-                    <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3">
-                        <label for="tip_solicitud">(*) Tipo Solicitud:</label>
-                        <select type="text" id="tip_solicitud" class="form-control" formControlName="tipSolicitud">
-                            <option value="">Seleccione</option>
-                            <option *ngFor="let s of solicitudList" [value]="s.codigo">{{s.texto}}</option>
-                        </select>
-                        <div class="col-12 form-group error-container p-0">
-                            <ng-container *ngFor="let validation of validations.tipSolicitud">
-                                <div class="error-message"
-                                    *ngIf="solicitudForm.get('tipSolicitud').hasError(validation.type) &&
-                                     (solicitudForm.get('tipSolicitud').dirty || solicitudForm.get('tipSolicitud').touched)">
-                                    <span>{{ validation.message }}</span>
+<ngb-tabset (click)="clean()">
+    <ngb-tab title="TODOS">
+      <ng-template ngbTabContent>
+        <form [formGroup]="solicitudForm" (ngSubmit)="solicitud(solicitudForm.value)">
+            <div class="row m-2">
+                <div class="col-12">
+                    <p class="subtitle">| DATOS DE LA SOLICITUD</p>
+                </div>
+                <div class="col-12">
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3">
+                                <label for="tip_solicitud">Tipo Solicitud (*):</label>
+                                <select type="text" id="tip_solicitud" class="form-control" formControlName="tipSolicitud">
+                                    <option value="">Seleccione</option>
+                                    <option *ngFor="let s of solicitudList" [value]="s.codigo">{{s.texto}}</option>
+                                </select>
+                                <div class="col-12 form-group error-container p-0">
+                                    <ng-container *ngFor="let validation of validations.tipSolicitud">
+                                        <div class="error-message"
+                                            *ngIf="solicitudForm.get('tipSolicitud').hasError(validation.type) &&
+                                                     (solicitudForm.get('tipSolicitud').dirty || solicitudForm.get('tipSolicitud').touched)">
+                                            <span>{{ validation.message }}</span>
+                                        </div>
+                                    </ng-container>
                                 </div>
-                            </ng-container>
-                        </div>
-                    </div>
-                    <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3">
-                        <label for="tip_prestamo">(*) Tipo Prestamo:</label>
-                        <select type="text" id="tip_prestamo" class="form-control" formControlName="codTipoPrestamo">
-                            <option value="">Seleccione</option>
-                            <option *ngFor="let p of prestamoList" [value]="p.codigo">{{p.texto}}</option>
-                        </select>
-                        <div class="col-12 form-group error-container p-0">
-                            <ng-container *ngFor="let validation of validations.codTipoPrestamo">
-                                <div class="error-message"
-                                    *ngIf="solicitudForm.get('codTipoPrestamo').hasError(validation.type) &&
-                                     (solicitudForm.get('codTipoPrestamo').dirty || solicitudForm.get('codTipoPrestamo').touched)">
-                                    <span>{{ validation.message }}</span>
-                                </div>
-                            </ng-container>
-                        </div>
-                    </div>
-                    <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3">
-                        <label for="pol_grupo">(*) Poliza Grupo:</label>
-                        <select type="text" id="pol_grupo" class="form-control" (change)="setPolizaGrupo($event)"
-                            formControlName="numPolizaGrupo">
-                            <option value="">Seleccione</option>
-                            <option *ngFor="let p of polizaGrupoList" [value]="p.codigo">{{p.texto}}</option>
-                        </select>
-                        <div class="col-12 form-group error-container p-0">
-                            <ng-container *ngFor="let validation of validations.numPolizaGrupo">
-                                <div class="error-message"
-                                    *ngIf="solicitudForm.get('numPolizaGrupo').hasError(validation.type) &&
-                                     (solicitudForm.get('numPolizaGrupo').dirty || solicitudForm.get('numPolizaGrupo').touched)">
-                                    <span>{{ validation.message }}</span>
-                                </div>
-                            </ng-container>
-                        </div>
-                    </div>
-                    <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3">
-                        <label for="tip_moneda">(*) Tipo Moneda Cúmulo:</label>
-                        <select type="text" id="tip_moneda" class="form-control" formControlName="codMonedaPrestamo">
-                            <option value="">Seleccione</option>
-                            <option *ngFor="let m of monedaList" [value]="m.codigo">{{m.texto}}</option>
-                        </select>
-                        <div class="col-12 form-group error-container p-0">
-                            <ng-container *ngFor="let validation of validations.codMonedaPrestamo">
-                                <div class="error-message"
-                                    *ngIf="solicitudForm.get('codMonedaPrestamo').hasError(validation.type) &&
-                                     (solicitudForm.get('codMonedaPrestamo').dirty || solicitudForm.get('codMonedaPrestamo').touched)">
-                                    <span>{{ validation.message }}</span>
-                                </div>
-                            </ng-container>
-                        </div>
-                    </div>
-                    <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3">
-                        <label for="imp_cumulo">(*) Imp. Cúmulo:</label>
-                        <div class="input-group">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text" id="basic-addon1">{{amountSign}}</span>
                             </div>
-                            <input type="text" id="imp_cumulo" class="form-control" formControlName="impCumulo">
-                        </div>
-                        <div class="col-12 form-group error-container p-0">
-                            <ng-container *ngFor="let validation of validations.impCumulo">
-                                <div class="error-message" *ngIf="solicitudForm.get('impCumulo').hasError(validation.type) &&
-                                     (solicitudForm.get('impCumulo').dirty || solicitudForm.get('impCumulo').touched)">
-                                    <span>{{ validation.message }}</span>
+                            <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3">
+                                <label for="tip_prestamo">Tipo Prestamo (*):</label>
+                                <select type="text" id="tip_prestamo" class="form-control" formControlName="codTipoPrestamo">
+                                    <option value="">Seleccione</option>
+                                    <option *ngFor="let p of prestamoList" [value]="p.codigo">{{p.texto}}</option>
+                                </select>
+                                <div class="col-12 form-group error-container p-0">
+                                    <ng-container *ngFor="let validation of validations.codTipoPrestamo">
+                                        <div class="error-message"
+                                            *ngIf="solicitudForm.get('codTipoPrestamo').hasError(validation.type) &&
+                                                     (solicitudForm.get('codTipoPrestamo').dirty || solicitudForm.get('codTipoPrestamo').touched)">
+                                            <span>{{ validation.message }}</span>
+                                        </div>
+                                    </ng-container>
                                 </div>
-                            </ng-container>
+                            </div>
+                            <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3">
+                                <label for="pol_grupo">Poliza Grupo (*):</label>
+                                <select type="text" id="pol_grupo" class="form-control" (change)="setPolizaGrupo($event)"
+                                    formControlName="numPolizaGrupo">
+                                    <option value="">Seleccione</option>
+                                    <option *ngFor="let p of polizaGrupoList" [value]="p.codigo">{{p.texto}}</option>
+                                </select>
+                                <div class="col-12 form-group error-container p-0">
+                                    <ng-container *ngFor="let validation of validations.numPolizaGrupo">
+                                        <div class="error-message"
+                                            *ngIf="solicitudForm.get('numPolizaGrupo').hasError(validation.type) &&
+                                                     (solicitudForm.get('numPolizaGrupo').dirty || solicitudForm.get('numPolizaGrupo').touched)">
+                                            <span>{{ validation.message }}</span>
+                                        </div>
+                                    </ng-container>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3">
+                                <label for="tip_moneda">Tipo Moneda Cúmulo (*):</label>
+                                <select type="text" id="tip_moneda" class="form-control" formControlName="codMonedaPrestamo"
+                                    (change)="setCoinType($event)">
+                                    <option value="">Seleccione</option>
+                                    <option *ngFor="let m of monedaList" [value]="m.codigo">{{m.texto}}</option>
+                                </select>
+                                <div class="col-12 form-group error-container p-0">
+                                    <ng-container *ngFor="let validation of validations.codMonedaPrestamo">
+                                        <div class="error-message"
+                                            *ngIf="solicitudForm.get('codMonedaPrestamo').hasError(validation.type) &&
+                                                     (solicitudForm.get('codMonedaPrestamo').dirty || solicitudForm.get('codMonedaPrestamo').touched)">
+                                            <span>{{ validation.message }}</span>
+                                        </div>
+                                    </ng-container>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3">
+                                <label for="imp_cumulo">Imp. Cúmulo (*):</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text" id="basic-addon1">{{amountSign}}</span>
+                                    </div>
+                                    <input type="number" id="imp_cumulo" class="form-control" formControlName="impCumulo">
+                                </div>
+                                <div class="col-12 form-group error-container p-0">
+                                    <ng-container *ngFor="let validation of validations.impCumulo">
+                                        <div class="error-message"
+                                            *ngIf="solicitudForm.get('impCumulo').hasError(validation.type) &&
+                                                     (solicitudForm.get('impCumulo').dirty || solicitudForm.get('impCumulo').touched)">
+                                            <span>{{ validation.message }}</span>
+                                        </div>
+                                    </ng-container>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
+                                <label for="desc">Descripción:</label>
+                                <textarea id="desc" cols="30" rows="3" class="form-control"></textarea>
+                                <span style="font-size: 0.8em;" class="text-muted">Máximo 200 caracteres</span>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
-                        <label for="desc">Descripción:</label>
-                        <textarea id="desc" cols="30" rows="3" class="form-control"></textarea>
-                        <span style="font-size: 0.8em;" class="text-muted">Máximo 200 caracteres</span>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-
-    <div class="divider"></div>
-
-    <div *ngIf="showSeguro" class="row m-2">
-        <div class="col-12">
-            <p class="subtitle">| SEGUROS DE VIDA</p>
-        </div>
-        <div class="col-12 text-center">
-            <div class="form-group">
-                <div class="row">
-                    <div class="col-12 text-center">
-                        <label>{{cabezera}}</label>
-                        <button *ngIf="!showRadio" type="button" class="ml-1 btn btn-danger btn-sm"
-                            (click)="removePlan()"><i class="fa fa-times"></i></button>
-                    </div>
-                    <div *ngIf="showRadio" class="col-12 mb-3 text-center">
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" value="S" [(ngModel)]="seguro"
-                                [ngModelOptions]="{standalone: true}" (change)="checkSeguro($event)">
-                            <label class="form-check-label" for="rdButtonS">Si</label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" value="N" [(ngModel)]="seguro"
-                                [ngModelOptions]="{standalone: true}" (change)="checkSeguro($event)">
-                            <label class="form-check-label" for="rdButtonN">No</label>
-                        </div>
-                    </div>
-                    <div *ngIf="showPlanes" class="col-sm-12 col-md-10 col-lg-8 col-xl-6 text-center m-auto">
-                        <div class="container">
-                            <div class="row">
-                                <div class="col-sm-6 mb-2" *ngFor="let plan of planSeguroList; let i = index"
-                                    (click)="setPlan(i, plan)">
-                                    <div class="custom-hover card text-center" [class.active]="selectedPlan === i">
-                                        <div class="card-body">
-                                            <div class="circle mb-1">
-                                                <i class="fa fa-heart text-light"></i>
+        
+            <div class="divider"></div>
+        
+            <div *ngIf="showSeguro" class="row m-2">
+                <div class="col-12">
+                    <p class="subtitle">| SEGUROS DE VIDA</p>
+                </div>
+                <div class="col-12 text-center">
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-12 text-center">
+                                <label>{{cabezera}}</label>
+                                <button *ngIf="!showRadio" type="button" class="ml-1 btn btn-danger btn-sm"
+                                    (click)="removePlan()"><i class="fa fa-times"></i></button>
+                            </div>
+                            <div *ngIf="showRadio" class="col-12 mb-3 text-center">
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" value="S" [(ngModel)]="seguro"
+                                        [ngModelOptions]="{standalone: true}" (change)="checkSeguro($event)">
+                                    <label class="form-check-label" for="rdButtonS">Si</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" value="N" [(ngModel)]="seguro"
+                                        [ngModelOptions]="{standalone: true}" (change)="checkSeguro($event)">
+                                    <label class="form-check-label" for="rdButtonN">No</label>
+                                </div>
+                            </div>
+                            <div *ngIf="showPlanes" class="col-sm-12 col-md-10 col-lg-8 col-xl-6 text-center m-auto">
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col-sm-6 mb-2" *ngFor="let plan of planSeguroList; let i = index"
+                                            (click)="setPlan(i, plan)">
+                                            <div class="custom-hover card text-center" [class.activated]="selectedPlan === i">
+                                                <div class="card-body">
+                                                    <div class="circle mb-1">
+                                                        <i class="fa fa-heart text-light"></i>
+                                                    </div>
+                                                    <p class="mb-0">{{plan.text}}</p>
+                                                    <div class="divider mb-1"></div>
+                                                    <p class="mb-0 font-weight-bold">{{plan.price}}</p>
+                                                </div>
+                                                <div class="custom-footer card-footer">
+                                                    <ul class="coverage-item" *ngFor="let c of plan.coverages">
+                                                        <li><i class="fa fa-check text-success"></i></li>
+                                                        <li><span style="font-size: 12px;" class="text-muted">{{c.text}}</span>
+                                                        </li>
+                                                        <li><span style="font-size: 11px;">{{c.sum_assured | uppercase}}</span>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                                <div class="card-body"></div>
                                             </div>
-                                            <p class="mb-0">{{plan.text}}</p>
-                                            <div class="divider mb-1"></div>
-                                            <p class="mb-0 font-weight-bold">{{plan.price}}</p>
                                         </div>
-                                        <div class="custom-footer card-footer">
-                                            <ul class="coverage-item" *ngFor="let c of plan.coverages">
-                                                <li><i class="fa fa-check text-success"></i></li>
-                                                <li><span style="font-size: 12px;" class="text-muted">{{c.text}}</span>
-                                                </li>
-                                                <li><span style="font-size: 11px;">{{c.sum_assured | uppercase}}</span>
-                                                </li>
-                                            </ul>
+                                        <div class="col-12">
+                                            <button type="button" class="btn mapfre-color text-white m-2"
+                                                [disabled]="selectedPlan == -1" (click)="confirmPlan()">Confirmar</button>
+                                            <button type="button" class="btn btn-secondary m-2" (click)="hidePlan()">No,
+                                                Gracias</button>
                                         </div>
-                                        <div class="card-body"></div>
                                     </div>
                                 </div>
-                                <div class="col-12">
-                                    <button type="button" class="btn mapfre-color text-white m-2"
-                                        [disabled]="selectedPlan == -1" (click)="confirmPlan()">Confirmar</button>
-                                    <button type="button" class="btn btn-secondary m-2" (click)="hidePlan()">No,
-                                        Gracias</button>
-                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-
-    <div class="row m-2">
-        <div class="col-12 text-right">
-            <button type="submit" class="btn mapfre-color text-white">Continuar</button>
-        </div>
-    </div>
-</form>
+        
+            <div class="row m-2">
+                <div class="col-12 text-right">
+                    <button type="submit" class="btn mapfre-color text-white" (click)="goTab()">Continuar</button>
+                </div>
+            </div>
+        </form>
+      </ng-template>
+    </ngb-tab>
+    <ngb-tab title="PENDIENTES">
+      <ng-template ngbTabContent>
+      </ng-template>
+    </ngb-tab>
+    <ngb-tab title="REVISADOS">
+      <ng-template ngbTabContent>
+      </ng-template>
+    </ngb-tab>
+  </ngb-tabset>

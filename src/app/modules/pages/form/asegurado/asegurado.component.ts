@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
 import { Router } from '@angular/router';
+import { DigitalService } from 'src/app/core/services/digital.service';
 
 @Component({
   selector: 'app-asegurado',
@@ -10,26 +11,40 @@ import { Router } from '@angular/router';
 export class AseguradoComponent implements OnInit {
 
   showExtra: boolean = false;
+  cuestionarioList: any = [];
 
-  constructor(private location: Location, private router: Router) { }
+  constructor(private location: Location, private router: Router, private digitalServ: DigitalService) { }
 
   ngOnInit() {
+    this.obtenerDigital();
   }
 
-  addExtra(){
-    this.showExtra = true;
+  obtenerDigital(){
+    Promise.all(
+      [
+        this.recuperarCuestionario(),
+        this.requiereDps()
+      ]
+    ).then(values => {
+      console.log(values);
+    }).catch(err => {
+      console.log(err);
+    })
   }
 
-  removeExtra(){
-    this.showExtra = false;
+  recuperarCuestionario(){
+    return this.digitalServ.recuperarCuestionario().toPromise().then(resp => {
+      console.log(resp);
+      this.cuestionarioList = resp['Resultado'];
+      console.log(this.cuestionarioList);
+      
+    })
   }
 
-  goTo(){
-    this.router.navigate(['form/beneficiario']);
-  }
-
-  back(){
-    this.location.back();
+  requiereDps(){
+    return this.digitalServ.requiereDps().toPromise().then(resp => {
+      console.log(resp);
+    })
   }
 
 }
