@@ -45,7 +45,7 @@
                                 </div>
                                 <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3">
                                     <label for="nro_doc">Nro Documento (*):</label>
-                                    <input type="text" id="nro_doc" class="form-control" formControlName="codDocum">
+                                    <input type="number" id="nro_doc" class="form-control" formControlName="codDocum">
                                     <div class="col-12 form-group error-container p-0">
                                         <ng-container *ngFor="let validation of validations.codDocum">
                                             <div class="error-message"
@@ -58,8 +58,8 @@
                                 </div>
                                 <div class="col-sm-12 col-md-6 col-lg-4 col-xl-2">
                                     <label for="fec_nac">Fecha Nacimiento (*):</label>
-                                    <input type="date" id="fec_nac" class="form-control" formControlName="fecNacimiento"
-                                        [ngClass]="{ 'is-invalid': submitted && asegurado.controls.fecNacimiento.errors }">
+                                    <input type="date" id="fec_nac" class="form-control"
+                                        formControlName="fecNacimiento">
                                     <div class="col-12 form-group error-container p-0">
                                         <ng-container *ngFor="let validation of validations.fecNacimiento">
                                             <div class="error-message"
@@ -74,7 +74,8 @@
                                     <label for="est_civ">Estado Civil (*):</label>
                                     <select id="est_civ" class="form-control" formControlName="estadoCivil">
                                         <option value="">Seleccione</option>
-                                        <option *ngFor="let d of documentoList" [value]="d.codigo">{{d.texto}}</option>
+                                        <option *ngFor="let d of estadoCivilList" [value]="d.codigo">{{d.texto}}
+                                        </option>
                                     </select>
                                     <div class="col-12 form-group error-container p-0">
                                         <ng-container *ngFor="let validation of validations.estadoCivil">
@@ -131,6 +132,7 @@
                                     <label for="sex">Sexo (*):</label>
                                     <select id="sex" class="form-control" formControlName="mcaSexo">
                                         <option value="">Seleccione</option>
+                                        <option *ngFor="let d of generoList" [value]="d.codigo">{{d.texto}}</option>
                                     </select>
                                     <div class="col-12 form-group error-container p-0">
                                         <ng-container *ngFor="let validation of validations.mcaSexo">
@@ -144,10 +146,7 @@
                                 </div>
                                 <div class="col-sm-12 col-md-6 col-lg-4 col-xl-2">
                                     <label for="pais">Nacionalidad (*):</label>
-                                    <select id="pais" class="form-control" formControlName="codPais">
-                                        <option value="">Seleccione</option>
-                                        <option *ngFor="let d of documentoList" [value]="d.codigo">{{d.texto}}</option>
-                                    </select>
+                                    <input type="text" id="pais" class="form-control" formControlName="codPais">
                                     <div class="col-12 form-group error-container p-0">
                                         <ng-container *ngFor="let validation of validations.codPais">
                                             <div class="error-message"
@@ -160,11 +159,11 @@
                                 </div>
                                 <div class="col-sm-12 col-md-6 col-lg-4 col-xl-2">
                                     <label for="dep">Departamento (*):</label>
-                                    <select id="dep" class="form-control" formControlName="codDepartamento"
-                                        [ngClass]="{ 'is-invalid': submitted && asegurado.controls.nacionalidad.errors }">
-                                        <option value="">Seleccione</option>
-                                        <option *ngFor="let d of documentoList" [value]="d.codigo">{{d.texto}}</option>
-                                    </select>
+                                    <ng-select [items]="departamentoList" bindLabel="texto" bindValue="codigo"
+                                        [searchable]="true" labelForId="dep" formControlName="codDepartamento"
+                                        (change)="obtenerProvincia($event, i)" [loading]="depaIsLoading"
+                                        loadingText="Cargando Departamentos..." placeholder="Seleccione Departamento">
+                                    </ng-select>
                                     <div class="col-12 form-group error-container p-0">
                                         <ng-container *ngFor="let validation of validations.codDepartamento">
                                             <div class="error-message"
@@ -177,10 +176,11 @@
                                 </div>
                                 <div class="col-sm-12 col-md-6 col-lg-4 col-xl-2">
                                     <label for="prov">Provincia (*):</label>
-                                    <select id="prov" class="form-control" formControlName="codProvincia">
-                                        <option value="">Seleccione</option>
-                                        <option *ngFor="let d of documentoList" [value]="d.codigo">{{d.texto}}</option>
-                                    </select>
+                                    <ng-select [items]="provinciaList" bindLabel="texto" bindValue="codigo"
+                                        [searchable]="true" labelForId="prov" formControlName="codProvincia"
+                                        (change)="obtenerDistrito($event, i)" [loading]="provIsLoading"
+                                        loadingText="Cargando Provincias..." placeholder="Seleccione Provincia">
+                                    </ng-select>
                                     <div class="col-12 form-group error-container p-0">
                                         <ng-container *ngFor="let validation of validations.codProvincia">
                                             <div class="error-message"
@@ -193,10 +193,11 @@
                                 </div>
                                 <div class="col-sm-12 col-md-6 col-lg-4 col-xl-2">
                                     <label for="dist">Distrito (*):</label>
-                                    <select id="dist" class="form-control" formControlName="codDistrito">
-                                        <option value="">Seleccione</option>
-                                        <option *ngFor="let d of documentoList" [value]="d.codigo">{{d.texto}}</option>
-                                    </select>
+                                    <ng-select [items]="distritoList" bindLabel="texto" bindValue="codigo"
+                                        [searchable]="true" labelForId="dist" formControlName="codDistrito"
+                                        placeholder="Seleccione Distrito" [loading]="distIsLoading"
+                                        loadingText="Cargando Distritos..." (change)="onChangeOcupation($event)">
+                                    </ng-select>
                                     <div class="col-12 form-group error-container p-0">
                                         <ng-container *ngFor="let validation of validations.codDistrito">
                                             <div class="error-message"
@@ -293,12 +294,13 @@
                                         </ng-container>
                                     </div>
                                 </div>
-                                <div class="col-sm-12 col-md-6 col-lg-4 col-xl-2">
+                                <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
                                     <label for="ocup">Ocupación (*):</label>
-                                    <select id="ocup" class="form-control" formControlName="codOcupacion">
-                                        <option value="">Seleccione</option>
-                                        <option *ngFor="let d of documentoList" [value]="d.codigo">{{d.texto}}</option>
-                                    </select>
+                                    <ng-select [items]="profesionesList" bindLabel="texto" bindValue="codigo"
+                                        [searchable]="true" labelForId="ocup" formControlName="codOcupacion"
+                                        (change)="onChangeOcupation($event)" [loading]="profIsLoading"
+                                        loadingText="Cargando Profesiones..." placeholder="Seleccione Ocupación">
+                                    </ng-select>
                                     <div class="col-12 form-group error-container p-0">
                                         <ng-container *ngFor="let validation of validations.codOcupacion">
                                             <div class="error-message"
@@ -309,12 +311,25 @@
                                         </ng-container>
                                     </div>
                                 </div>
+                                <div *ngIf="otroIsSelected" class="col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                                    <label for="peso">Otro (*):</label>
+                                    <input type="text" id="otro_ocup" class="form-control" formControlName="peso">
+                                    <div class="col-12 form-group error-container p-0">
+                                        <ng-container *ngFor="let validation of validations.peso">
+                                            <div class="error-message"
+                                                *ngIf="asegurado.get('peso').hasError(validation.type) &&
+                                                             (asegurado.get('peso').dirty || asegurado.get('peso').touched)">
+                                                <span>{{ validation.message }}</span>
+                                            </div>
+                                        </ng-container>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="card-footer text-muted">
-                    <div *ngIf="dpsChecker == true" class="col-sm-12 col-md-6 col-lg-4 col-xl-3 p-0">
+                <div *ngIf="dpsChecker" class="card-footer text-muted">
+                    <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3 p-0">
                         <button type="button" class="btn mapfre-color text-white" data-toogle="modal"
                             (click)="dpsModal.show()"> <i class="fa fa-times"></i> Registrar DPS</button>
                     </div>
@@ -324,10 +339,8 @@
     </div>
     <div class="row m-2">
         <div class="col-12 text-right">
-            <!-- <button type="button" class="btn btn-outline-success text-dark ml-1" (click)="addExtraAsegurado()">Agregar
-                Asegurado</button> -->
             <button type="button" class="btn mapfre-color text-white ml-1" (click)="back()">Volver</button>
-            <button type="submit" class="btn mapfre-color text-white ml-1">Guardar</button>
+            <button type="submit" class="btn mapfre-color text-white ml-1">{{ dpsChecker ? 'Siguiente' : 'Guardar' }}</button>
         </div>
     </div>
 </form>
@@ -340,39 +353,47 @@
             (click)="dpsModal.hide()"><i class="fa fa-times text-light"></i></button>
     </div>
     <div class="app-modal-body">
-        <form [formGroup]="dpsModalForm">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th scope="col" *ngFor="let item of headers" [class]="item.class">{{item.text}}</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr *ngFor="let c of cuestionarioData">
-                        <td>#{{c.CodigoPregunta}}</td>
-                        <td>{{c.DescripcionPregunta}}</td>
-                        <td>
-                            <div style="display: flex;">
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" value="S"
-                                        [(ngModel)]="c.CodigoPregunta" [ngModelOptions]="{standalone: true}"
-                                        (change)="checkSeguro($event)">
-                                    <label class="form-check-label" for="rdButtonS">Si</label>
-                                </div>
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" value="N"
-                                        [(ngModel)]="c.CodigoPregunta" [ngModelOptions]="{standalone: true}"
-                                        (change)="checkSeguro($event)">
-                                    <label class="form-check-label" for="rdButtonN">No</label>
-                                </div>
+        <div class="row text-center">
+            <div class="col-1">
+                Nro
+            </div>
+            <div class="col-8">
+                Pregunta
+            </div>
+            <div class="col-3 text-center">
+                Selección
+            </div>
+        </div>
+        <div class="divider"></div>
+        <form [formGroup]="cuestionarioForm" (ngSubmit)="setCuestionario(cuestionarioForm.value)">
+            <div class="col-12 m-2" *ngFor="let pregunta of p.controls; let i = index">
+                <div [formGroup]="pregunta" class="row">
+                    <div class="col-1 p-0">
+                        <input type="number" class="form-control white-all" formControlName="codPregunta" readonly>
+                    </div>
+                    <div class="col-8 p-0">
+                        <textarea type="text" class="form-control-plaintext" formControlName="desPregunta" autosize></textarea>
+                    </div>
+                    <div class="col-3 p-0 text-center"> 
+                        <div style="display: inline-flex;">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" value="S" formControlName="codRespuesta">
+                                <label class="form-check-label" for="rdButtonS">Si</label>
                             </div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" value="N" formControlName="codRespuesta">
+                                <label class="form-check-label" for="rdButtonN">No</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="divider"></div>
             <div class="col-12 p-0">
-                <p class="subtitle">| OBSERVACIONES</p>
+                <app-dynamic-observacion></app-dynamic-observacion>
+            </div>
+            <div class="col-12 p-0 text-right">
+                <button type="submit" class="btn btn-danger text-light ml-1">Confirmar</button>
             </div>
         </form>
     </div>

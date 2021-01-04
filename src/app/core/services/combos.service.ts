@@ -15,35 +15,48 @@ export class CombosService {
 
   constructor(private http: HttpClient) { }
 
-  obtenerTipoConformación() {
-    return this.http.get<Response>(`${URI + this.rootEntity.TIPO_CONFORMACION}`);
+  async obtenerTipoConformación() {
+    return await this.http.get<Response>(`${URI + this.rootEntity.TIPO_CONFORMACION}`).toPromise();
   }
 
-  obtenerTipoMoneda() {
-    return this.http.get<Response>(`${URI + this.rootEntity.TIPO_MONEDA}`);
+  async obtenerTipoMoneda() {
+    return await this.http.get<Response>(`${URI + this.rootEntity.TIPO_MONEDA}`).toPromise();
   }
 
-  obtenerTipoSolicitud() {
-    return this.http.get<Response>(`${URI + this.rootEntity.TIPO_SOLICITUD}`);
+  async obtenerTipoPrestamo() {
+    return await this.http.get<Response>(`${URI + this.rootEntity.TIPO_PRESTAMO}`).toPromise();
   }
 
-  obtenerTipoPrestamo() {
-    return this.http.get<Response>(`${URI + this.rootEntity.TIPO_PRESTAMO}`);
+  async obtenerTipoDocumento() {
+    return await this.http.get<Response>(`${URI + this.rootEntity.TIPO_DOCUMENTO}`).toPromise();
   }
 
-  obtenerTipoPoliza() {
-    return this.http.get<Response>(`${URI + this.rootEntity.TIPO_GRUPO_POLIZA}`);
+  async obtenerTipoParentesco() {
+    return await this.http.get<Response>(`${URI + this.rootEntity.TIPO_PARENTESCO}`).toPromise();
   }
 
-  obtenerTipoDocumento() {
-    return this.http.get<Response>(`${URI + this.rootEntity.TIPO_DOCUMENTO}`);
+  async obtenerEstadoCivil() {
+    return await this.http.get<Response>(`${URI + this.rootEntity.TIPO_ESTADO_CIVIL}`).toPromise();
   }
 
-  obtenerTipoParentesco() {
-    return this.http.get<Response>(`${URI + this.rootEntity.TIPO_PARENTESCO}`);
+  async obtenerGenero() {
+    return await this.http.get<Response>(`${URI + this.rootEntity.TIPO_GENERO}`).toPromise();
   }
 
-  obtenerPlanSeguroVida() {
-    return this.http.get<Response>(`${URI + this.rootEntity.TIPO_PLAN_SEGURO_VIDA}`);
+  async obtenerDepartamento() {
+    return await this.http.get<Response>(`${URI + this.rootEntity.DEPARTAMENTO}`).toPromise();
   }
+
+  async obtenerProvincia(codDepartamento:any) {
+    return await this.http.get<Response>(`${URI + this.rootEntity.PROVINCIA}/${codDepartamento}`).toPromise();
+  }
+
+  async obtenerDistrito(codProvincia:any) {
+    return await this.http.get<Response>(`${URI + this.rootEntity.DISTRITO}/${codProvincia}`).toPromise();
+  }
+
+  async obtenerProfesiones() {
+    return await this.http.get<Response>(`${URI + this.rootEntity.TIPO_PROFESION}`).toPromise();
+  }
+
 }

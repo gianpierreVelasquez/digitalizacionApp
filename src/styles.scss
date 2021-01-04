@@ -2,6 +2,7 @@
 
 // bootstrap
 @import "~bootstrap/scss/bootstrap";
+@import "~@ng-select/ng-select/themes/default.theme.css";
 
 body{
     background: #faf9fa;
@@ -34,4 +35,8 @@ body{
       color: #d81e05;
       font-size: 14px;
     }
+}
+
+tabset.nav-hidden .nav-tabs {
+    display: none;
 }

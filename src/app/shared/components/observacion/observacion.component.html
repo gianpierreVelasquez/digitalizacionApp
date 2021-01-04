@@ -1,0 +1,93 @@
+<div class="col-12 p-0">
+    <p class="subtitle">| OBSERVACIONES</p>
+    <form [formGroup]="observacionForm" (ngSubmit)="setObservacion(observacionForm.value)">
+        <div *ngFor="let observacion of t.controls; let i = index" class="row m-2">
+            <div [formGroup]="observacion" class="card p-3 shadow">
+                <div class="card-header p-0">
+                    <div class="row">
+                        <div class="col-9">
+                            <p class="card-title2 p-2 m-0">Observación {{i + 1}}</p>
+                        </div>
+                        <div *ngIf="i != 0" class="col-3">
+                            <button type="button" style="float: right;" class="btn btn-outline-light" (click)="removeObservation(i)">
+                                <i class="fa fa-times text-dark"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <label for="enfer">Enfermedades padecidas o tratamientos recomendados:</label>
+                        <input type="text" id="enfer" class="form-control" formControlName="enfermedad">
+                        <div class="col-12 form-group error-container p-0">
+                            <ng-container *ngFor="let validation of validations.enfermedad">
+                                <div class="error-message" *ngIf="observacion.get('enfermedad').hasError(validation.type) &&
+                                 (observacion.get('enfermedad').dirty || observacion.get('enfermedad').touched)">
+                                    <span>{{ validation.message }}</span>
+                                </div>
+                            </ng-container>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6">
+                        <label for="fec">Fecha:</label>
+                        <input type="date" id="fec" class="form-control" formControlName="fecha">
+                        <div class="col-12 form-group error-container p-0">
+                            <ng-container *ngFor="let validation of validations.fecha">
+                                <div class="error-message" *ngIf="observacion.get('fecha').hasError(validation.type) &&
+                                     (observacion.get('fecha').dirty || observacion.get('fecha').touched)">
+                                    <span>{{ validation.message }}</span>
+                                </div>
+                            </ng-container>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6">
+                        <label for="dura">Duración</label>
+                        <input type="number" id="dura" class="form-control" formControlName="duracion" min="0">
+                        <div class="col-12 form-group error-container p-0">
+                            <ng-container *ngFor="let validation of validations.duracion">
+                                <div class="error-message" *ngIf="observacion.get('duracion').hasError(validation.type) &&
+                                 (observacion.get('duracion').dirty || observacion.get('duracion').touched)">
+                                    <span>{{ validation.message }}</span>
+                                </div>
+                            </ng-container>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6">
+                        <label for="clini">Nombre de la clinica o medico tratante:</label>
+                        <input type="text" id="clini" class="form-control" formControlName="clinica">
+                        <div class="col-12 form-group error-container p-0">
+                            <ng-container *ngFor="let validation of validations.clinica">
+                                <div class="error-message" *ngIf="observacion.get('clinica').hasError(validation.type) &&
+                                 (observacion.get('clinica').dirty || observacion.get('clinica').touched)">
+                                    <span>{{ validation.message }}</span>
+                                </div>
+                            </ng-container>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6">
+                        <label for="est_act">Estado actual:</label>
+                        <input type="text" id="est_act" class="form-control" formControlName="estado_actual">
+                        <div class="col-12 form-group error-container p-0">
+                            <ng-container *ngFor="let validation of validations.estado_actual">
+                                <div class="error-message"
+                                    *ngIf="observacion.get('estado_actual').hasError(validation.type) &&
+                                     (observacion.get('estado_actual').dirty || observacion.get('estado_actual').touched)">
+                                    <span>{{ validation.message }}</span>
+                                </div>
+                            </ng-container>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12 text-left">
+            <button *ngIf="t.length != 3" type="button" class="btn btn-sm btn-primary text-light ml-1" (click)="addObservation()">Agregar
+                Observación</button>
+            <button *ngIf="formComplete == false || observacionForm.invalid" type="submit" class="btn btn-sm btn-danger text-light ml-1">Guardar</button>
+        </div>
+    </form>
+</div>

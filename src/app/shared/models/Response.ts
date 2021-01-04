@@ -8,14 +8,14 @@ export interface Data {
 }
 
 export interface PlanData {
-    id: string;
-    price: string;
-    text: string;
-    coverages: Coverage[];
+    id?: string;
+    price?: string;
+    text?: string;
+    coverages?: Coverage[];
 }
 
 export interface Coverage {
-    id: string;
-    text: string;
-    sum_assured: string;
+    id?: string;
+    text?: string;
+    sum_assured?: string;
 }

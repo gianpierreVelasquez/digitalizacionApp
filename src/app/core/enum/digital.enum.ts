@@ -1,7 +1,10 @@
 export enum ROOT_DIGITAL {
-    SUSCRIBIR_DESGRAVAMEN = "/suscribir-desgravamen",
-    REQUIERE_DPS = "/requiere-dps",
-    RECUPERAR_CUESTIONARIO = "/recuperar-cuestionario",
-    OBTENER_PARAMETROS = "/obtener-parametros",
-    GUARDAR_PARAMETROS = "/guardar-parametros"
+    SUSCRIBIR_DESGRAVAMEN = "/historyCredits",
+    REQUIERE_DPS = "/historyCredits/dps/",
+    RECUPERAR_CUESTIONARIO = "/historyCredits/questions",
+    GUARDAR_PARAMETROS = "/historyCredits/parameters",
+    OBTENER_PARAMETROS = "/historyCredits/parameters/{id_parameters}",
+    TIPO_SOLICITUD = "/requiresExam",
+    TIPO_GRUPO_POLIZA = "/insurancePolicyGroups",
+    PLAN_SEGURO_VIDA = "/insurance/plan",
 }

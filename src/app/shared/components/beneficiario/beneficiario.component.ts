@@ -1,5 +1,5 @@
 import { Location } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { UtilService } from 'src/app/core/services/util.service';
 
@@ -9,6 +9,8 @@ import { UtilService } from 'src/app/core/services/util.service';
   styleUrls: ['./beneficiario.component.scss']
 })
 export class BeneficiarioComponent implements OnInit {
+
+  @Output() backButton: EventEmitter<string> = new EventEmitter<string>();
 
   beneficiarioForm: FormGroup;
   submitted = false;
@@ -127,8 +129,8 @@ export class BeneficiarioComponent implements OnInit {
     this.t.removeAt(i);
   }
 
-  back() {
-    this.loc.back();
+  volver( $event:any ){
+    this.backButton.emit($event);
   }
 
 }

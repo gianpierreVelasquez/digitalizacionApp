@@ -25,10 +25,9 @@ import { NgbTabsetModule } from '@ng-bootstrap/ng-bootstrap';
     AseguradoModule,
     BeneficiarioModule,
     ModalModule,
-    NgbTabsetModule
+    NgbTabsetModule,
   ],
-  declarations: [
-  ],
+  declarations: [],
   providers: [
     UiModalService
   ]

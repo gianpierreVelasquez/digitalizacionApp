@@ -70,14 +70,15 @@ export interface Direccion {
 }
 
 export interface Cuestionario {
-    preguntas: Pregunta[]
+    preguntas: Pregunta[];
+    observaciones?: Observacion[];
 }
 
 export interface Pregunta {
-    codPregunta?: number;
-    codRespuesta?: string;
+    codPregunta: number;
+    desPregunta?: string;
+    codRespuesta: string;
     descRespuesta?: DescripcionRespuesta;
-    observaciones?: Observacion[];
 }
 
 export interface DescripcionRespuesta {

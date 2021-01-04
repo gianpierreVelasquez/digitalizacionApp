@@ -17,23 +17,29 @@ export class UtilService {
 
   public spinnerTextValue = new BehaviorSubject<string>(SPINNER_TEXT.DEFAULT);
 
-  //Operadores
-  conformacionData = new Subject();
-  monedaData = new Subject();
-  solicitudData = new Subject();
-  prestamoData = new Subject();
-  polizaGrupoData = new Subject();
+  //Operadores Solicitud
+  conformacionData = new BehaviorSubject<any>('');
+  monedaData = new BehaviorSubject<any>('');
+  solicitudData = new BehaviorSubject<any>('');
+  prestamoData = new BehaviorSubject<any>('');
+  polizaGrupoData = new BehaviorSubject<any>('');
 
-  parentescoData = new Subject();
-  tipoDocData = new Subject();
-  generoData = new Subject();
-  estCivilData = new Subject();
+  planSeguroData = new BehaviorSubject<any>('');
+  // Identifier to verify if there's a current plan
+  isPlanActivated = new BehaviorSubject<any>(false);
 
-  planSeguroData = new Subject();
-
+  //Operadores Asegurado
+  parentescoData = new BehaviorSubject<any>('');
+  tipoDocData = new BehaviorSubject<any>('');
+  tipoEstCiv = new BehaviorSubject<any>('');
+  generoData = new BehaviorSubject<any>('');
+  estCivilData = new BehaviorSubject<any>('');
+  departamentoData = new BehaviorSubject<any>('');
+  profesionesData = new BehaviorSubject<any>('');
 
   //Variables
   conformacionVar = new Subject();
+  monedaChecker = new Subject<any>();
   dpsChecker = new BehaviorSubject<boolean>(false);
 
   constructor(private spinner: NgxSpinnerService, private modal: UiModalService) { }

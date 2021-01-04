@@ -1,7 +1,6 @@
-<ngb-tabset (click)="clean()">
-    <ngb-tab title="TODOS">
-      <ng-template ngbTabContent>
-        <form [formGroup]="solicitudForm" (ngSubmit)="solicitud(solicitudForm.value)">
+<tabset #staticTabs [class.nav-hidden]="true">
+    <tab heading="Solicitud">
+        <form [formGroup]="solicitudForm" (ngSubmit)="setSolicitud(solicitudForm.value)">
             <div class="row m-2">
                 <div class="col-12">
                     <p class="subtitle">| DATOS DE LA SOLICITUD</p>
@@ -11,7 +10,8 @@
                         <div class="row">
                             <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3">
                                 <label for="tip_solicitud">Tipo Solicitud (*):</label>
-                                <select type="text" id="tip_solicitud" class="form-control" formControlName="tipSolicitud">
+                                <select type="text" id="tip_solicitud" class="form-control"
+                                    formControlName="tipSolicitud">
                                     <option value="">Seleccione</option>
                                     <option *ngFor="let s of solicitudList" [value]="s.codigo">{{s.texto}}</option>
                                 </select>
@@ -27,10 +27,11 @@
                             </div>
                             <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3">
                                 <label for="tip_prestamo">Tipo Prestamo (*):</label>
-                                <select type="text" id="tip_prestamo" class="form-control" formControlName="codTipoPrestamo">
+                                <select type="text" id="tip_prestamo" class="form-control"
+                                    formControlName="codTipoPrestamo">
                                     <option value="">Seleccione</option>
                                     <option *ngFor="let p of prestamoList" [value]="p.codigo">{{p.texto}}</option>
-                                </select>
+                                </select>   
                                 <div class="col-12 form-group error-container p-0">
                                     <ng-container *ngFor="let validation of validations.codTipoPrestamo">
                                         <div class="error-message"
@@ -43,8 +44,8 @@
                             </div>
                             <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3">
                                 <label for="pol_grupo">Poliza Grupo (*):</label>
-                                <select type="text" id="pol_grupo" class="form-control" (change)="setPolizaGrupo($event)"
-                                    formControlName="numPolizaGrupo">
+                                <select type="text" id="pol_grupo" class="form-control"
+                                    (change)="setPolizaGrupo($event)" formControlName="numPolizaGrupo">
                                     <option value="">Seleccione</option>
                                     <option *ngFor="let p of polizaGrupoList" [value]="p.codigo">{{p.texto}}</option>
                                 </select>
@@ -60,8 +61,8 @@
                             </div>
                             <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3">
                                 <label for="tip_moneda">Tipo Moneda Cúmulo (*):</label>
-                                <select type="text" id="tip_moneda" class="form-control" formControlName="codMonedaPrestamo"
-                                    (change)="setCoinType($event)">
+                                <select type="text" id="tip_moneda" class="form-control"
+                                    formControlName="codMonedaPrestamo" (change)="setCoinType($event)">
                                     <option value="">Seleccione</option>
                                     <option *ngFor="let m of monedaList" [value]="m.codigo">{{m.texto}}</option>
                                 </select>
@@ -81,7 +82,8 @@
                                     <div class="input-group-prepend">
                                         <span class="input-group-text" id="basic-addon1">{{amountSign}}</span>
                                     </div>
-                                    <input type="number" id="imp_cumulo" class="form-control" formControlName="impCumulo">
+                                    <input type="number" id="imp_cumulo" class="form-control"
+                                        formControlName="impCumulo">
                                 </div>
                                 <div class="col-12 form-group error-container p-0">
                                     <ng-container *ngFor="let validation of validations.impCumulo">
@@ -102,9 +104,9 @@
                     </div>
                 </div>
             </div>
-        
+
             <div class="divider"></div>
-        
+
             <div *ngIf="showSeguro" class="row m-2">
                 <div class="col-12">
                     <p class="subtitle">| SEGUROS DE VIDA</p>
@@ -134,7 +136,8 @@
                                     <div class="row">
                                         <div class="col-sm-6 mb-2" *ngFor="let plan of planSeguroList; let i = index"
                                             (click)="setPlan(i, plan)">
-                                            <div class="custom-hover card text-center" [class.activated]="selectedPlan === i">
+                                            <div class="custom-hover card text-center"
+                                                [class.activated]="selectedPlan === i">
                                                 <div class="card-body">
                                                     <div class="circle mb-1">
                                                         <i class="fa fa-heart text-light"></i>
@@ -146,9 +149,11 @@
                                                 <div class="custom-footer card-footer">
                                                     <ul class="coverage-item" *ngFor="let c of plan.coverages">
                                                         <li><i class="fa fa-check text-success"></i></li>
-                                                        <li><span style="font-size: 12px;" class="text-muted">{{c.text}}</span>
+                                                        <li><span style="font-size: 12px;"
+                                                                class="text-muted">{{c.text}}</span>
                                                         </li>
-                                                        <li><span style="font-size: 11px;">{{c.sum_assured | uppercase}}</span>
+                                                        <li><span
+                                                                style="font-size: 11px;">{{c.sum_assured | uppercase}}</span>
                                                         </li>
                                                     </ul>
                                                 </div>
@@ -157,7 +162,8 @@
                                         </div>
                                         <div class="col-12">
                                             <button type="button" class="btn mapfre-color text-white m-2"
-                                                [disabled]="selectedPlan == -1" (click)="confirmPlan()">Confirmar</button>
+                                                [disabled]="selectedPlan == -1"
+                                                (click)="confirmPlan()">Confirmar</button>
                                             <button type="button" class="btn btn-secondary m-2" (click)="hidePlan()">No,
                                                 Gracias</button>
                                         </div>
@@ -168,21 +174,23 @@
                     </div>
                 </div>
             </div>
-        
+
             <div class="row m-2">
                 <div class="col-12 text-right">
-                    <button type="submit" class="btn mapfre-color text-white" (click)="goTab()">Continuar</button>
+                    <button type="submit" class="btn mapfre-color text-white">Continuar</button>
                 </div>
             </div>
         </form>
-      </ng-template>
-    </ngb-tab>
-    <ngb-tab title="PENDIENTES">
-      <ng-template ngbTabContent>
-      </ng-template>
-    </ngb-tab>
-    <ngb-tab title="REVISADOS">
-      <ng-template ngbTabContent>
-      </ng-template>
-    </ngb-tab>
-  </ngb-tabset>
+    </tab>
+    <tab heading="Asegurado">
+        <app-dynamic-asegurado 
+            (backButton)="selectTab(0)"
+            (nextButton)="selectTab(2)">
+        </app-dynamic-asegurado>
+    </tab>
+    <tab heading="Beneficiario">
+        <app-dynamic-beneficiario
+            (backButton)="selectTab(1)">
+        </app-dynamic-beneficiario>
+    </tab>
+</tabset>
