@@ -1,8 +1,10 @@
 export const environment = {
   production: true,
-  BASE_API_URL_COMBOS: 'http://localhost:8080/backend-apis',
-  BASE_API_URL_DIGITAL: '',
+  BASE_API_URL_COMBOS: 'http://473eb190e032.ngrok.io/apidatos/wsrAPIDatos',
+  BASE_API_URL_DIGITAL: 'http://473eb190e032.ngrok.io/desgravamenes/wsrDesgravamenes',
+  EPK: '',
   KEYS: {
-    TOKEN: 'token'
+    TOKEN: 'token',
+    PARAMS: 'params'
   }
 };

@@ -3,39 +3,115 @@
         <p class="subtitle">| DATOS ENTIDAD</p>
     </div>
     <div class="col-12">
-        <div class="form-group">
-            <div class="row">
-                <div class="col-6 col-sm-6 col-md-6 col-lg-3 col-xl-2">
-                    <label for="nro_solicitud">Nro Solicitud Caja:</label>
-                    <input type="text" id="nro_solicitud" class="form-control">
-                </div>
-                <div class="col-6 col-sm-6 col-md-6 col-lg-3 col-xl-2">
-                    <label for="tip_conformacion">Tipo Conformación:</label>
-                    <select type="text" id="tip_conformacion" class="form-control" [(ngModel)]="conformacion" (change)="setConformacion($event)">
-                        <option *ngFor="let c of conformacionList" [value]="c.codigo">{{c.texto}}</option>
-                    </select>
-                </div>
-                <div class="col-6 col-sm-6 col-md-6 col-lg-3 col-xl-2">
-                    <label for="plzPrestamo">Plazo Prestamo:</label>
-                    <input type="text" id="plzPrestamo" class="form-control">
-                </div>
-                <div class="col-6 col-sm-6 col-md-6 col-lg-3 col-xl-2">
-                    <label for="tip_moneda">Moneda:</label>
-                    <select type="text" id="tip_moneda" class="form-control" [(ngModel)]="moneda" (change)="setMoneda($event)">
-                        <option value="">Seleccione</option>
-                        <option *ngFor="let m of monedaList" [value]="m.codigo">{{m.texto}}</option>
-                    </select>
-                </div>
-                <div class="col-6 col-sm-6 col-md-6 col-lg-3 col-xl-2">
-                    <label for="impPrestamo">Imp. Prestamo:</label>
-                    <input type="text" id="impPrestamo" class="form-control">
-                </div>
-                <div class="col-6 col-sm-6 col-md-6 col-lg-3 col-xl-2">
-                    <label for="funcCanal">Funcionario Canal:</label>
-                    <input type="text" id="funcCanal" class="form-control">
+        <form [formGroup]="entidadForm" (ngSubmit)="setEntidad(entidadForm.value)">
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-6 col-sm-6 col-md-6 col-lg-3 col-xl-2">
+                        <label for="nro_solicitud">Nro Solicitud Caja:</label>
+                        <input type="number" id="nro_solicitud" class="form-control" formControlName="nroSolicitudCaja" autocomplete="off" [readonly]="submitted">
+                        <div class="col-12 form-group error-container p-0">
+                            <ng-container *ngFor="let validation of validations.nroSolicitudCaja">
+                                <div class="error-message"
+                                    *ngIf="entidadForm.get('nroSolicitudCaja').hasError(validation.type) &&
+                                             (entidadForm.get('nroSolicitudCaja').dirty || entidadForm.get('nroSolicitudCaja').touched)">
+                                    <span>{{ validation.message }}</span>
+                                </div>
+                            </ng-container>
+                        </div>
+                    </div>
+
+                    <div class="col-6 col-sm-6 col-md-6 col-lg-3 col-xl-2">
+                        <label for="tip_conformacion">Tipo Conformación:</label>
+                        <select type="text" id="tip_conformacion" class="form-control" formControlName="codTipoConformacion"
+                            (change)="setConformacion($event)">
+                            <option value="">Seleccione</option>
+                            <option *ngFor="let c of conformacionList" [value]="c.codigo">{{c.texto}}</option>
+                        </select>
+                        <div class="col-12 form-group error-container p-0">
+                            <ng-container *ngFor="let validation of validations.codTipoConformacion">
+                                <div class="error-message"
+                                    *ngIf="entidadForm.get('codTipoConformacion').hasError(validation.type) &&
+                                             (entidadForm.get('codTipoConformacion').dirty || entidadForm.get('codTipoConformacion').touched)">
+                                    <span>{{ validation.message }}</span>
+                                </div>
+                            </ng-container>
+                        </div>
+                    </div>
+
+                    <div class="col-6 col-sm-6 col-md-6 col-lg-3 col-xl-2">
+                        <label for="plzPrestamo">Plazo Prestamo:</label>
+                        <input type="number" id="plzPrestamo" class="form-control" formControlName="plazoPrestamo" min="1" autocomplete="off" [readonly]="submitted">
+                        <div class="col-12 form-group error-container p-0">
+                            <ng-container *ngFor="let validation of validations.plazoPrestamo">
+                                <div class="error-message"
+                                    *ngIf="entidadForm.get('plazoPrestamo').hasError(validation.type) &&
+                                             (entidadForm.get('plazoPrestamo').dirty || entidadForm.get('plazoPrestamo').touched)">
+                                    <span>{{ validation.message }}</span>
+                                </div>
+                            </ng-container>
+                        </div>
+                    </div>
+
+                    <div class="col-6 col-sm-6 col-md-6 col-lg-3 col-xl-2">
+                        <label for="tip_moneda">Moneda:</label>
+                        <select type="text" id="tip_moneda" class="form-control" formControlName="codMonedaPrestamo"
+                            (change)="setMoneda($event)">
+                            <option value="">Seleccione</option>
+                            <option *ngFor="let m of monedaList" [value]="m.codigo">{{m.texto}}</option>
+                        </select>
+                        <div class="col-12 form-group error-container p-0">
+                            <ng-container *ngFor="let validation of validations.codMonedaPrestamo">
+                                <div class="error-message"
+                                    *ngIf="entidadForm.get('codMonedaPrestamo').hasError(validation.type) &&
+                                             (entidadForm.get('codMonedaPrestamo').dirty || entidadForm.get('codMonedaPrestamo').touched)">
+                                    <span>{{ validation.message }}</span>
+                                </div>
+                            </ng-container>
+                        </div>
+                    </div>
+
+                    <div class="col-6 col-sm-6 col-md-6 col-lg-3 col-xl-2">
+                        <label for="impPrestamo">Imp. Prestamo:</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="basic-addon1" autocomplete="off">{{amountSign}}</span>
+                            </div>
+                            <input type="number" id="impPrestamo" class="form-control" formControlName="impPrestamo" autocomplete="off" [readonly]="submitted">
+                        </div>
+                        <div class="col-12 form-group error-container p-0">
+                            <ng-container *ngFor="let validation of validations.impPrestamo">
+                                <div class="error-message"
+                                    *ngIf="entidadForm.get('impPrestamo').hasError(validation.type) &&
+                                             (entidadForm.get('impPrestamo').dirty || entidadForm.get('impPrestamo').touched)">
+                                    <span>{{ validation.message }}</span>
+                                </div>
+                            </ng-container>
+                        </div>
+                    </div>
+
+                    <div class="col-6 col-sm-6 col-md-6 col-lg-3 col-xl-2">
+                        <label for="funcCanal">Funcionario Canal:</label>
+                        <input type="text" id="funcCanal" class="form-control" formControlName="codigoUsuario" autocomplete="off" [readonly]="submitted">
+                        <div class="col-12 form-group error-container p-0">
+                            <ng-container *ngFor="let validation of validations.codigoUsuario">
+                                <div class="error-message"
+                                    *ngIf="entidadForm.get('codigoUsuario').hasError(validation.type) &&
+                                             (entidadForm.get('codigoUsuario').dirty || entidadForm.get('codigoUsuario').touched)">
+                                    <span>{{ validation.message }}</span>
+                                </div>
+                            </ng-container>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-12 text-right" style="position: absolute; margin-top: -45px;">
+                        <button type="submit" class="btn btn-sm" [ngClass]="submitted ? 'btn-danger' : 'btn-success' ">
+                            <i class="fa" [ngClass]="submitted ? 'fa-times' : 'fa-check' "></i>
+                        </button>
+                    </div>
+
                 </div>
             </div>
-        </div>
+        </form>
     </div>
 </div>
 <div class="divider"></div>

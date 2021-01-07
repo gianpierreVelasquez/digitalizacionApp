@@ -45,7 +45,7 @@
                                 </div>
                                 <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3">
                                     <label for="nro_doc">Nro Documento (*):</label>
-                                    <input type="number" id="nro_doc" class="form-control" formControlName="codDocum">
+                                    <input type="number" id="nro_doc" class="form-control" formControlName="codDocum" autocomplete="off">
                                     <div class="col-12 form-group error-container p-0">
                                         <ng-container *ngFor="let validation of validations.codDocum">
                                             <div class="error-message"
@@ -89,8 +89,7 @@
                                 </div>
                                 <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
                                     <label for="name">Nombres (*):</label>
-                                    <input type="text" id="name" class="form-control" formControlName="nombre"
-                                        [ngClass]="{ 'is-invalid': submitted && asegurado.controls.nombre.errors }">
+                                    <input type="text" id="name" class="form-control" formControlName="nombre" autocomplete="off">
                                     <div class="col-12 form-group error-container p-0">
                                         <ng-container *ngFor="let validation of validations.nombre">
                                             <div class="error-message"
@@ -103,7 +102,7 @@
                                 </div>
                                 <div class="col-sm-12 col-md-6 col-lg-4 col-xl-2">
                                     <label for="ape_pat">Apellido Paterno (*):</label>
-                                    <input type="text" id="ape_pat" class="form-control" formControlName="apePaterno">
+                                    <input type="text" id="ape_pat" class="form-control" formControlName="apePaterno" autocomplete="off">
                                     <div class="col-12 form-group error-container p-0">
                                         <ng-container *ngFor="let validation of validations.apePaterno">
                                             <div class="error-message"
@@ -116,8 +115,7 @@
                                 </div>
                                 <div class="col-sm-12 col-md-6 col-lg-4 col-xl-2">
                                     <label for="ape_mat">Apellido Materno (*):</label>
-                                    <input type="text" id="ape_mat" class="form-control" formControlName="apeMaterno"
-                                        [ngClass]="{ 'is-invalid': submitted && asegurado.controls.apeMaterno.errors }">
+                                    <input type="text" id="ape_mat" class="form-control" formControlName="apeMaterno" autocomplete="off">
                                     <div class="col-12 form-group error-container p-0">
                                         <ng-container *ngFor="let validation of validations.apeMaterno">
                                             <div class="error-message"
@@ -144,92 +142,100 @@
                                         </ng-container>
                                     </div>
                                 </div>
+
                                 <div class="col-sm-12 col-md-6 col-lg-4 col-xl-2">
                                     <label for="pais">Nacionalidad (*):</label>
-                                    <input type="text" id="pais" class="form-control" formControlName="codPais">
+                                    <input type="text" id="pais" class="form-control" formControlName="nacionalidad" readonly>
                                     <div class="col-12 form-group error-container p-0">
-                                        <ng-container *ngFor="let validation of validations.codPais">
+                                        <ng-container *ngFor="let validation of validations.nacionalidad">
                                             <div class="error-message"
-                                                *ngIf="asegurado.get('codPais').hasError(validation.type) &&
-                                                     (asegurado.get('codPais').dirty || asegurado.get('codPais').touched)">
+                                                *ngIf="asegurado.get('nacionalidad').hasError(validation.type) &&
+                                                    (asegurado.get('nacionalidad').dirty || asegurado.get('nacionalidad').touched)">
                                                 <span>{{ validation.message }}</span>
                                             </div>
                                         </ng-container>
                                     </div>
                                 </div>
-                                <div class="col-sm-12 col-md-6 col-lg-4 col-xl-2">
-                                    <label for="dep">Departamento (*):</label>
-                                    <ng-select [items]="departamentoList" bindLabel="texto" bindValue="codigo"
-                                        [searchable]="true" labelForId="dep" formControlName="codDepartamento"
-                                        (change)="obtenerProvincia($event, i)" [loading]="depaIsLoading"
-                                        loadingText="Cargando Departamentos..." placeholder="Seleccione Departamento">
-                                    </ng-select>
-                                    <div class="col-12 form-group error-container p-0">
-                                        <ng-container *ngFor="let validation of validations.codDepartamento">
-                                            <div class="error-message"
-                                                *ngIf="asegurado.get('codDepartamento').hasError(validation.type) &&
-                                                     (asegurado.get('codDepartamento').dirty || asegurado.get('codDepartamento').touched)">
-                                                <span>{{ validation.message }}</span>
+
+                                <div class="col-12" *ngFor="let direccion of d.controls; let j = index">
+                                    <div [formGroup]="direccion" class="row" style="display: flex;">
+
+                                        <div class="col-sm-12 col-md-6 col-lg-4 col-xl-2">
+                                            <label for="dep">Departamento (*):</label>
+                                            <ng-select [items]="departamentoList" bindLabel="texto" bindValue="codigo"
+                                                [searchable]="true" labelForId="dep" formControlName="codDepartamento"
+                                                (change)="obtenerProvincia($event, j)" [loading]="depaIsLoading"
+                                                loadingText="Cargando Departamentos..." placeholder="Seleccione Departamento">
+                                            </ng-select>
+                                            <div class="col-12 form-group error-container p-0">
+                                                <ng-container *ngFor="let validation of validations.codDepartamento">
+                                                    <div class="error-message"
+                                                        *ngIf="direccion.get('codDepartamento').hasError(validation.type) &&
+                                                            (direccion.get('codDepartamento').dirty || direccion.get('codDepartamento').touched)">
+                                                        <span>{{ validation.message }}</span>
+                                                    </div>
+                                                </ng-container>
                                             </div>
-                                        </ng-container>
+                                        </div>
+                                        <div class="col-sm-12 col-md-6 col-lg-4 col-xl-2">
+                                            <label for="prov">Provincia (*):</label>
+                                            <ng-select [items]="provinciaList" bindLabel="texto" bindValue="codigo"
+                                                [searchable]="true" labelForId="prov" formControlName="codProvincia"
+                                                (change)="obtenerDistrito($event, j)" [loading]="provIsLoading"
+                                                loadingText="Cargando Provincias..." placeholder="Seleccione Provincia">
+                                            </ng-select>
+                                            <div class="col-12 form-group error-container p-0">
+                                                <ng-container *ngFor="let validation of validations.codProvincia">
+                                                    <div class="error-message"
+                                                        *ngIf="direccion.get('codProvincia').hasError(validation.type) &&
+                                                            (direccion.get('codProvincia').dirty || direccion.get('codProvincia').touched)">
+                                                        <span>{{ validation.message }}</span>
+                                                    </div>
+                                                </ng-container>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12 col-md-6 col-lg-4 col-xl-2">
+                                            <label for="dist">Distrito (*):</label>
+                                            <ng-select [items]="distritoList" bindLabel="texto" bindValue="codigo"
+                                                [searchable]="true" labelForId="dist" formControlName="codDistrito"
+                                                placeholder="Seleccione Distrito" [loading]="distIsLoading"
+                                                loadingText="Cargando Distritos...">
+                                            </ng-select>
+                                            <div class="col-12 form-group error-container p-0">
+                                                <ng-container *ngFor="let validation of validations.codDistrito">
+                                                    <div class="error-message"
+                                                        *ngIf="direccion.get('codDistrito').hasError(validation.type) &&
+                                                            (direccion.get('codDistrito').dirty ||direccion.get('codDistrito').touched)">
+                                                        <span>{{ validation.message }}</span>
+                                                    </div>
+                                                </ng-container>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3">
+                                            <label for="dir">Dirección (*):</label>
+                                            <input type="text" id="dir" class="form-control" formControlName="nomDomicilio">
+                                            <div class="col-12 form-group error-container p-0">
+                                                <ng-container *ngFor="let validation of validations.nomDomicilio">
+                                                    <div class="error-message"
+                                                        *ngIf="direccion.get('nomDomicilio').hasError(validation.type) &&
+                                                                (direccion.get('nomDomicilio').dirty || direccion.get('nomDomicilio').touched)">
+                                                        <span>{{ validation.message }}</span>
+                                                    </div>
+                                                </ng-container>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3">
+                                            <label for="ref_ubi">Ref. de Ubicación:</label>
+                                            <textarea type="text" id="ref_ubi" class="form-control"
+                                                formControlName="refDireccion"></textarea>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="col-sm-12 col-md-6 col-lg-4 col-xl-2">
-                                    <label for="prov">Provincia (*):</label>
-                                    <ng-select [items]="provinciaList" bindLabel="texto" bindValue="codigo"
-                                        [searchable]="true" labelForId="prov" formControlName="codProvincia"
-                                        (change)="obtenerDistrito($event, i)" [loading]="provIsLoading"
-                                        loadingText="Cargando Provincias..." placeholder="Seleccione Provincia">
-                                    </ng-select>
-                                    <div class="col-12 form-group error-container p-0">
-                                        <ng-container *ngFor="let validation of validations.codProvincia">
-                                            <div class="error-message"
-                                                *ngIf="asegurado.get('codProvincia').hasError(validation.type) &&
-                                                     (asegurado.get('codProvincia').dirty || asegurado.get('codProvincia').touched)">
-                                                <span>{{ validation.message }}</span>
-                                            </div>
-                                        </ng-container>
-                                    </div>
-                                </div>
-                                <div class="col-sm-12 col-md-6 col-lg-4 col-xl-2">
-                                    <label for="dist">Distrito (*):</label>
-                                    <ng-select [items]="distritoList" bindLabel="texto" bindValue="codigo"
-                                        [searchable]="true" labelForId="dist" formControlName="codDistrito"
-                                        placeholder="Seleccione Distrito" [loading]="distIsLoading"
-                                        loadingText="Cargando Distritos..." (change)="onChangeOcupation($event)">
-                                    </ng-select>
-                                    <div class="col-12 form-group error-container p-0">
-                                        <ng-container *ngFor="let validation of validations.codDistrito">
-                                            <div class="error-message"
-                                                *ngIf="asegurado.get('codDistrito').hasError(validation.type) &&
-                                                     (asegurado.get('codDistrito').dirty || asegurado.get('codDistrito').touched)">
-                                                <span>{{ validation.message }}</span>
-                                            </div>
-                                        </ng-container>
-                                    </div>
-                                </div>
-                                <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3">
-                                    <label for="dir">Dirección (*):</label>
-                                    <input type="text" id="dir" class="form-control" formControlName="nomDomicilio">
-                                    <div class="col-12 form-group error-container p-0">
-                                        <ng-container *ngFor="let validation of validations.nomDomicilio">
-                                            <div class="error-message"
-                                                *ngIf="asegurado.get('nomDomicilio').hasError(validation.type) &&
-                                                         (asegurado.get('nomDomicilio').dirty || asegurado.get('nomDomicilio').touched)">
-                                                <span>{{ validation.message }}</span>
-                                            </div>
-                                        </ng-container>
-                                    </div>
-                                </div>
-                                <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3">
-                                    <label for="ref_ubi">Ref. de Ubicación:</label>
-                                    <textarea type="text" id="ref_ubi" class="form-control"
-                                        formControlName="refDireccion"></textarea>
-                                </div>
+
                                 <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
                                     <label for="mail">Email (*):</label>
-                                    <input type="text" id="mail" class="form-control" formControlName="email"
-                                        [ngClass]="{ 'is-invalid': submitted && asegurado.controls.email.errors }">
+                                    <input type="text" id="mail" class="form-control" formControlName="email">
                                     <div class="col-12 form-group error-container p-0">
                                         <ng-container *ngFor="let validation of validations.email">
                                             <div class="error-message"
@@ -242,8 +248,7 @@
                                 </div>
                                 <div class="col-sm-12 col-md-6 col-lg-4 col-xl-2">
                                     <label for="nro_tel">Nro Telefono (*):</label>
-                                    <input type="number" id="nro_tel" class="form-control" formControlName="tlfNumero"
-                                        [ngClass]="{ 'is-invalid': submitted && asegurado.controls.tlfNumero.errors }">
+                                    <input type="number" id="nro_tel" class="form-control" formControlName="tlfNumero">
                                     <div class="col-12 form-group error-container p-0">
                                         <ng-container *ngFor="let validation of validations.tlfNumero">
                                             <div class="error-message"
@@ -256,8 +261,7 @@
                                 </div>
                                 <div class="col-sm-12 col-md-6 col-lg-4 col-xl-2">
                                     <label for="nro_mov">Nro Movil (*):</label>
-                                    <input type="number" id="nro_mov" class="form-control" formControlName="tlfMovil"
-                                        [ngClass]="{ 'is-invalid': submitted && asegurado.controls.tlfMovil.errors }">
+                                    <input type="number" id="nro_mov" class="form-control" formControlName="tlfMovil">
                                     <div class="col-12 form-group error-container p-0">
                                         <ng-container *ngFor="let validation of validations.tlfMovil">
                                             <div class="error-message"
@@ -270,7 +274,12 @@
                                 </div>
                                 <div class="col-sm-12 col-md-6 col-lg-4 col-xl-2">
                                     <label for="talla">Talla (*):</label>
-                                    <input type="number" id="talla" class="form-control" formControlName="talla">
+                                    <div class="input-group">
+                                        <input type="number" id="talla" class="form-control" formControlName="talla" min="0">
+                                        <div class="input-group-append">
+                                            <span class="input-group-text" id="basic-addon2">mts.</span>
+                                        </div>
+                                    </div>
                                     <div class="col-12 form-group error-container p-0">
                                         <ng-container *ngFor="let validation of validations.talla">
                                             <div class="error-message"
@@ -283,7 +292,12 @@
                                 </div>
                                 <div class="col-sm-12 col-md-6 col-lg-4 col-xl-2">
                                     <label for="peso">Peso (*):</label>
-                                    <input type="number" id="peso" class="form-control" formControlName="peso">
+                                    <div class="input-group">
+                                        <input type="number" id="peso" class="form-control" formControlName="peso" min="0">
+                                        <div class="input-group-append">
+                                            <span class="input-group-text" id="basic-addon3">kg.</span>
+                                        </div>
+                                    </div>
                                     <div class="col-12 form-group error-container p-0">
                                         <ng-container *ngFor="let validation of validations.peso">
                                             <div class="error-message"
@@ -298,7 +312,7 @@
                                     <label for="ocup">Ocupación (*):</label>
                                     <ng-select [items]="profesionesList" bindLabel="texto" bindValue="codigo"
                                         [searchable]="true" labelForId="ocup" formControlName="codOcupacion"
-                                        (change)="onChangeOcupation($event)" [loading]="profIsLoading"
+                                        (change)="onChangeOcupation($event, i)" [loading]="profIsLoading"
                                         loadingText="Cargando Profesiones..." placeholder="Seleccione Ocupación">
                                     </ng-select>
                                     <div class="col-12 form-group error-container p-0">
@@ -312,13 +326,13 @@
                                     </div>
                                 </div>
                                 <div *ngIf="otroIsSelected" class="col-sm-12 col-md-6 col-lg-6 col-xl-6">
-                                    <label for="peso">Otro (*):</label>
-                                    <input type="text" id="otro_ocup" class="form-control" formControlName="peso">
+                                    <label for="peso">Otro:</label>
+                                    <input type="text" id="otro_ocup" class="form-control" formControlName="otroOcupacion">
                                     <div class="col-12 form-group error-container p-0">
-                                        <ng-container *ngFor="let validation of validations.peso">
+                                        <ng-container *ngFor="let validation of validations.otroOcupacion">
                                             <div class="error-message"
-                                                *ngIf="asegurado.get('peso').hasError(validation.type) &&
-                                                             (asegurado.get('peso').dirty || asegurado.get('peso').touched)">
+                                                *ngIf="asegurado.get('otroOcupacion').hasError(validation.type) &&
+                                                             (asegurado.get('otroOcupacion').dirty || asegurado.get('otroOcupacion').touched)">
                                                 <span>{{ validation.message }}</span>
                                             </div>
                                         </ng-container>
@@ -339,7 +353,7 @@
     </div>
     <div class="row m-2">
         <div class="col-12 text-right">
-            <button type="button" class="btn mapfre-color text-white ml-1" (click)="back()">Volver</button>
+            <button type="button" class="btn mapfre-color text-white ml-1" (click)="back($event)">Volver</button>
             <button type="submit" class="btn mapfre-color text-white ml-1">{{ dpsChecker ? 'Siguiente' : 'Guardar' }}</button>
         </div>
     </div>

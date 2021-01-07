@@ -20,8 +20,10 @@ export class AuthInterceptor implements HttpInterceptor {
       request = req.clone({
         headers: req.headers
           .set('Content-Type', 'application/json')
-          .set('Authorization', `Bearer ${token}`)
-          .set('token_seg', `${token}`)
+          // .set('Authorization', `Bearer ${token}`)
+          // .set('token_seg', `${token}`)
+          .set('aplic_id', `78`)
+          .set('usua_id', `apicjpiurapre`)
       });
     }
 

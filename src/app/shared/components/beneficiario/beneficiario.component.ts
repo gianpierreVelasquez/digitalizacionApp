@@ -97,7 +97,7 @@ export class BeneficiarioComponent implements OnInit {
   }
 
   setParticipacion(index) {
-    let currentPercentage:number = 0; let nextTotalPercentage:number = 0;
+    let currentPercentage: number = 0; let nextTotalPercentage: number = 0;
     var beneficiarios = this.beneficiarioForm.get('beneficiarios').value;
     for (let i = 0; i < beneficiarios.length; i++) {
       currentPercentage = beneficiarios[i].porcParticipacion - 0;
@@ -129,7 +129,7 @@ export class BeneficiarioComponent implements OnInit {
     this.t.removeAt(i);
   }
 
-  volver( $event:any ){
+  back($event: any) {
     this.backButton.emit($event);
   }
 

@@ -22,8 +22,8 @@ export interface Solicitud {
 export interface Producto {
     codCia?: number;
     codRamo?: number;
-    numPolizaGrupo?: string;
-    codPlan?: string;
+    numPolizaGrupo?: number;
+    codPlan?: number;
 }
 
 export interface RiesgoDesgravamen {

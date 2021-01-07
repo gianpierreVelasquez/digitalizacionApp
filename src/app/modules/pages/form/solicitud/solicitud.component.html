@@ -80,10 +80,9 @@
                                 <label for="imp_cumulo">Imp. Cúmulo (*):</label>
                                 <div class="input-group">
                                     <div class="input-group-prepend">
-                                        <span class="input-group-text" id="basic-addon1">{{amountSign}}</span>
+                                        <span class="input-group-text" id="basic-addon1" autocomplete="off">{{amountSign}}</span>
                                     </div>
-                                    <input type="number" id="imp_cumulo" class="form-control"
-                                        formControlName="impCumulo">
+                                    <input type="number" id="imp_cumulo" class="form-control" formControlName="impCumulo">
                                 </div>
                                 <div class="col-12 form-group error-container p-0">
                                     <ng-container *ngFor="let validation of validations.impCumulo">

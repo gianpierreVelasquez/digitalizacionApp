@@ -6,6 +6,9 @@ import { DigitalService } from 'src/app/core/services/digital.service';
 import { UtilService } from 'src/app/core/services/util.service';
 import { PlanData } from 'src/app/shared/models/Response';
 import { TabsetComponent } from 'ngx-bootstrap';
+import { Producto } from 'src/app/shared/models/Desgravamen';
+import { SessionService } from 'src/app/core/services/session.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-solicitud',
@@ -33,7 +36,7 @@ export class SolicitudComponent implements OnInit {
   public showPlanes: boolean = false;
   public showRadio: boolean = true;
 
-  public planData: PlanData;
+  public planData: PlanData = null;
   public selectedPlan: number = -1;
   
   //Operadores
@@ -57,7 +60,7 @@ export class SolicitudComponent implements OnInit {
     ]
   };
 
-  constructor(private formBuilder: FormBuilder, private router: Router, private util: UtilService, 
+  constructor(private formBuilder: FormBuilder, private router: Router, private util: UtilService, private session: SessionService, 
     private combosServ: CombosService, private digitalServ: DigitalService) {
     this.solicitudForm = this.formBuilder.group({
       tipSolicitud: ['', [Validators.required]],
@@ -76,7 +79,6 @@ export class SolicitudComponent implements OnInit {
       this.obtenerTipoPoliza(),
       this.obtenerTipoMoneda()
     ]).then((value) => {
-      console.log(value);
       this.util.hideSpinner();
     }).catch(reason => {
       console.log(reason)
@@ -84,8 +86,8 @@ export class SolicitudComponent implements OnInit {
     });
 
     this.util.monedaChecker.subscribe(resp => {
-      console.log(resp);
       this.solicitudForm.controls.codMonedaPrestamo.setValue(resp);
+      this.setCoinType({target:{value: resp}})
     })
 
   }
@@ -111,36 +113,33 @@ export class SolicitudComponent implements OnInit {
   }
 
   async obtenerTipoSolicitud() {
-    return this.digitalServ.obtenerTipoSolicitud().toPromise().then(resp => {
+    return this.digitalServ.obtenerTipoSolicitud()
+    .then(resp => {
       var data = resp.data;
       this.solicitudList = data;
-    },
-      err => {
-        console.log(err);
-      }
-    )
+    }).catch(err => {
+      console.log(err);
+    })
   }
 
   async obtenerTipoPoliza() {
-    return this.digitalServ.obtenerTipoPoliza().toPromise().then(resp => {
+    return this.digitalServ.obtenerTipoPoliza()
+    .then(resp => {
       var data = resp.data;
       this.polizaGrupoList = data;
-    },
-      err => {
-        console.log(err);
-      }
-    )
+    }).catch(err => {
+      console.log(err);
+    })
   }
 
   async obtenerPlanSeguroVida() {
-    return this.digitalServ.obtenerPlanSeguroVida().toPromise().then(resp => {
+    return this.digitalServ.obtenerPlanSeguroVida()
+    .then(resp => {
       var data = resp.data;
       this.planSeguroList = data;
-    },
-      err => {
-        console.log(err);
-      }
-    )
+    }).catch(err => {
+      console.log(err);
+    })
   }
 
   async setPolizaGrupo(ev: any) {
@@ -149,6 +148,9 @@ export class SolicitudComponent implements OnInit {
       await this.obtenerPlanSeguroVida()
     } else {
       this.showSeguro = false;
+      this.showPlanes = false;
+      this.seguro = 'N';
+      this.selectedPlan = -1;
       this.planData = {};
     }
   }
@@ -172,6 +174,14 @@ export class SolicitudComponent implements OnInit {
     this.showRadio = false;
     this.showPlanes = false;
     this.cabezera = "Plan Seleccionado: " + this.planData.text;
+
+    var producto: Producto = {
+      codCia: 1,
+      codRamo: 611,
+      codPlan:  parseInt(this.planData.id),
+      numPolizaGrupo: parseInt(this.solicitudForm.controls.numPolizaGrupo.value)
+    }
+    console.log(producto);
   }
 
   removePlan() {
@@ -188,12 +198,21 @@ export class SolicitudComponent implements OnInit {
   }
 
   setSolicitud(values) {
-    // if (this.solicitudForm.invalid) {
-    //   this.solicitudForm.markAllAsTouched();
-    // } else {
-    //   this.selectTab(1);
-    // }
-    this.selectTab(1);
+    if (this.solicitudForm.invalid) {
+      this.solicitudForm.markAllAsTouched();
+    } else {
+      if (this.util.entidadFormObserver.getValue() === true) {
+        if(this.showPlanes == true){
+          this.util.warningAlert('Advertencia', 'Debe seleccionar un plan antes de continuar.')
+        } else {
+          console.log(values);
+          this.selectTab(1);
+        }   
+      } else {
+        this.util.warningAlert('Advertencia', 'Quedan campos por completar');
+        this.util.entidadFormChecker.next(true)
+      }
+    }
   }
 
   setCoinType(ev: any){
@@ -202,14 +221,9 @@ export class SolicitudComponent implements OnInit {
     } else if(ev.target.value == 2) {
       this.amountSign = "$"
     } else {
-      this.amountSign = "$"
+      this.amountSign = ""
     }
   }
-
-  // goTab(activeTab){
-  //   activeTab.preventDefault();
-  //   this.activeTab = activeTab;
-  // }
 
   selectTab(tabId: number) {
     this.staticTabs.tabs[tabId].active = true;

@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { UiModalService } from 'src/app/shared/components/modal/ui-modal/ui-modal.service';
+import { Desgravamen } from 'src/app/shared/models/Desgravamen';
 
 import Swal from 'sweetalert2';
 
@@ -16,6 +17,11 @@ export enum SPINNER_TEXT {
 export class UtilService {
 
   public spinnerTextValue = new BehaviorSubject<string>(SPINNER_TEXT.DEFAULT);
+
+  desgravamenData = new BehaviorSubject<any>(null);
+
+  entidadFormObserver = new BehaviorSubject<boolean>(false);
+  entidadFormChecker = new BehaviorSubject<boolean>(false);
 
   //Operadores Solicitud
   conformacionData = new BehaviorSubject<any>('');
@@ -38,8 +44,8 @@ export class UtilService {
   profesionesData = new BehaviorSubject<any>('');
 
   //Variables
-  conformacionVar = new Subject();
-  monedaChecker = new Subject<any>();
+  conformacionVar = new BehaviorSubject<any>('');
+  monedaChecker = new BehaviorSubject<number>(0);
   dpsChecker = new BehaviorSubject<boolean>(false);
 
   constructor(private spinner: NgxSpinnerService, private modal: UiModalService) { }

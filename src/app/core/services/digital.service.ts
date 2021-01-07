@@ -16,28 +16,32 @@ export class DigitalService {
   constructor(private http: HttpClient) { }
 
   async recuperarCuestionario(codCanal: number){
-    return this.http.get<Response>(`${URI + this.rootEntity.RECUPERAR_CUESTIONARIO}/${codCanal}`).toPromise();;
+    return this.http.get<Response>(`${URI + this.rootEntity.RECUPERAR_CUESTIONARIO}/${codCanal}`).toPromise();
   }
 
-  requiereDps(poliza: any, data: any){
+  async requiereDps(poliza: any, data: any){
     return this.http.get<Response>(`${URI + this.rootEntity.REQUIERE_DPS}/${poliza}`, data);
   }
 
-  obtenerTipoSolicitud() {
-    return this.http.get<Response>(`${URI + this.rootEntity.TIPO_SOLICITUD}`);
+  async obtenerTipoSolicitud() {
+    return this.http.get<Response>(`${URI + this.rootEntity.TIPO_SOLICITUD}`).toPromise();
   }
 
-  obtenerTipoPoliza() {
-    return this.http.get<Response>(`${URI + this.rootEntity.TIPO_GRUPO_POLIZA}`);
+  async obtenerTipoPoliza() {
+    return this.http.get<Response>(`${URI + this.rootEntity.TIPO_GRUPO_POLIZA}`).toPromise();
   }
 
-  obtenerPlanSeguroVida() {
+  async obtenerPlanSeguroVida() {
     var data = {
-      cod_cia: 0,
-      cod_ramo: 0,
-      cod_tabla: 0
+      cod_cia: 2,
+      cod_ramo: 616,
+      cod_tabla: 67
     }
-    return this.http.post<Response>(`${URI + this.rootEntity.PLAN_SEGURO_VIDA}`, data);
+    return this.http.post<Response>(`${URI + this.rootEntity.PLAN_SEGURO_VIDA}`, data).toPromise();
+  }
+
+  async obtenerParametros(id) {
+    return this.http.get<Response>(`${URI + this.rootEntity.OBTENER_PARAMETROS}/${id}`).toPromise();
   }
 
 }
