@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { UtilService } from './core/services/util.service';
 
 @Component({
   selector: 'app-root',
@@ -10,8 +11,12 @@ export class AppComponent implements OnInit {
   title = 'digitalizacionAppv2';
   spinnerText = "Cargando información...";
 
-  constructor() { }
+  constructor(private util: UtilService) { }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.util.spinnerTextValue.subscribe(resp => {
+      this.spinnerText = resp
+    })
+  }
 
 }

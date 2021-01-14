@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { UiModalService } from 'src/app/shared/components/modal/ui-modal/ui-modal.service';
@@ -8,7 +9,9 @@ import Swal from 'sweetalert2';
 
 export enum SPINNER_TEXT {
   DEFAULT = 'Cargando información...',
-  FILTER_DEFAULT = 'Buscando información con los parametros solicitados...'
+  PARAMETERS = 'Obteniendo Parametros...',
+  PLANS = 'Cargando planes disponibles...',
+  QUIZ = 'Cargando preguntas...',
 }
 
 @Injectable({
@@ -43,17 +46,19 @@ export class UtilService {
   departamentoData = new BehaviorSubject<any>('');
   profesionesData = new BehaviorSubject<any>('');
 
+  direccionFormObserver = new BehaviorSubject<boolean>(false);
+  direccionFormChecker = new BehaviorSubject<boolean>(false);
+
+  observacionFormObserver = new BehaviorSubject<boolean>(false);
+  observacionFormChecker = new BehaviorSubject<boolean>(false);
+
   //Variables
   conformacionVar = new BehaviorSubject<any>('');
   monedaChecker = new BehaviorSubject<number>(0);
   dpsChecker = new BehaviorSubject<boolean>(false);
+  dpsObserver = new BehaviorSubject<boolean>(false);
 
-  constructor(private spinner: NgxSpinnerService, private modal: UiModalService) { }
-
-  //Utility
-  public dpsOnChange(): Observable<boolean> {
-    return this.dpsChecker.asObservable();
-  }
+  constructor(private spinner: NgxSpinnerService, private modal: UiModalService, private router: Router) { }
 
   // Spinner
   showSpinner() {
@@ -95,6 +100,78 @@ export class UtilService {
     })
   }
 
+  notAllowAlert(title?: string, text?: string){
+    Swal.fire({
+      icon: 'error',
+      title: title,
+      text: text,
+      showCancelButton: false,
+      confirmButtonColor: '#d33',
+      confirmButtonText: 'Cerrar'
+    }).then((result) => {
+      if (result.value) {
+        this.router.navigate(['']);
+      }
+    })
+  }
+
+  //Date
+  dateConverterToPlatform(value: any) {
+    const DELIMITER = '/';
+    if (value) {
+      var a, m, d;
+      var date = value.split(DELIMITER);
+
+      a = date[2];
+
+      if(parseInt(date[1]) < 10){
+        m = '0'+parseInt(date[1])
+      }else {
+        m = date[1]
+      }
+     
+      if(parseInt(date[0]) < 10){
+        d = '0'+parseInt(date[0])
+      }else {
+        d = date[0]
+      }
+
+      var newDate = a + '-' + m + '-' + d;
+
+      return newDate;
+    } else {
+      return '';
+    }
+  }
+
+  dateConverterToServer(value: any) {
+    const DELIMITER = '-';
+    if (value) {
+      var a, m, d;
+      var date = value.split(DELIMITER);
+
+      a = date[0];
+
+      if(parseInt(date[1]) < 10){
+        m = '0'+parseInt(date[1])
+      }else {
+        m = date[1]
+      }
+     
+      if(parseInt(date[2]) < 10){
+        d = '0'+parseInt(date[2])
+      }else {
+        d = date[2]
+      }
+
+      var newDate = d + '-' + m + '-' + a;
+
+      return newDate;
+    } else {
+      return '';
+    }
+  }
+
   // Modal
   agregarComp(modal: any) {
     this.modal.add(modal);
@@ -110,5 +187,16 @@ export class UtilService {
 
   hideModal(id: string) {
     this.modal.close(id);
+  }
+
+  //Verifier
+  propChecker(value: any, arr: any[]){
+    var obj = arr.find(x => x.codigo == value)
+    if(obj != undefined) {
+      return value
+    }
+    else {
+      return null
+    }
   }
 }

@@ -14,6 +14,7 @@ export interface Cabecera {
 
 export interface Solicitud {
     codCanal?: number;
+    tipSolicitud?: number;
     nroSolicitudCaja?: number;
     fecSolicitud?: string;
     comentarios?: string;
@@ -105,4 +106,9 @@ export interface Beneficiario {
     apeMaterno?: string;
     mcaSexo?: number;
     estadoCivil?: string;
+}
+
+export interface DireccionHelper {
+    aseguradoP?: any[],
+    aseguradoS?: any[]
 }

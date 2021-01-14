@@ -19,8 +19,8 @@ export class DigitalService {
     return this.http.get<Response>(`${URI + this.rootEntity.RECUPERAR_CUESTIONARIO}/${codCanal}`).toPromise();
   }
 
-  async requiereDps(poliza: any, data: any){
-    return this.http.get<Response>(`${URI + this.rootEntity.REQUIERE_DPS}/${poliza}`, data);
+  async requiereDPS(poliza: any, data: any){
+    return this.http.post<any>(`${URI + this.rootEntity.REQUIERE_DPS}/${poliza}`, JSON.stringify(data)).toPromise();
   }
 
   async obtenerTipoSolicitud() {

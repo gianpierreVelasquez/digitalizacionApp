@@ -15,6 +15,8 @@ export class ObservacionComponent implements OnInit {
 
   maxObservations = 3;
 
+  observacionFormObserverHelper: boolean = false;
+
   validations = {
     'enfermedad': [
       { type: 'required', message: 'Este campo es requerido.' },
@@ -40,7 +42,14 @@ export class ObservacionComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.addObservation();
+    this.util.observacionFormObserver.subscribe(resp => {
+      this.observacionFormObserverHelper = resp;
+      if(this.observacionFormObserverHelper == true){
+        this.addObservation();
+      }else {
+        this.t.clear();
+      }
+    })
   }
 
   get f() { return this.observacionForm.controls; }
@@ -70,9 +79,13 @@ export class ObservacionComponent implements OnInit {
   }
 
   removeObservation(i) {
-    this.submitted = false;
-    this.formComplete = false;
-    this.t.removeAt(i);
+    if (this.observacionFormObserverHelper == true) {
+      this.util.warningAlert('Advertencia', 'Debes agregar almenos una observación.')
+    } else {
+      this.submitted = false;
+      this.formComplete = false;
+      this.t.removeAt(i);
+    }
   }
 
   onReset() {

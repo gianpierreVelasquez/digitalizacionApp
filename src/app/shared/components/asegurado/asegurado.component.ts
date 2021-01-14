@@ -4,9 +4,10 @@ import { NgSelectConfig } from '@ng-select/ng-select';
 import { CombosService } from 'src/app/core/services/combos.service';
 import { DigitalService } from 'src/app/core/services/digital.service';
 import { SessionService } from 'src/app/core/services/session.service';
-import { UtilService } from 'src/app/core/services/util.service';
+import { SPINNER_TEXT, UtilService } from 'src/app/core/services/util.service';
 import { ValidatorsService } from 'src/app/core/services/validators.service';
 import { environment } from 'src/environments/environment';
+import { DireccionHelper } from '../../models/Desgravamen';
 
 @Component({
   selector: 'app-dynamic-asegurado',
@@ -37,66 +38,79 @@ export class AseguradoComponent implements OnInit {
   profIsLoading: boolean = false;
   otroIsSelected: boolean = false;
 
+  direccionDistr: DireccionHelper;
+
+  hasPlan: boolean = false;
+
   validations = {
     'codParentesco': [
       { type: 'required', message: 'El tipo de parentesco es requerido.' },
+      { type: 'notnull', message: 'El valor ingresado no existe.' }
     ],
     'tipDocum': [
       { type: 'required', message: 'El tipo de documento es requerido.' },
+      { type: 'notnull', message: 'El valor ingresado no existe.' }
     ],
     'codDocum': [
       { type: 'required', message: 'El número de documento es requerido.' },
-      { type: 'minlength', message: 'Este campo debe contener 8 dígitos.' },
+      { type: 'minlength', message: 'Este campo debe contener mínimo 8 dígitos.' },
+      { type: 'maxlength', message: 'Este campo debe contener máximo 12 dígitos.' },
+      { type: 'pattern', message: 'Este campo debe contener solo caracteres numéricos.' }
     ],
     'fecNacimiento': [
       { type: 'required', message: 'La fecha de nacimiento es requerida.' },
     ],
     'estadoCivil': [
       { type: 'required', message: 'El estado civil es requerido.' },
+      { type: 'notnull', message: 'El valor ingresado no existe.' }
     ],
     'nombre': [
       { type: 'required', message: 'Los nombres son requeridos.' },
+      { type: 'minlength', message: 'Este campo debe contener mínimo 3 dígitos.' },
+      { type: 'maxlength', message: 'Este campo debe contener máximo 100 dígitos.' },
+      { type: 'whitespace', message: 'Este campo no puede recibir caracteres vacíos.' }
     ],
     'apePaterno': [
       { type: 'required', message: 'El apellido parterno es requerido.' },
+      { type: 'minlength', message: 'Este campo debe contener mínimo 3 dígitos.' },
+      { type: 'maxlength', message: 'Este campo debe contener máximo 50 dígitos.' },
+      { type: 'whitespace', message: 'Este campo no puede recibir caracteres vacíos.' }
     ],
     'apeMaterno': [
       { type: 'required', message: 'El apellido marterno es  requerido.' },
+      { type: 'minlength', message: 'Este campo debe contener mínimo 3 dígitos.' },
+      { type: 'maxlength', message: 'Este campo debe contener máximo 50 dígitos.' },
+      { type: 'whitespace', message: 'Este campo no puede recibir caracteres vacíos.' }
     ],
     'mcaSexo': [
       { type: 'required', message: 'El sexo es requerido.' },
+      { type: 'notnull', message: 'El valor ingresado no existe.' }
     ],
     'nacionalidad': [
       { type: 'required', message: 'El pais es requerido.' },
-    ],
-    'codDepartamento': [
-      { type: 'required', message: 'El departamento es requerido.' },
-    ],
-    'codProvincia': [
-      { type: 'required', message: 'La provincia es requerida.' },
-    ],
-    'codDistrito': [
-      { type: 'required', message: 'El distrito es requerido.' },
-    ],
-    'nomDomicilio': [
-      { type: 'required', message: 'El domicilio es requerido.' },
     ],
     'email': [
       { type: 'required', message: 'El correo es requerido.' },
     ],
     'tlfNumero': [
       { type: 'required', message: 'El número de telefono es requerido.' },
+      { type: 'minlength', message: 'Este campo debe contener mínimo 7 dígitos.' },
+      { type: 'maxlength', message: 'Este campo debe contener máximo 10 dígitos.' },
+      { type: 'pattern', message: 'Este campo debe contener solo caracteres numéricos.' }
     ],
     'tlfMovil': [
       { type: 'required', message: 'El número de celular es requerido.' },
+      { type: 'minlength', message: 'Este campo debe contener mínimo 9 dígitos.' },
+      { type: 'maxlength', message: 'Este campo debe contener máximo 12 dígitos.' },
+      { type: 'pattern', message: 'Este campo debe contener solo caracteres numéricos.' }
     ],
     'talla': [
       { type: 'required', message: 'La talla es requerida.' },
-      { type: 'notzero', message: 'La talla debe ser mayor a 0.' },
+      { type: 'notzero', message: 'La talla debe ser mayor a 0.' }
     ],
     'peso': [
       { type: 'required', message: 'El peso es requerido.' },
-      { type: 'notzero', message: 'El peso debe ser mayor a 0.' },
+      { type: 'notzero', message: 'El peso debe ser mayor a 0.' }
     ],
     'codOcupacion': [
       { type: 'required', message: 'La ocupación es requerida.' }
@@ -111,10 +125,7 @@ export class AseguradoComponent implements OnInit {
 
   //Variable
   varConformacion: any;
-  varDireccion: number = 1; // Por si se solicitan en un futuro mas direcciones anexadas a un solo asegurado
-  dpsChecker: boolean = false;
-
-  direccionHelper: any;
+  dpsValidator: boolean = false;
 
   constructor(private formBuilder: FormBuilder, private session: SessionService, private util: UtilService, private config: NgSelectConfig, private digitalServ: DigitalService,
     private combosServ: CombosService, private validator: ValidatorsService) {
@@ -136,9 +147,9 @@ export class AseguradoComponent implements OnInit {
       this.obtenerTipoDocumento(),
       this.obtenerTipoEstadoCivil(),
       this.obtenerGenero(),
-      this.obtenerDepartamento(),
       this.obtenerTipoProfesiones()
     ]).then((value) => {
+      // nothing
     }).catch(reason => {
       console.log(reason)
       this.util.hideSpinner();
@@ -150,73 +161,89 @@ export class AseguradoComponent implements OnInit {
     })
 
     //Verificar si el usuario tendra habilitado DPS
-    this.dpsChecker = this.util.isPlanActivated.getValue();
+    // this.dpsChecker = 
 
-    this.recuperarCuestionario();
+    //Chekc if plan is activated
+    this.util.isPlanActivated.subscribe(resp => {
+      this.hasPlan = resp;
+    })
+
+    this.util.dpsChecker.subscribe(resp => {
+      if(resp == true){
+        this.dpsValidator = true;
+        this.recuperarCuestionario();
+      }
+    })
+
+
   }
 
   async obtenerTipoParentesco() {
     await this.combosServ.obtenerTipoParentesco()
-    .then(resp => {
-      var data = resp.data;
-      this.parentescoList = data;
-    }).catch(err => {
-      console.log(err);
-    })
+      .then(resp => {
+        var data = resp.data;
+        this.parentescoList = data;
+      }).catch(err => {
+        console.log(err);
+      })
   }
 
   async obtenerTipoDocumento() {
     await this.combosServ.obtenerTipoDocumento()
-    .then(resp => {
-      var data = resp.data;
-      this.documentoList = data;
-    }).catch(err => {
-      console.log(err);
-    })
+      .then(resp => {
+        var data = resp.data;
+        this.documentoList = data;
+      }).catch(err => {
+        console.log(err);
+      })
   }
 
   async obtenerTipoEstadoCivil() {
     await this.combosServ.obtenerEstadoCivil()
-    .then(resp => {
-      var data = resp.data;
-      this.estadoCivilList = data;
-    }).catch(err => {
-      console.log(err);
-    })
+      .then(resp => {
+        var data = resp.data;
+        this.estadoCivilList = data;
+      }).catch(err => {
+        console.log(err);
+      })
   }
 
   async obtenerGenero() {
     await this.combosServ.obtenerGenero()
-    .then(resp => {
-      var data = resp.data;
-      this.generoList = data;
-    }).catch(err => {
-      console.log(err);
-    })
+      .then(resp => {
+        var data = resp.data;
+        this.generoList = data;
+      }).catch(err => {
+        console.log(err);
+      })
   }
 
   async obtenerTipoProfesiones() {
     this.profIsLoading = true;
     await this.combosServ.obtenerProfesiones()
-    .then(resp => {
-      var arr = resp.data;
-      this.profesionesList = arr;
-      this.profIsLoading = false;
-    }).catch(err => {
-      console.log(err);
-      this.profIsLoading = false;
-    })
+      .then(resp => {
+        var arr = resp.data;
+        this.profesionesList = arr;
+        this.profIsLoading = false;
+      }).catch(err => {
+        console.log(err);
+        this.profIsLoading = false;
+      })
   }
 
-  async recuperarCuestionario(){
+  async recuperarCuestionario() {
+    this.util.showSpinner()
+    this.util.setSpinnerTextValue(SPINNER_TEXT.QUIZ);
     this.digitalServ.recuperarCuestionario(21)
-    .then(resp => {
-      var data = resp['Resultado'];
-      this.cuestionarioData = data;
-      this.addPreguntas();
-    }).catch(err => {
-      console.log(err);
-    })
+      .then(resp => {
+        var data = resp['Resultado'];
+        this.cuestionarioData = data;
+        this.addPreguntas();
+        this.util.hideSpinner();
+      }).catch(err => {
+        console.log(err);
+        this.util.hideSpinner();
+      })
   }
 
   get f() { return this.aseguradoForm.controls; }
@@ -226,158 +253,104 @@ export class AseguradoComponent implements OnInit {
     if (this.t.length < this.varConformacion) {
       for (let i = this.t.length; i < this.varConformacion; i++) {
         this.t.push(this.formBuilder.group({
-          codParentesco: ['', Validators.required],
-          tipDocum: ['', [Validators.required]],
-          codDocum: ['', [Validators.required, Validators.minLength(8)]],
+          codParentesco: ['', [Validators.required, this.validator.notNull]],
+          tipDocum: ['', [Validators.required, this.validator.notNull]],
+          codDocum: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(12), Validators.pattern("^[0-9]+$")]],
           fecNacimiento: ['', [Validators.required]],
-          estadoCivil: ['', [Validators.required]],
-          nombre: ['', [Validators.required]],
-          apePaterno: ['', [Validators.required]],
-          apeMaterno: ['', [Validators.required]],
-          mcaSexo: ['', [Validators.required]],
+          estadoCivil: [null, [Validators.required, this.validator.notNull]],
+          nombre: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(100)]],
+          apePaterno: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
+          apeMaterno: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
+          mcaSexo: [null, [Validators.required, this.validator.notNull]],
           email: ['', [Validators.required]],
-          tlfNumero: ['', [Validators.required]],
-          tlfMovil: ['', [Validators.required]],
+          tlfNumero: ['', [Validators.required, Validators.minLength(7), Validators.maxLength(10), Validators.pattern("^[0-9]+$")]],
+          tlfMovil: ['', [Validators.required, Validators.minLength(9), Validators.maxLength(12), Validators.pattern("^[0-9]+$")]],
           talla: ['', [Validators.required, this.validator.notZero]],
           peso: ['', [Validators.required, this.validator.notZero]],
           codOcupacion: [null, [Validators.required]],
-          otroOcupacion: [''],
+          // otroOcupacion: [''],
           nacionalidad: ['PE'],
-          direccion: new FormArray([])
+          direccion: [],
+          cuestionario: []
         }));
       }
-      this.addDireccion();
+
+      this.displayAsegurados();
+
     } else {
       for (let i = this.t.length; i >= this.varConformacion; i--) {
         this.t.removeAt(i);
       }
     }
-  }
-
-  get d() { return this.t.controls[0]['controls'].direccion as FormArray; }
-
-  addDireccion() {
-    // this.direccionHelper = this.t.controls[aseguradoIndex]['controls'].direccion as FormArray;
-    if (this.d.length < this.varDireccion) {
-      for (let i = this.d.length; i < this.varDireccion; i++) {
-        this.d.push(this.formBuilder.group({
-            codPais: ['PE', [Validators.required]],
-            codDepartamento: [null, [Validators.required]],
-            codProvincia: [{ value: null, disabled: true }, [Validators.required]],
-            codDistrito: [{ value: null, disabled: true }, [Validators.required]],
-            nomDomicilio: ['', [Validators.required]],
-            refDireccion: ['']
-        }));
-      }
-    } else {
-      for (let i = this.t.length; i >= this.varConformacion; i--) {
-        this.t.removeAt(i);
-      }
-    }
-    this.displayAsegurados();
-  }
-
-  async obtenerDepartamento() {
-
-    this.depaIsLoading = true;
-
-    await this.combosServ.obtenerDepartamento()
-    .then(resp => {
-      var arr = resp.data;
-      this.departamentoList = arr;
-      this.depaIsLoading = false;
-    }).catch(err => {
-      console.log(err);
-      this.depaIsLoading = false;
-    })
-  }
-
-  async obtenerProvincia(ev: any, i) {
-    var codDepartamento = ev.codigo;
-
-    this.provIsLoading = true;
-
-    this.d.controls[i]['controls'].codProvincia.setValue(null);
-    this.d.controls[i]['controls'].codProvincia.disable();
-
-    this.d.controls[i]['controls'].codDistrito.setValue(null);
-    this.d.controls[i]['controls'].codDistrito.disable();
-
-    await this.combosServ.obtenerProvincia(codDepartamento)
-      .then(resp => {
-        this.provinciaList = resp.data;
-        this.provIsLoading = false;
-        this.d.controls[i]['controls'].codProvincia.enable();
-      }).catch(err => {
-        console.log(err);
-        this.provIsLoading = false;
-      })
-  }
-
-  async obtenerDistrito(ev: any, i) {
-    var codDistrito = ev.codigo;
-
-    this.distIsLoading = true;
-
-    this.d.controls[i]['controls'].codDistrito.setValue(null);
-    this.d.controls[i]['controls'].codDistrito.disable();
-
-    await this.combosServ.obtenerDistrito(codDistrito)
-      .then(resp => {
-        this.distritoList = resp.data;
-        this.distIsLoading = false;
-        this.d.controls[i]['controls'].codDistrito.enable();
-      }).catch(err => {
-        console.log(err);
-        this.distIsLoading = false;
-      })
   }
 
   setAsegurado(values) {
     if (this.aseguradoForm.invalid) {
       this.aseguradoForm.markAllAsTouched();
     } else {
-      if(this.dpsChecker == true){
+      if (this.hasPlan == true) {
         console.log(values);
         this.next(null);
-      }else {
+      } else {
         console.log(values);
       }
     }
   }
 
-  onChangeOcupation(ev: any, i) {
-    if (ev.texto == 'OTROS') {
-      this.otroIsSelected = true;
-    } else {
-      this.otroIsSelected = false;
-      this.t.controls[i].get('otroOcupacion').disable();
-    }
-  }
+  // onChangeOcupation(ev: any, i) {
+  //   if (ev.texto == 'OTROS') {
+  //     this.otroIsSelected = true;
+  //   } else {
+  //     this.otroIsSelected = false;
+  //     this.t.controls[i].get('otroOcupacion').disable();
+  //   }
+  // }
 
-  displayAsegurados(){
-    var asegurados:any= this.session.getSession(environment.KEYS.PARAMS).asegurados;
-    if(asegurados != [] || asegurados != null){
-      if(asegurados.length > 1){
-        var aseguradoP = asegurados.find(x => x.codParentesco == 1);
+  displayAsegurados() {
+    var asegurados: any = this.session.getSession(environment.KEYS.PARAMS).asegurados;
+    if (asegurados != [] || asegurados != null) {
+      var aseguradoP = asegurados.find(x => x.codParentesco == 1);
+
+      if (this.varConformacion == 2 && asegurados.length > 1) {
         var aseguradoS = asegurados.find(y => y.codParentesco != 1);
-  
-        this.t.controls[0].get('codParentesco').setValue(aseguradoP.codParentesco);
-        this.t.controls[0].get('tipDocum').setValue(aseguradoP.tipDocum);
-        this.t.controls[0].get('codDocum').setValue(aseguradoP.codDocum);
-        this.t.controls[0].get('nombre').setValue(aseguradoP.nombre);
-        this.t.controls[0].get('apePaterno').setValue(aseguradoP.apePaterno);
-        this.t.controls[0].get('apeMaterno').setValue(aseguradoP.apeMaterno);
-        this.t.controls[0].get('mcaSexo').setValue(aseguradoP.mcaSexo);
-        this.t.controls[0].get('estadoCivil').setValue(aseguradoP.estadoCivil);
-        this.t.controls[0].get('tlfMovil').setValue(aseguradoP.tlfMovil);
-  
-        this.d.controls[0]['controls'].codDepartamento.setValue(aseguradoP.direccion[0].codDepartamento.toString());
-        this.obtenerProvincia({codigo:aseguradoP.direccion[0].codDepartamento.toString()},0);
-        this.d.controls[0]['controls'].codProvincia.setValue(aseguradoP.direccion[0].codProvincia.toString());
-        this.obtenerDistrito({codigo:aseguradoP.direccion[0].codProvincia.toString()},0);
-        this.d.controls[0]['controls'].codDistrito.setValue(aseguradoP.direccion[0].codDistrito.toString());
-        this.d.controls[0]['controls'].nomDomicilio.setValue(aseguradoP.direccion[0].nomDomicilio);
+
+        this.t.controls[0]['controls'].codParentesco.setValue(this.util.propChecker(aseguradoP.codParentesco, this.parentescoList));
+        this.t.controls[0]['controls'].tipDocum.setValue(this.util.propChecker(aseguradoP.tipDocum, this.documentoList));
+        this.t.controls[0]['controls'].codDocum.setValue(aseguradoP.codDocum);
+        this.t.controls[0]['controls'].nombre.setValue(aseguradoP.nombre);
+        this.t.controls[0]['controls'].apePaterno.setValue(aseguradoP.apePaterno);
+        this.t.controls[0]['controls'].apeMaterno.setValue(aseguradoP.apeMaterno);
+        this.t.controls[0]['controls'].fecNacimiento.setValue(this.util.dateConverterToPlatform(aseguradoP.fecNacimiento));
+        this.t.controls[0]['controls'].mcaSexo.setValue(this.util.propChecker(aseguradoP.mcaSexo, this.generoList));
+        this.t.controls[0]['controls'].estadoCivil.setValue(this.util.propChecker(aseguradoP.estadoCivil, this.estadoCivilList));
+        this.t.controls[0]['controls'].tlfMovil.setValue(aseguradoP.tlfMovil);
+        this.t.controls[0]['controls'].direccion.setValue(aseguradoP.direccion);
+
+        this.t.controls[1]['controls'].codParentesco.setValue(this.util.propChecker(aseguradoS.codParentesco, this.parentescoList));
+        this.t.controls[1]['controls'].tipDocum.setValue(this.util.propChecker(aseguradoS.tipDocum, this.documentoList));
+        this.t.controls[1]['controls'].codDocum.setValue(aseguradoS.codDocum);
+        this.t.controls[1]['controls'].nombre.setValue(aseguradoS.nombre);
+        this.t.controls[1]['controls'].apePaterno.setValue(aseguradoS.apePaterno);
+        this.t.controls[1]['controls'].apeMaterno.setValue(aseguradoS.apeMaterno);
+        this.t.controls[1]['controls'].fecNacimiento.setValue(this.util.dateConverterToPlatform(aseguradoS.fecNacimiento));
+        this.t.controls[1]['controls'].mcaSexo.setValue(this.util.propChecker(aseguradoS.mcaSexo, this.generoList));
+        this.t.controls[1]['controls'].estadoCivil.setValue(this.util.propChecker(aseguradoS.estadoCivil, this.estadoCivilList));
+        this.t.controls[1]['controls'].tlfMovil.setValue(aseguradoS.tlfMovil);
+        this.t.controls[1]['controls'].direccion.setValue(aseguradoS.direccion);
+
+      } else {
+
+        this.t.controls[0]['controls'].codParentesco.setValue(this.util.propChecker(aseguradoP.codParentesco, this.parentescoList));
+        this.t.controls[0]['controls'].tipDocum.setValue(this.util.propChecker(aseguradoP.tipDocum, this.documentoList));
+        this.t.controls[0]['controls'].codDocum.setValue(aseguradoP.codDocum);
+        this.t.controls[0]['controls'].nombre.setValue(aseguradoP.nombre);
+        this.t.controls[0]['controls'].apePaterno.setValue(aseguradoP.apePaterno);
+        this.t.controls[0]['controls'].apeMaterno.setValue(aseguradoP.apeMaterno);
+        this.t.controls[0]['controls'].fecNacimiento.setValue(this.util.dateConverterToPlatform(aseguradoP.fecNacimiento));
+        this.t.controls[0]['controls'].mcaSexo.setValue(this.util.propChecker(aseguradoP.mcaSexo, this.generoList));
+        this.t.controls[0]['controls'].estadoCivil.setValue(this.util.propChecker(aseguradoP.estadoCivil, this.estadoCivilList));
+        this.t.controls[0]['controls'].tlfMovil.setValue(aseguradoP.tlfMovil);
+        this.t.controls[0]['controls'].direccion.setValue(aseguradoP.direccion);
 
       }
     }
@@ -391,7 +364,7 @@ export class AseguradoComponent implements OnInit {
       for (let i = this.p.length; i < this.cuestionarioData.length; i++) {
         this.p.push(this.formBuilder.group({
           codPregunta: [parseInt(this.cuestionarioData[i].CodigoPregunta), [Validators.required]],
-          desPregunta: [{value: this.cuestionarioData[i].DescripcionPregunta, disabled: true}],
+          desPregunta: [{ value: this.cuestionarioData[i].DescripcionPregunta, disabled: true }],
           codRespuesta: ['N', [Validators.required]],
           descRespuesta: [null]
         }));
@@ -411,6 +384,16 @@ export class AseguradoComponent implements OnInit {
     // console.log(values.preguntas);
   }
 
+  validateQuizIfPositive(ev:any, values) {
+    var responses: any[] = values.preguntas;
+    var checker = responses.some(e => e.codRespuesta == 'S');
+    if(checker == true){
+      this.util.observacionFormObserver.next(true);
+    } else {
+      this.util.observacionFormObserver.next(false);
+    }
+  }
+
   back($event: any) {
     this.backButton.emit($event);
   }
@@ -419,4 +402,32 @@ export class AseguradoComponent implements OnInit {
     this.nextButton.emit($event);
   }
 
+  setFechaNacimiento(ev: any, index) {
+    if (index == 0) {
+      var date = this.util.dateConverterToServer(ev.target.value);
+      var data = {
+        'Fecha_Nacimiento': date,
+        'Importe_Cumulo': this.session.getSession(environment.KEYS.REQUEST).impCumulo
+      }
+      this.verifyDPS(this.session.getSession(environment.KEYS.REQUEST).numPolizaGrupo, data);
+    }
+  }
+
+  verifyDPS(numPolizaGrupo: any, data: any) {
+    this.util.showSpinner();
+    this.util.setSpinnerTextValue(SPINNER_TEXT.DEFAULT);
+    this.digitalServ.requiereDPS(numPolizaGrupo, data)
+      .then(resp => {
+        this.util.dpsObserver.next(true);
+        var data = resp.Resultado;
+        if (data == 'N') this.util.dpsChecker.next(false)
+        else this.util.dpsChecker.next(true)
+        this.util.hideSpinner();
+      }).catch(err => {
+        console.log(err);
+        this.util.hideSpinner();
+      })
+  }
+
 }
+

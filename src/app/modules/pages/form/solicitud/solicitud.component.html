@@ -62,15 +62,15 @@
                             <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3">
                                 <label for="tip_moneda">Tipo Moneda Cúmulo (*):</label>
                                 <select type="text" id="tip_moneda" class="form-control"
-                                    formControlName="codMonedaPrestamo" (change)="setCoinType($event)">
+                                    formControlName="codMonedaCumulo" (change)="setCoinType($event)">
                                     <option value="">Seleccione</option>
                                     <option *ngFor="let m of monedaList" [value]="m.codigo">{{m.texto}}</option>
                                 </select>
                                 <div class="col-12 form-group error-container p-0">
-                                    <ng-container *ngFor="let validation of validations.codMonedaPrestamo">
+                                    <ng-container *ngFor="let validation of validations.codMonedaCumulo">
                                         <div class="error-message"
-                                            *ngIf="solicitudForm.get('codMonedaPrestamo').hasError(validation.type) &&
-                                                     (solicitudForm.get('codMonedaPrestamo').dirty || solicitudForm.get('codMonedaPrestamo').touched)">
+                                            *ngIf="solicitudForm.get('codMonedaCumulo').hasError(validation.type) &&
+                                                     (solicitudForm.get('codMonedaCumulo').dirty || solicitudForm.get('codMonedaCumulo').touched)">
                                             <span>{{ validation.message }}</span>
                                         </div>
                                     </ng-container>
@@ -82,7 +82,7 @@
                                     <div class="input-group-prepend">
                                         <span class="input-group-text" id="basic-addon1" autocomplete="off">{{amountSign}}</span>
                                     </div>
-                                    <input type="number" id="imp_cumulo" class="form-control" formControlName="impCumulo">
+                                    <input type="number" id="imp_cumulo" class="form-control" formControlName="impCumulo" min="0">
                                 </div>
                                 <div class="col-12 form-group error-container p-0">
                                     <ng-container *ngFor="let validation of validations.impCumulo">
@@ -96,8 +96,17 @@
                             </div>
                             <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
                                 <label for="desc">Descripción:</label>
-                                <textarea id="desc" cols="30" rows="3" class="form-control"></textarea>
+                                <textarea id="desc" cols="30" rows="3" class="form-control" formControlName="comentarios" maxlength="200"></textarea>
                                 <span style="font-size: 0.8em;" class="text-muted">Máximo 200 caracteres</span>
+                                <div class="col-12 form-group error-container p-0">
+                                    <ng-container *ngFor="let validation of validations.comentarios">
+                                        <div class="error-message"
+                                            *ngIf="solicitudForm.get('comentarios').hasError(validation.type) &&
+                                                     (solicitudForm.get('comentarios').dirty || solicitudForm.get('comentarios').touched)">
+                                            <span>{{ validation.message }}</span>
+                                        </div>
+                                    </ng-container>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -176,7 +185,7 @@
 
             <div class="row m-2">
                 <div class="col-12 text-right">
-                    <button type="submit" class="btn mapfre-color text-white">Continuar</button>
+                    <button type="submit" class="btn mapfre-color text-white">{{ entidadFormObserverHelper && !solicitudForm.invalid  ? 'Continuar' :'Verificar'}}</button>
                 </div>
             </div>
         </form>

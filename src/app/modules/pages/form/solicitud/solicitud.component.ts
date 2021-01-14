@@ -1,14 +1,14 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
 import { CombosService } from 'src/app/core/services/combos.service';
 import { DigitalService } from 'src/app/core/services/digital.service';
-import { UtilService } from 'src/app/core/services/util.service';
+import { SPINNER_TEXT, UtilService } from 'src/app/core/services/util.service';
 import { PlanData } from 'src/app/shared/models/Response';
 import { TabsetComponent } from 'ngx-bootstrap';
-import { Producto } from 'src/app/shared/models/Desgravamen';
+import { Desgravamen, Producto } from 'src/app/shared/models/Desgravamen';
 import { SessionService } from 'src/app/core/services/session.service';
 import { environment } from 'src/environments/environment';
+import { ValidatorsService } from 'src/app/core/services/validators.service';
 
 @Component({
   selector: 'app-solicitud',
@@ -38,7 +38,9 @@ export class SolicitudComponent implements OnInit {
 
   public planData: PlanData = null;
   public selectedPlan: number = -1;
-  
+
+  public entidadFormObserverHelper: boolean = false
+
   //Operadores
   planSeguroList: any;
 
@@ -52,22 +54,28 @@ export class SolicitudComponent implements OnInit {
     'numPolizaGrupo': [
       { type: 'required', message: 'El tipo de poliza grupo es requerido.' },
     ],
-    'codMonedaPrestamo': [
+    'codMonedaCumulo': [
       { type: 'required', message: 'El tipo de moneda de cúmulo es requerido.' },
     ],
     'impCumulo': [
       { type: 'required', message: 'El importe cúmulo es requerido.' },
+      { type: 'notzero', message: 'El importe ingresado debe ser mayor a 0.' }
+    ],
+    'comentarios': [
+      { type: 'required', message: 'El comentario es requerido.' },
+      { type: 'whitespace', message: 'Este campo no puede recibir caracteres vacíos.' }
     ]
   };
 
-  constructor(private formBuilder: FormBuilder, private router: Router, private util: UtilService, private session: SessionService, 
+  constructor(private formBuilder: FormBuilder, private validator: ValidatorsService, private util: UtilService, private session: SessionService,
     private combosServ: CombosService, private digitalServ: DigitalService) {
     this.solicitudForm = this.formBuilder.group({
       tipSolicitud: ['', [Validators.required]],
       codTipoPrestamo: ['', [Validators.required]],
       numPolizaGrupo: ['', [Validators.required]],
-      codMonedaPrestamo: ['', [Validators.required]],
-      impCumulo: ['', [Validators.required]],
+      codMonedaCumulo: ['', [Validators.required]],
+      impCumulo: ['', [Validators.required, this.validator.notZero]],
+      comentarios: [''],
     });
   }
 
@@ -86,60 +94,68 @@ export class SolicitudComponent implements OnInit {
     });
 
     this.util.monedaChecker.subscribe(resp => {
-      this.solicitudForm.controls.codMonedaPrestamo.setValue(resp);
-      this.setCoinType({target:{value: resp}})
+      this.solicitudForm.controls.codMonedaCumulo.setValue(resp);
+      this.setCoinType({ target: { value: resp } })
+    })
+
+    this.util.entidadFormObserver.subscribe(resp => {
+      this.entidadFormObserverHelper = resp;
     })
 
   }
 
   async obtenerTipoMoneda() {
     return this.combosServ.obtenerTipoMoneda()
-    .then(resp => {
-      var data = resp.data;
-      this.monedaList = data;
-    }).catch(err => {
-      console.log(err);
-    })
+      .then(resp => {
+        var data = resp.data;
+        this.monedaList = data;
+      }).catch(err => {
+        console.log(err);
+      })
   }
 
   async obtenerTipoPrestamo() {
     return this.combosServ.obtenerTipoPrestamo()
-    .then(resp => {
-      var data = resp.data;
-      this.prestamoList = data;
-    }).catch(err => {
-      console.log(err);
-    })
+      .then(resp => {
+        var data = resp.data;
+        this.prestamoList = data;
+      }).catch(err => {
+        console.log(err);
+      })
   }
 
   async obtenerTipoSolicitud() {
     return this.digitalServ.obtenerTipoSolicitud()
-    .then(resp => {
-      var data = resp.data;
-      this.solicitudList = data;
-    }).catch(err => {
-      console.log(err);
-    })
+      .then(resp => {
+        var data = resp.data;
+        this.solicitudList = data;
+      }).catch(err => {
+        console.log(err);
+      })
   }
 
   async obtenerTipoPoliza() {
     return this.digitalServ.obtenerTipoPoliza()
-    .then(resp => {
-      var data = resp.data;
-      this.polizaGrupoList = data;
-    }).catch(err => {
-      console.log(err);
-    })
+      .then(resp => {
+        var data = resp.data;
+        this.polizaGrupoList = data;
+      }).catch(err => {
+        console.log(err);
+      })
   }
 
   async obtenerPlanSeguroVida() {
+    this.util.showSpinner();
+    this.util.setSpinnerTextValue(SPINNER_TEXT.PLANS);
     return this.digitalServ.obtenerPlanSeguroVida()
-    .then(resp => {
-      var data = resp.data;
-      this.planSeguroList = data;
-    }).catch(err => {
-      console.log(err);
-    })
+      .then(resp => {
+        var data = resp.data;
+        this.planSeguroList = data;
+        this.util.hideSpinner();
+      }).catch(err => {
+        console.log(err);
+        this.util.hideSpinner();
+      })
   }
 
   async setPolizaGrupo(ev: any) {
@@ -178,10 +194,11 @@ export class SolicitudComponent implements OnInit {
     var producto: Producto = {
       codCia: 1,
       codRamo: 611,
-      codPlan:  parseInt(this.planData.id),
-      numPolizaGrupo: parseInt(this.solicitudForm.controls.numPolizaGrupo.value)
+      numPolizaGrupo: parseInt(this.solicitudForm.controls.numPolizaGrupo.value),
+      codPlan: parseInt(this.planData.id)
     }
-    console.log(producto);
+
+    this.session.setSession(environment.KEYS.PRODUCT, producto);
   }
 
   removePlan() {
@@ -197,28 +214,56 @@ export class SolicitudComponent implements OnInit {
     this.showPlanes = false;
   }
 
+  verifyDPS() {
+
+    var fecNac = this.session.getSession(environment.KEYS.PARAMS).asegurados[0].fecNacimiento;
+    var impCum = this.solicitudForm.controls.impCumulo.value;
+
+    if (fecNac != undefined && impCum != undefined) {
+      var data = {
+        'Fecha_Nacimiento': fecNac,
+        'Importe_Cumulo': impCum
+      }
+
+      this.digitalServ.requiereDPS(this.solicitudForm.controls.numPolizaGrupo.value, data)
+        .then(resp => {
+          this.util.dpsObserver.next(true);
+          var data = resp.Resultado;
+          if (data == 'N') this.util.dpsChecker.next(false)
+          else this.util.dpsChecker.next(true)
+        }).catch(err => {
+          console.log(err);
+        })
+    } else {
+      this.util.dpsObserver.next(false);
+    }
+
+  }
+
   setSolicitud(values) {
     if (this.solicitudForm.invalid) {
       this.solicitudForm.markAllAsTouched();
     } else {
-      if (this.util.entidadFormObserver.getValue() === true) {
-        if(this.showPlanes == true){
+      if (this.util.entidadFormObserver.getValue() == true) {
+        if (this.showPlanes == true) {
           this.util.warningAlert('Advertencia', 'Debe seleccionar un plan antes de continuar.')
         } else {
-          console.log(values);
+          this.session.setSession(environment.KEYS.REQUEST, values);
+          if (this.util.dpsObserver.getValue() == true) {
+            this.verifyDPS();
+          }
           this.selectTab(1);
-        }   
+        }
       } else {
-        this.util.warningAlert('Advertencia', 'Quedan campos por completar');
         this.util.entidadFormChecker.next(true)
       }
     }
   }
 
-  setCoinType(ev: any){
+  setCoinType(ev: any) {
     if (ev.target.value == 1) {
       this.amountSign = "S/."
-    } else if(ev.target.value == 2) {
+    } else if (ev.target.value == 2) {
       this.amountSign = "$"
     } else {
       this.amountSign = ""
@@ -227,6 +272,31 @@ export class SolicitudComponent implements OnInit {
 
   selectTab(tabId: number) {
     this.staticTabs.tabs[tabId].active = true;
+  }
+
+  desgravamenFormat() {
+    var desgravamen: Desgravamen = {
+      cabecera: this.session.getSession(environment.KEYS.PARAMS).cabecera,
+      solicitud: {
+        codCanal: this.session.getSession(environment.KEYS.ENTITY).codCanal,
+        nroSolicitudCaja: parseInt(this.session.getSession(environment.KEYS.ENTITY).solicitud.nroSolicitudCaja),
+        tipSolicitud: this.solicitudForm.controls.tipSolicitud.value,
+        fecSolicitud: this.session.getSession(environment.KEYS.PARAMS).solicitud.fecSolicitud,
+        comentarios: this.solicitudForm.controls.comentarios.value,
+      },
+      producto: this.session.getSession(environment.KEYS.PRODUCT),
+      riesgoDesgravamen: {
+        codTipoConformacion: this.session.getSession(environment.KEYS.ENTITY).codTipoConformacion,
+        codTipoPrestamo: this.solicitudForm.controls.codTipoPrestamo.value,
+        codMonedaPrestamo: this.solicitudForm.controls.codMonedaPrestamo.value,
+        impPrestamo: this.session.getSession(environment.KEYS.ENTITY).impPrestamo,
+        numPrestamo: 0,
+        codMonedaCumulo: this.solicitudForm.controls.codMonedaCumulo.value,
+        impCumulo: this.solicitudForm.controls.impCumulo.value,
+        plazoPrestamo: this.session.getSession(environment.KEYS.ENTITY).plazoPrestamo
+      }
+
+    }
   }
 
 }

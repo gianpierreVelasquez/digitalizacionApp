@@ -1,0 +1,80 @@
+<form [formGroup]="direccionForm" (ngSubmit)="setDireccion(direccionForm.value)" style="width: 100% !important;">
+    <div class="row m-1" *ngFor="let direccion of u.controls; let i = index">
+        <div [formGroup]="direccion" class="col-12">
+            <div class="row">
+                <div class="col-sm-12 col-md-6 col-lg-4 col-xl-2">
+                    <label for="dep">Departamento (*):</label>
+                    <ng-select [items]="departamentoList" bindLabel="texto" bindValue="codigo" [searchable]="true"
+                        labelForId="dep" formControlName="codDepartamento" (change)="obtenerProvincia($event, i)"
+                        [loading]="depaIsLoading" loadingText="Cargando Departamentos..."
+                        placeholder="Seleccione Departamento">
+                    </ng-select>
+                    <div class="col-12 form-group error-container p-0">
+                                        <ng-container
+                                            *ngFor="let validation of validations.codDepartamento">
+                                            <div class="error-message"
+                                                *ngIf="direccion.get('codDepartamento').hasError(validation.type) &&
+                                                    (direccion.get('codDepartamento').dirty || direccion.get('codDepartamento').touched)">
+                                                <span>{{ validation.message }}</span>
+                                            </div>
+                                        </ng-container>
+                                    </div>
+                </div>
+                <div class="col-sm-12 col-md-6 col-lg-4 col-xl-2">
+                    <label for="prov">Provincia (*):</label>
+                    <ng-select [items]="provinciaList" bindLabel="texto" bindValue="codigo" [searchable]="true"
+                        labelForId="prov" formControlName="codProvincia" (change)="obtenerDistrito($event, i)"
+                        [loading]="provIsLoading" loadingText="Cargando Provincias..."
+                        placeholder="Seleccione Provincia">
+                    </ng-select>
+                    <div class="col-12 form-group error-container p-0">
+                                        <ng-container *ngFor="let validation of validations.codProvincia">
+                                            <div class="error-message"
+                                                *ngIf="direccion.get('codProvincia').hasError(validation.type) &&
+                                                    (direccion.get('codProvincia').dirty || direccion.get('codProvincia').touched)">
+                                                <span>{{ validation.message }}</span>
+                                            </div>
+                                        </ng-container>
+                                    </div>
+                </div>
+                <div class="col-sm-12 col-md-6 col-lg-4 col-xl-2">
+                    <label for="dist">Distrito (*):</label>
+                    <ng-select [items]="distritoList" bindLabel="texto" bindValue="codigo" [searchable]="true"
+                        labelForId="dist" formControlName="codDistrito" placeholder="Seleccione Distrito"
+                        [loading]="distIsLoading" loadingText="Cargando Distritos...">
+                    </ng-select>
+                    <div class="col-12 form-group error-container p-0">
+                                        <ng-container *ngFor="let validation of validations.codDistrito">
+                                            <div class="error-message"
+                                                *ngIf="direccion.get('codDistrito').hasError(validation.type) &&
+                                                    (direccion.get('codDistrito').dirty ||direccion.get('codDistrito').touched)">
+                                                <span>{{ validation.message }}</span>
+                                            </div>
+                                        </ng-container>
+                                    </div>
+                </div>
+
+                <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3">
+                    <label for="dir">Dirección (*):</label>
+                    <input type="text" id="dir" class="form-control"
+                        formControlName="nomDomicilio" (input)="setDireccion(direccionForm.value)">
+                    <div class="col-12 form-group error-container p-0">
+                        <ng-container *ngFor="let validation of validations.nomDomicilio">
+                            <div class="error-message"
+                                *ngIf="direccion.get('nomDomicilio').hasError(validation.type) &&
+                                        (direccion.get('nomDomicilio').dirty || direccion.get('nomDomicilio').touched)">
+                                <span>{{ validation.message }}</span>
+                            </div>
+                        </ng-container>
+                    </div>
+                </div>
+
+                <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3">
+                    <label for="ref_ubi">Ref. de Ubicación:</label>
+                    <textarea type="text" id="ref_ubi" class="form-control"
+                        formControlName="refDireccion"></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

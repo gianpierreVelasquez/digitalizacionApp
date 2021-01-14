@@ -8,7 +8,7 @@
                 <div class="row">
                     <div class="col-6 col-sm-6 col-md-6 col-lg-3 col-xl-2">
                         <label for="nro_solicitud">Nro Solicitud Caja:</label>
-                        <input type="number" id="nro_solicitud" class="form-control" formControlName="nroSolicitudCaja" autocomplete="off" [readonly]="submitted">
+                        <input type="number" id="nro_solicitud" class="form-control" formControlName="nroSolicitudCaja" autocomplete="off" [readonly]="nroSolBlur" (blur)="verificarNroSol()">
                         <div class="col-12 form-group error-container p-0">
                             <ng-container *ngFor="let validation of validations.nroSolicitudCaja">
                                 <div class="error-message"
@@ -103,11 +103,11 @@
                         </div>
                     </div>
 
-                    <div class="col-sm-12 text-right" style="position: absolute; margin-top: -45px;">
+                    <!-- <div class="col-sm-12 text-right" style="position: absolute; margin-top: -45px;">
                         <button type="submit" class="btn btn-sm" [ngClass]="submitted ? 'btn-danger' : 'btn-success' ">
                             <i class="fa" [ngClass]="submitted ? 'fa-times' : 'fa-check' "></i>
                         </button>
-                    </div>
+                    </div> -->
 
                 </div>
             </div>

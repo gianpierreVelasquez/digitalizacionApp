@@ -8,7 +8,7 @@
                         <div class="col-9">
                             <p class="card-title2 p-2 m-0">Observación {{i + 1}}</p>
                         </div>
-                        <div *ngIf="i != 0" class="col-3">
+                        <div class="col-3">
                             <button type="button" style="float: right;" class="btn btn-outline-light" (click)="removeObservation(i)">
                                 <i class="fa fa-times text-dark"></i>
                             </button>
@@ -87,7 +87,8 @@
         <div class="col-sm-12 text-left">
             <button *ngIf="t.length != 3" type="button" class="btn btn-sm btn-primary text-light ml-1" (click)="addObservation()">Agregar
                 Observación</button>
-            <button *ngIf="formComplete == false || observacionForm.invalid" type="submit" class="btn btn-sm btn-danger text-light ml-1">Guardar</button>
+            <!-- <button *ngIf="formComplete == false || observacionForm.invalid && t.length > 0" type="submit" class="btn btn-sm btn-danger text-light ml-1">Guardar</button> -->
+            <button *ngIf="t.length > 0" type="submit" class="btn btn-sm btn-danger text-light ml-1">Guardar</button>
         </div>
     </form>
 </div>

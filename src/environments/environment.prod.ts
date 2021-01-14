@@ -5,6 +5,9 @@ export const environment = {
   EPK: '',
   KEYS: {
     TOKEN: 'token',
-    PARAMS: 'params'
+    PARAMS: 'params',
+    ENTITY: 'entity',
+    PRODUCT: 'product',
+    REQUEST: 'request'
   }
 };
