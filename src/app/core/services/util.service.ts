@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
@@ -51,14 +52,19 @@ export class UtilService {
 
   observacionFormObserver = new BehaviorSubject<boolean>(false);
   observacionFormChecker = new BehaviorSubject<boolean>(false);
+  validateObservacionFormObserver = new BehaviorSubject<boolean>(false);
+
+  respuestaFormObserver = new BehaviorSubject<boolean>(false);
+  respuestaFormChecker = new BehaviorSubject<boolean>(false);
 
   //Variables
   conformacionVar = new BehaviorSubject<any>('');
   monedaChecker = new BehaviorSubject<number>(0);
   dpsChecker = new BehaviorSubject<boolean>(false);
   dpsObserver = new BehaviorSubject<boolean>(false);
+  cuestionarioIsSubmitted = new BehaviorSubject<boolean>(false);
 
-  constructor(private spinner: NgxSpinnerService, private modal: UiModalService, private router: Router) { }
+  constructor(private spinner: NgxSpinnerService, private uimodalServ: UiModalService, private router: Router) { }
 
   // Spinner
   showSpinner() {
@@ -100,17 +106,18 @@ export class UtilService {
     })
   }
 
-  notAllowAlert(title?: string, text?: string){
+  notAllowAlert(title?: string, text?: string) {
     Swal.fire({
       icon: 'error',
       title: title,
       text: text,
       showCancelButton: false,
       confirmButtonColor: '#d33',
-      confirmButtonText: 'Cerrar'
+      confirmButtonText: 'Cerrar',
+      allowOutsideClick: false
     }).then((result) => {
       if (result.value) {
-        this.router.navigate(['']);
+        this.router.navigate(['/mantenimiento/error']);
       }
     })
   }
@@ -124,15 +131,15 @@ export class UtilService {
 
       a = date[2];
 
-      if(parseInt(date[1]) < 10){
-        m = '0'+parseInt(date[1])
-      }else {
+      if (parseInt(date[1]) < 10) {
+        m = '0' + parseInt(date[1])
+      } else {
         m = date[1]
       }
-     
-      if(parseInt(date[0]) < 10){
-        d = '0'+parseInt(date[0])
-      }else {
+
+      if (parseInt(date[0]) < 10) {
+        d = '0' + parseInt(date[0])
+      } else {
         d = date[0]
       }
 
@@ -152,15 +159,15 @@ export class UtilService {
 
       a = date[0];
 
-      if(parseInt(date[1]) < 10){
-        m = '0'+parseInt(date[1])
-      }else {
+      if (parseInt(date[1]) < 10) {
+        m = '0' + parseInt(date[1])
+      } else {
         m = date[1]
       }
-     
-      if(parseInt(date[2]) < 10){
-        d = '0'+parseInt(date[2])
-      }else {
+
+      if (parseInt(date[2]) < 10) {
+        d = '0' + parseInt(date[2])
+      } else {
         d = date[2]
       }
 
@@ -174,29 +181,38 @@ export class UtilService {
 
   // Modal
   agregarComp(modal: any) {
-    this.modal.add(modal);
+    this.uimodalServ.add(modal);
   }
 
   quitarComp(id: string) {
-    this.modal.remove(id);
+    this.uimodalServ.remove(id);
   }
 
   showModal(id: string) {
-    this.modal.open(id);
+    this.uimodalServ.open(id);
   }
 
   hideModal(id: string) {
-    this.modal.close(id);
+    this.uimodalServ.close(id);
   }
 
   //Verifier
-  propChecker(value: any, arr: any[]){
+  propChecker(value: any, arr: any[]) {
     var obj = arr.find(x => x.codigo == value)
-    if(obj != undefined) {
+    if (obj != undefined) {
       return value
     }
     else {
       return null
     }
+  }
+
+  //FormChecker
+  disabledFields(group: FormGroup) {
+    Object.keys(group.controls).forEach(key => {
+      if (group.controls[key].value != undefined) {
+        group.controls[key].disable();
+      }
+    });
   }
 }

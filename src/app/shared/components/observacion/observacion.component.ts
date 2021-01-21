@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { BehaviorSubject } from 'rxjs';
 import { UtilService } from 'src/app/core/services/util.service';
 
 @Component({
@@ -9,13 +10,30 @@ import { UtilService } from 'src/app/core/services/util.service';
 })
 export class ObservacionComponent implements OnInit {
 
+  @Input() aseguradoIndex: number;
+
+  private needObservationObserver = new BehaviorSubject<boolean>(false);
+
+  @Input() 
+  set needObservation(value) {
+    // set the latest value for neddObservationObserver BehaviorSubject
+    this.needObservationObserver.next(value);
+  };
+
+  get needObservation() {
+    // get the latest value from neddObservationObserver BehaviorSubject
+    return this.needObservationObserver.getValue();
+  };
+
+  @Output() dataGetter = new EventEmitter<any>();
+
+
   observacionForm: FormGroup;
   submitted = false;
-  formComplete = false;
 
   maxObservations = 3;
 
-  observacionFormObserverHelper: boolean = false;
+  validateObservacionFormObserverHelper: boolean = false;
 
   validations = {
     'enfermedad': [
@@ -42,13 +60,17 @@ export class ObservacionComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.util.observacionFormObserver.subscribe(resp => {
-      this.observacionFormObserverHelper = resp;
-      if(this.observacionFormObserverHelper == true){
+    this.needObservationObserver.subscribe(resp => {
+      this.validateObservacionFormObserverHelper = resp;
+      if (resp == true) {
         this.addObservation();
-      }else {
+      } else {
         this.t.clear();
       }
+    });
+
+    this.util.observacionFormChecker.subscribe(resp => {
+      this.setObservacion(this.observacionForm.value);
     })
   }
 
@@ -56,47 +78,45 @@ export class ObservacionComponent implements OnInit {
   get t() { return this.f.observacion as FormArray; }
 
   addObservation() {
+    this.util.observacionFormObserver.next(false);
     if (this.t.length < this.maxObservations) {
-        this.t.push(this.formBuilder.group({
-          enfermedad: ['', Validators.required],
-          fecha: ['', [Validators.required]],
-          duracion: ['', [Validators.required]],
-          clinica: ['', [Validators.required]],
-          estado_actual: ['', [Validators.required]]
-        }));
+      this.t.push(this.formBuilder.group({
+        enfermedad: ['', [Validators.required]],
+        fecha: ['', [Validators.required]],
+        duracion: ['', [Validators.required]],
+        clinica: ['', [Validators.required]],
+        estado_actual: ['', [Validators.required]]
+      }));
     }
   }
 
   setObservacion(values) {
-    // stop here if form is invalid
     if (this.observacionForm.invalid) {
+      this.util.observacionFormObserver.next(false);
       this.observacionForm.markAllAsTouched();
     } else {
       this.submitted = true;
-      this.formComplete = true;
-      console.log(values);
+      this.util.observacionFormObserver.next(true);
+      this.dataGetter.emit(values.observacion);
     }
   }
 
   removeObservation(i) {
-    if (this.observacionFormObserverHelper == true) {
+    if (this.validateObservacionFormObserverHelper == true && this.t.length < 2) {
       this.util.warningAlert('Advertencia', 'Debes agregar almenos una observación.')
     } else {
       this.submitted = false;
-      this.formComplete = false;
       this.t.removeAt(i);
     }
   }
 
   onReset() {
-    // reset whole form back to initial state
     this.submitted = false;
     this.observacionForm.reset();
     this.t.clear();
   }
 
   onClear() {
-    // clear errors and reset ticket fields
     this.submitted = false;
     this.t.reset();
   }

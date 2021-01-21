@@ -7,6 +7,7 @@ import { NgSelectModule } from '@ng-select/ng-select';
 import { ObservacionModule } from '../observacion/observacion.module';
 import { AutosizeModule } from 'ngx-autosize';
 import { DireccionModule } from '../direccion/direccion.module';
+import { PreguntaModule } from '../pregunta/pregunta.module';
 
 @NgModule({
   imports: [
@@ -17,7 +18,8 @@ import { DireccionModule } from '../direccion/direccion.module';
     NgSelectModule,
     ObservacionModule,
     AutosizeModule,
-    DireccionModule
+    DireccionModule,
+    PreguntaModule
   ],
   declarations: [AseguradoComponent],
   exports: [AseguradoComponent]

@@ -1,5 +1,6 @@
+import { ThrowStmt } from '@angular/compiler';
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { AuthenticationService } from 'src/app/core/auth/authentication.service';
 import { CombosService } from 'src/app/core/services/combos.service';
@@ -17,7 +18,6 @@ import { environment } from 'src/environments/environment';
 export class EntidadComponent implements OnInit {
 
   entidadForm: FormGroup;
-  submitted: boolean = false;
 
   //Operadores
   conformacion: any;
@@ -29,8 +29,6 @@ export class EntidadComponent implements OnInit {
   monedaList: any;
 
   parameterId: string = '';
-
-  nroSolBlur: boolean = false;
 
   validations = {
     'nroSolicitudCaja': [
@@ -46,32 +44,32 @@ export class EntidadComponent implements OnInit {
     ],
     'plazoPrestamo': [
       { type: 'required', message: 'El plazo de prestamo es requerido.' },
-      { type: 'notzero', message: 'El plazo debe ser mayor a 0.' }, 
+      { type: 'pattern', message: 'Este campo solo acepta números enteros.' },
+      { type: 'notzero', message: 'El plazo debe ser mayor a 0.' }
     ],
     'impPrestamo': [
       { type: 'required', message: 'El importe del prestamo es requerido.' }
     ],
     'codigoUsuario': [
-      { type: 'required', message: 'El funcionario del canal es requerido.' },
+      { type: 'required', message: 'El funcionario del canal es requerido.' }
     ]
   };
 
-  constructor(private session: SessionService, private util: UtilService, private combosServ: CombosService, private digitalServ: DigitalService, private fb: FormBuilder, private validator: ValidatorsService, 
+  constructor(private session: SessionService, private util: UtilService, private combosServ: CombosService, private digitalServ: DigitalService, private fb: FormBuilder, private validator: ValidatorsService,
     private auth: AuthenticationService, private route: ActivatedRoute) {
     this.entidadForm = this.fb.group({
       nroSolicitudCaja: ['', [Validators.required]],
       codTipoConformacion: ['', [Validators.required, this.validator.notNull]],
       codMonedaPrestamo: ['', [Validators.required, this.validator.notNull]],
-      plazoPrestamo: ['', [Validators.required, this.validator.notZero]],
+      plazoPrestamo: ['', [Validators.required, Validators.pattern("^[0-9]+$"), this.validator.notZero]],
       impPrestamo: ['', [Validators.required]],
       codCanal: [''],
       codigoUsuario: ['', [Validators.required]]
-    });
+    }, { updateOn: 'blur' });
 
     this.route.queryParams.subscribe(params => {
       var obj = JSON.parse(JSON.stringify(params));
       this.parameterId = obj['id_parameter'];
-      console.log(this.parameterId);
     });
   }
 
@@ -82,9 +80,15 @@ export class EntidadComponent implements OnInit {
       this.setEntidad(this.entidadForm.value)
     })
 
+    this.entidadForm.statusChanges.subscribe(val => {
+      if (val == 'VALID') {
+        this.util.disabledFields(this.entidadForm);
+        this.setEntidad(this.entidadForm.value)
+      }
+    })
   }
 
-  async init(){
+  async init() {
 
     this.util.showSpinner();
     Promise.all([
@@ -98,21 +102,21 @@ export class EntidadComponent implements OnInit {
 
   }
 
-  async obtenerParametros(){
-    if(this.parameterId != ''){
+  async obtenerParametros() {
+    if (this.parameterId != '') {
       this.util.showSpinner()
       this.util.setSpinnerTextValue(SPINNER_TEXT.PARAMETERS);
       this.digitalServ.obtenerParametros(this.parameterId)
-      .then(resp => {
-        var data = resp;
-        this.util.desgravamenData.next(data);
-        this.session.setSession(environment.KEYS.PARAMS, data);
-        this.displayParamsEntidad();
-        this.util.hideSpinner();
-      }).catch(err => {
-        console.log(err);
-        this.util.hideSpinner();
-      })
+        .then(resp => {
+          var data = resp;
+          this.util.desgravamenData.next(data);
+          this.session.setSession(environment.KEYS.PARAMS, data);
+          this.displayParamsEntidad();
+          this.util.hideSpinner();
+        }).catch(err => {
+          console.log(err);
+          this.util.hideSpinner();
+        })
     } else {
       this.util.warningAlert('Advertencia', 'El parámetro principal {id_parameter} en la URL no esta asignado')
     }
@@ -120,54 +124,53 @@ export class EntidadComponent implements OnInit {
 
   async obtenerTipoConformación() {
     await this.combosServ.obtenerTipoConformación()
-    .then(resp => {
-      var data = resp.data;
-      this.conformacionList = data;
-    }).catch(err => {
-      console.log(err);
-    })
+      .then(resp => {
+        var data = resp.data;
+        this.conformacionList = data;
+      }).catch(err => {
+        console.log(err);
+      })
   }
 
   async obtenerTipoMoneda() {
     await this.combosServ.obtenerTipoMoneda()
-    .then(resp => {
-      var data = resp.data;
-      this.monedaList = data;
-    }).catch(err => {
-      console.log(err);
-    })
+      .then(resp => {
+        var data = resp.data;
+        this.monedaList = data;
+      }).catch(err => {
+        console.log(err);
+      })
   }
 
-  setEntidad(values){
+  setEntidad(values) {
     if (this.entidadForm.invalid) {
       this.entidadForm.markAllAsTouched();
       this.util.entidadFormObserver.next(false)
     } else {
-      this.submitted = this.submitted == true ? false : true;
-      this.util.entidadFormObserver.next(true)
+      this.util.entidadFormObserver.next(true);
       this.session.setSession(environment.KEYS.ENTITY, values);
     }
   }
 
-  setConformacion(ev: any){
+  setConformacion(ev: any) {
     this.conformacion = ev.target.value;
     this.util.conformacionVar.next(ev.target.value);
     this.setEntidad(this.entidadForm.value);
   }
 
-  setMoneda(ev: any){
+  setMoneda(ev: any) {
     this.util.monedaChecker.next(ev.target.value);
     this.setEntidad(this.entidadForm.value);
     if (ev.target.value == 1) {
       this.amountSign = "S/."
-    } else if(ev.target.value == 2) {
+    } else if (ev.target.value == 2) {
       this.amountSign = "$"
     } else {
       this.amountSign = ""
     }
   }
 
-  async displayParamsEntidad(){
+  displayParamsEntidad() {
     this.entidadForm.controls.nroSolicitudCaja.setValue(this.session.getSession(environment.KEYS.PARAMS).solicitud.nroSolicitudCaja);
     this.entidadForm.controls.codCanal.setValue(this.session.getSession(environment.KEYS.PARAMS).solicitud.codCanal);
     this.entidadForm.controls.codTipoConformacion.setValue(this.util.propChecker(this.session.getSession(environment.KEYS.PARAMS).riesgoDesgravamen.codTipoConformacion, this.conformacionList));
@@ -176,13 +179,11 @@ export class EntidadComponent implements OnInit {
     this.entidadForm.controls.codMonedaPrestamo.setValue(this.util.propChecker(this.session.getSession(environment.KEYS.PARAMS).riesgoDesgravamen.codMonedaPrestamo, this.monedaList));
     this.entidadForm.controls.codigoUsuario.setValue(this.session.getSession(environment.KEYS.PARAMS).cabecera.codigoUsuario);
 
-    this.setMoneda({target:{value:this.session.getSession(environment.KEYS.PARAMS).riesgoDesgravamen.codMonedaPrestamo}});
+    this.setMoneda({ target: { value: this.session.getSession(environment.KEYS.PARAMS).riesgoDesgravamen.codMonedaPrestamo } });
     this.util.monedaChecker.next(this.session.getSession(environment.KEYS.PARAMS).riesgoDesgravamen.codMonedaPrestamo);
     this.util.conformacionVar.next(this.session.getSession(environment.KEYS.PARAMS).riesgoDesgravamen.codTipoConformacion);
-  }
 
-  verificarNroSol(){
-    this.nroSolBlur = true;
+    this.util.disabledFields(this.entidadForm);
   }
 
 }

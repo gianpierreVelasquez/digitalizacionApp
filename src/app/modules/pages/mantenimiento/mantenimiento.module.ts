@@ -1,14 +1,14 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { MaintanceRoutingModule } from './maintance-routing.module';
+import { MantenimientoRoutingModule } from './mantenimiento-routing.module';
 
 
 @NgModule({
   declarations: [],
   imports: [
     CommonModule,
-    MaintanceRoutingModule
+    MantenimientoRoutingModule
   ]
 })
-export class MaintanceModule { }
+export class MantenimientoModule { }

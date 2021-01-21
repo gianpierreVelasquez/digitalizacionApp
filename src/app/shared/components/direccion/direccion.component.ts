@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NgSelectConfig } from '@ng-select/ng-select';
 import { CombosService } from 'src/app/core/services/combos.service';
@@ -11,7 +11,9 @@ import { UtilService } from 'src/app/core/services/util.service';
 })
 export class DireccionComponent implements OnInit {
 
+  @Input() index: number;
   @Input() direccionData: any;
+  @Output() dataGetter = new EventEmitter<any>();
 
   direccionForm: FormGroup
 
@@ -102,11 +104,12 @@ export class DireccionComponent implements OnInit {
     this.u.controls[i]['controls'].codDistrito.setValue(null);
     this.u.controls[i]['controls'].codDistrito.disable();
 
+    this.u.controls[i]['controls'].codProvincia.enable();
+
     await this.combosServ.obtenerProvincia(codDepartamento)
       .then(resp => {
         this.provinciaList = resp.data;
         this.provIsLoading = false;
-        this.u.controls[i]['controls'].codProvincia.enable();
       }).catch(err => {
         console.log(err);
         this.provIsLoading = false;
@@ -121,11 +124,12 @@ export class DireccionComponent implements OnInit {
     this.u.controls[i]['controls'].codDistrito.setValue(null);
     this.u.controls[i]['controls'].codDistrito.disable();
 
+    this.u.controls[i]['controls'].codDistrito.enable();
+
     await this.combosServ.obtenerDistrito(codProvincia)
       .then(resp => {
         this.distritoList = resp.data;
         this.distIsLoading = false;
-        this.u.controls[i]['controls'].codDistrito.enable();
       }).catch(err => {
         console.log(err);
         this.distIsLoading = false;
@@ -136,17 +140,22 @@ export class DireccionComponent implements OnInit {
     if (this.direccionForm.invalid) {
       this.direccionForm.markAllAsTouched();
     } else {
-      console.log(values);
+      this.dataGetter.emit(values.direccion);
     }
   }
 
   displayDireccion(){
-    this.u.controls[0]['controls'].codDepartamento.setValue(this.direccionData[0].codDepartamento.toString());
-    this.obtenerProvincia({codigo:this.direccionData[0].codDepartamento.toString()},0);
-    this.u.controls[0]['controls'].codProvincia.setValue(this.direccionData[0].codProvincia.toString());
-    this.obtenerDistrito({codigo:this.direccionData[0].codProvincia.toString()},0);
-    this.u.controls[0]['controls'].codDistrito.setValue(this.direccionData[0].codDistrito.toString());
-    this.u.controls[0]['controls'].nomDomicilio.setValue(this.direccionData[0].nomDomicilio);
+    if (this.direccionData[0].codDepartamento != undefined){
+      this.u.controls[0]['controls'].codDepartamento.setValue(this.direccionData[0].codDepartamento.toString());
+      this.obtenerProvincia({codigo:this.direccionData[0].codDepartamento.toString()},0);
+      this.u.controls[0]['controls'].codProvincia.setValue(this.direccionData[0].codProvincia.toString());
+      this.obtenerDistrito({codigo:this.direccionData[0].codProvincia.toString()},0);
+      this.u.controls[0]['controls'].codDistrito.setValue(this.direccionData[0].codDistrito.toString());
+      this.u.controls[0]['controls'].nomDomicilio.setValue(this.direccionData[0].nomDomicilio);
+    } else {
+      this.u.controls[0]['controls'].codDepartamento.setValue(null);
+    }
+
   }
 
 }

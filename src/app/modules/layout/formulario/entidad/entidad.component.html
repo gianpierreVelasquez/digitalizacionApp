@@ -8,7 +8,8 @@
                 <div class="row">
                     <div class="col-6 col-sm-6 col-md-6 col-lg-3 col-xl-2">
                         <label for="nro_solicitud">Nro Solicitud Caja:</label>
-                        <input type="number" id="nro_solicitud" class="form-control" formControlName="nroSolicitudCaja" autocomplete="off" [readonly]="nroSolBlur" (blur)="verificarNroSol()">
+                        <input type="number" id="nro_solicitud" class="form-control" formControlName="nroSolicitudCaja"
+                            autocomplete="off" [readonly]="submitted">
                         <div class="col-12 form-group error-container p-0">
                             <ng-container *ngFor="let validation of validations.nroSolicitudCaja">
                                 <div class="error-message"
@@ -22,7 +23,7 @@
 
                     <div class="col-6 col-sm-6 col-md-6 col-lg-3 col-xl-2">
                         <label for="tip_conformacion">Tipo Conformación:</label>
-                        <select type="text" id="tip_conformacion" class="form-control" formControlName="codTipoConformacion"
+                        <select id="tip_conformacion" class="form-control" formControlName="codTipoConformacion"
                             (change)="setConformacion($event)">
                             <option value="">Seleccione</option>
                             <option *ngFor="let c of conformacionList" [value]="c.codigo">{{c.texto}}</option>
@@ -40,7 +41,13 @@
 
                     <div class="col-6 col-sm-6 col-md-6 col-lg-3 col-xl-2">
                         <label for="plzPrestamo">Plazo Prestamo:</label>
-                        <input type="number" id="plzPrestamo" class="form-control" formControlName="plazoPrestamo" min="1" autocomplete="off" [readonly]="submitted">
+                        <div class="input-group">
+                            <input type="number" id="plzPrestamo" class="form-control" formControlName="plazoPrestamo"
+                                min="1" autocomplete="off">
+                            <div class="input-group-append">
+                                <span class="input-group-text" id="basic-addon3">Meses</span>
+                            </div>
+                        </div>
                         <div class="col-12 form-group error-container p-0">
                             <ng-container *ngFor="let validation of validations.plazoPrestamo">
                                 <div class="error-message"
@@ -74,9 +81,11 @@
                         <label for="impPrestamo">Imp. Prestamo:</label>
                         <div class="input-group">
                             <div class="input-group-prepend">
-                                <span class="input-group-text" id="basic-addon1" autocomplete="off">{{amountSign}}</span>
+                                <span class="input-group-text" id="basic-addon1"
+                                    autocomplete="off">{{amountSign}}</span>
                             </div>
-                            <input type="number" id="impPrestamo" class="form-control" formControlName="impPrestamo" autocomplete="off" [readonly]="submitted">
+                            <input type="number" id="impPrestamo" class="form-control" formControlName="impPrestamo"
+                                autocomplete="off">
                         </div>
                         <div class="col-12 form-group error-container p-0">
                             <ng-container *ngFor="let validation of validations.impPrestamo">
@@ -91,7 +100,8 @@
 
                     <div class="col-6 col-sm-6 col-md-6 col-lg-3 col-xl-2">
                         <label for="funcCanal">Funcionario Canal:</label>
-                        <input type="text" id="funcCanal" class="form-control" formControlName="codigoUsuario" autocomplete="off" [readonly]="submitted">
+                        <input type="text" id="funcCanal" class="form-control" formControlName="codigoUsuario"
+                            autocomplete="off">
                         <div class="col-12 form-group error-container p-0">
                             <ng-container *ngFor="let validation of validations.codigoUsuario">
                                 <div class="error-message"
@@ -102,12 +112,6 @@
                             </ng-container>
                         </div>
                     </div>
-
-                    <!-- <div class="col-sm-12 text-right" style="position: absolute; margin-top: -45px;">
-                        <button type="submit" class="btn btn-sm" [ngClass]="submitted ? 'btn-danger' : 'btn-success' ">
-                            <i class="fa" [ngClass]="submitted ? 'fa-times' : 'fa-check' "></i>
-                        </button>
-                    </div> -->
 
                 </div>
             </div>

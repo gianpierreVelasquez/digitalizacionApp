@@ -1,0 +1,75 @@
+<div *ngIf="dpsValidator" class="card-footer text-muted">
+    <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3 p-0">
+        <button type="button" class="btn text-white"
+            [ngClass]="cuestionarioIsSubmitted ? 'btn-success' : 'mapfre-color' " data-toogle="modal"
+            (click)="dpsModal.show()"> <i class="fa" [ngClass]="cuestionarioIsSubmitted ? 'fa-check' : 'fa-times' "></i>
+            Registrar
+            DPS</button>
+        <!-- <button type="button" class="btn text-white mapfre-color" data-toogle="modal"
+            (click)="dpsModal.show()"> <i class="fa fa-times"></i> Registrar
+            DPS</button> -->
+    </div>
+</div>
+
+<app-ui-modal modalID="dpsModal" #dpsModal dialogClass="modal-dialog modal-lg" [containerClick]="false"
+    hideFooter="true">
+    <div class="app-modal-header">
+        <h5 class="text-light font-weight-light">DECLARACIÓN DE SALUD PERSONAL</h5>
+        <button type="button" class="close basic-close" data-dismiss="modal" aria-label="Close"
+            (click)="dpsModal.hide()"><i class="fa fa-times text-light"></i></button>
+    </div>
+    <div class="app-modal-body">
+        <div class="row text-center">
+            <div class="col-1">
+                Nro
+            </div>
+            <div class="col-8">
+                Pregunta
+            </div>
+            <div class="col-3 text-center">
+                Selección
+            </div>
+        </div>
+        <div class="divider"></div>
+        <form [formGroup]="cuestionarioForm" (ngSubmit)="setCuestionario(cuestionarioForm.value)">
+            <div class="col-12 m-2" *ngFor="let pregunta of p.controls; let k = index">
+                <div [formGroup]="pregunta" class="row">
+                    <div class="col-1 p-0">
+                        <input type="number" class="form-control white-all" formControlName="codPregunta" readonly>
+                    </div>
+                    <div class="col-8 p-0">
+                        <textarea type="text" class="form-control-plaintext" formControlName="desPregunta"
+                            autosize></textarea>
+                    </div>
+                    <div class="col-3 p-0 text-center">
+                        <div style="display: inline-flex;">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" value="S" formControlName="codRespuesta"
+                                    (change)="validateQuizIfPositive($event, cuestionarioForm.value)">
+                                <label class="form-check-label" for="rdButtonS">Si</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" value="N" formControlName="codRespuesta"
+                                    (change)="validateQuizIfPositive($event, cuestionarioForm.value)">
+                                <label class="form-check-label" for="rdButtonN">No</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div *ngIf="pregunta.controls.flag.value == 'S' && pregunta.controls.codRespuesta.value == 'S'"
+                        formGroupName="descRespuesta" class="card custom-c shadow-sm">
+                        <app-dynamic-respuesta [needRespuesta]="pregunta.controls.codRespuesta.value" (dataGetter)="getRespuestaData($event)"></app-dynamic-respuesta>
+                    </div>
+                </div>
+            </div>
+            <div class="divider"></div>
+            <div class="col-12 p-0">
+                <app-dynamic-observacion [needObservation]="needObservation" (dataGetter)="getObservacionData($event)">
+                </app-dynamic-observacion>
+            </div>
+            <div class="col-12 p-0 text-right">
+                <button type="submit" class="btn btn-danger text-light ml-1">Verificar</button>
+            </div>
+        </form>
+    </div>
+    <div class="app-modal-footer"></div>
+</app-ui-modal>

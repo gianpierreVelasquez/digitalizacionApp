@@ -71,7 +71,7 @@
 
                 <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3">
                     <label for="ref_ubi">Ref. de Ubicación:</label>
-                    <textarea type="text" id="ref_ubi" class="form-control"
+                    <textarea type="text" id="ref_ubi" class="form-control" (input)="setDireccion(direccionForm.value)"
                         formControlName="refDireccion"></textarea>
                 </div>
             </div>

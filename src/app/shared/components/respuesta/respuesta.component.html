@@ -1,0 +1,35 @@
+<form [formGroup]="respuestaForm" (ngSubmit)="setRespuesta(respuestaForm.value)">
+    <div *ngFor="let respuesta of r.controls; let i = index" class="col-12">
+        <div [formGroup]="respuesta" class="row">
+            <div class="col-6">
+                <label for="parent">Frecuencia (*):</label>
+                <select id="parent" class="form-control" formControlName="frecuencia">
+                    <option value="">Seleccione</option>
+                    <option *ngFor="let f of frecList" [value]="f.codigo">{{f.texto}}</option>
+                </select>
+                <div class="col-12 form-group error-container p-0">
+                    <ng-container *ngFor="let validation of validations.frecuencia">
+                        <div class="error-message" *ngIf="respuesta.get('frecuencia').hasError(validation.type) &&
+                         (respuesta.get('frecuencia').dirty || respuesta.get('frecuencia').touched)">
+                            <span>{{ validation.message }}</span>
+                        </div>
+                    </ng-container>
+                </div>
+            </div>
+
+            <div class="col-6">
+                <label for="parent">Cantidad (*):</label>
+                <input type="number" class="form-control" formControlName="cantidad">
+                <div class="col-12 form-group error-container p-0">
+                    <ng-container *ngFor="let validation of validations.cantidad">
+                        <div class="error-message" *ngIf="respuesta.get('cantidad').hasError(validation.type) &&
+                         (respuesta.get('cantidad').dirty || respuesta.get('cantidad').touched)">
+                            <span>{{ validation.message }}</span>
+                        </div>
+                    </ng-container>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</form>

@@ -8,6 +8,7 @@ import { SPINNER_TEXT, UtilService } from 'src/app/core/services/util.service';
 import { ValidatorsService } from 'src/app/core/services/validators.service';
 import { environment } from 'src/environments/environment';
 import { DireccionHelper } from '../../models/Desgravamen';
+import { UiModalService } from '../modal/ui-modal/ui-modal.service';
 
 @Component({
   selector: 'app-dynamic-asegurado',
@@ -91,6 +92,7 @@ export class AseguradoComponent implements OnInit {
     ],
     'email': [
       { type: 'required', message: 'El correo es requerido.' },
+      { type: 'email', message: 'Debe ingresar el formato correcto.' }
     ],
     'tlfNumero': [
       { type: 'required', message: 'El número de telefono es requerido.' },
@@ -120,21 +122,13 @@ export class AseguradoComponent implements OnInit {
     ]
   };
 
-  cuestionarioForm: FormGroup;
-  cuestionarioData: any[] = [];
-
   //Variable
   varConformacion: any;
-  dpsValidator: boolean = false;
 
   constructor(private formBuilder: FormBuilder, private session: SessionService, private util: UtilService, private config: NgSelectConfig, private digitalServ: DigitalService,
-    private combosServ: CombosService, private validator: ValidatorsService) {
+    private combosServ: CombosService, private validator: ValidatorsService, private modal: UiModalService) {
     this.aseguradoForm = this.formBuilder.group({
       asegurados: new FormArray([])
-    });
-
-    this.cuestionarioForm = this.formBuilder.group({
-      preguntas: new FormArray([])
     });
 
     this.config.notFoundText = 'No se encontraron registros';
@@ -160,21 +154,10 @@ export class AseguradoComponent implements OnInit {
       this.addExtraAsegurado();
     })
 
-    //Verificar si el usuario tendra habilitado DPS
-    // this.dpsChecker = 
-
     //Chekc if plan is activated
     this.util.isPlanActivated.subscribe(resp => {
       this.hasPlan = resp;
     })
-
-    this.util.dpsChecker.subscribe(resp => {
-      if(resp == true){
-        this.dpsValidator = true;
-        this.recuperarCuestionario();
-      }
-    })
-
 
   }
 
@@ -231,21 +214,6 @@ export class AseguradoComponent implements OnInit {
       })
   }
 
-  async recuperarCuestionario() {
-    this.util.showSpinner()
-    this.util.setSpinnerTextValue(SPINNER_TEXT.QUIZ);
-    this.digitalServ.recuperarCuestionario(21)
-      .then(resp => {
-        var data = resp['Resultado'];
-        this.cuestionarioData = data;
-        this.addPreguntas();
-        this.util.hideSpinner();
-      }).catch(err => {
-        console.log(err);
-        this.util.hideSpinner();
-      })
-  }
-
   get f() { return this.aseguradoForm.controls; }
   get t() { return this.f.asegurados as FormArray; }
 
@@ -262,7 +230,7 @@ export class AseguradoComponent implements OnInit {
           apePaterno: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
           apeMaterno: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
           mcaSexo: [null, [Validators.required, this.validator.notNull]],
-          email: ['', [Validators.required]],
+          email: ['', [Validators.required, Validators.email]],
           tlfNumero: ['', [Validators.required, Validators.minLength(7), Validators.maxLength(10), Validators.pattern("^[0-9]+$")]],
           tlfMovil: ['', [Validators.required, Validators.minLength(9), Validators.maxLength(12), Validators.pattern("^[0-9]+$")]],
           talla: ['', [Validators.required, this.validator.notZero]],
@@ -271,7 +239,7 @@ export class AseguradoComponent implements OnInit {
           // otroOcupacion: [''],
           nacionalidad: ['PE'],
           direccion: [],
-          cuestionario: []
+          cuestionario: [null]
         }));
       }
 
@@ -288,11 +256,15 @@ export class AseguradoComponent implements OnInit {
     if (this.aseguradoForm.invalid) {
       this.aseguradoForm.markAllAsTouched();
     } else {
-      if (this.hasPlan == true) {
-        console.log(values);
-        this.next(null);
+      if (this.util.cuestionarioIsSubmitted.value == true) {
+        if (this.hasPlan == true) {
+          console.log(values);
+          this.next(null);
+        } else {
+          console.log(values);
+        } 
       } else {
-        console.log(values);
+        this.util.warningAlert('Advertencia', 'Necesita rellenar la Declaración Personal de Salud del(los) asegurado(s).')
       }
     }
   }
@@ -307,7 +279,7 @@ export class AseguradoComponent implements OnInit {
   // }
 
   displayAsegurados() {
-    var asegurados: any = this.session.getSession(environment.KEYS.PARAMS).asegurados;
+    var asegurados: any[] = this.session.getSession(environment.KEYS.PARAMS).asegurados;
     if (asegurados != [] || asegurados != null) {
       var aseguradoP = asegurados.find(x => x.codParentesco == 1);
 
@@ -326,17 +298,35 @@ export class AseguradoComponent implements OnInit {
         this.t.controls[0]['controls'].tlfMovil.setValue(aseguradoP.tlfMovil);
         this.t.controls[0]['controls'].direccion.setValue(aseguradoP.direccion);
 
-        this.t.controls[1]['controls'].codParentesco.setValue(this.util.propChecker(aseguradoS.codParentesco, this.parentescoList));
-        this.t.controls[1]['controls'].tipDocum.setValue(this.util.propChecker(aseguradoS.tipDocum, this.documentoList));
-        this.t.controls[1]['controls'].codDocum.setValue(aseguradoS.codDocum);
-        this.t.controls[1]['controls'].nombre.setValue(aseguradoS.nombre);
-        this.t.controls[1]['controls'].apePaterno.setValue(aseguradoS.apePaterno);
-        this.t.controls[1]['controls'].apeMaterno.setValue(aseguradoS.apeMaterno);
-        this.t.controls[1]['controls'].fecNacimiento.setValue(this.util.dateConverterToPlatform(aseguradoS.fecNacimiento));
-        this.t.controls[1]['controls'].mcaSexo.setValue(this.util.propChecker(aseguradoS.mcaSexo, this.generoList));
-        this.t.controls[1]['controls'].estadoCivil.setValue(this.util.propChecker(aseguradoS.estadoCivil, this.estadoCivilList));
-        this.t.controls[1]['controls'].tlfMovil.setValue(aseguradoS.tlfMovil);
-        this.t.controls[1]['controls'].direccion.setValue(aseguradoS.direccion);
+        if(aseguradoS != undefined) {
+
+          this.t.controls[1]['controls'].codParentesco.setValue(this.util.propChecker(aseguradoS.codParentesco, this.parentescoList));
+          this.t.controls[1]['controls'].tipDocum.setValue(this.util.propChecker(aseguradoS.tipDocum, this.documentoList));
+          this.t.controls[1]['controls'].codDocum.setValue(aseguradoS.codDocum);
+          this.t.controls[1]['controls'].nombre.setValue(aseguradoS.nombre);
+          this.t.controls[1]['controls'].apePaterno.setValue(aseguradoS.apePaterno);
+          this.t.controls[1]['controls'].apeMaterno.setValue(aseguradoS.apeMaterno);
+          this.t.controls[1]['controls'].fecNacimiento.setValue(this.util.dateConverterToPlatform(aseguradoS.fecNacimiento));
+          this.t.controls[1]['controls'].mcaSexo.setValue(this.util.propChecker(aseguradoS.mcaSexo, this.generoList));
+          this.t.controls[1]['controls'].estadoCivil.setValue(this.util.propChecker(aseguradoS.estadoCivil, this.estadoCivilList));
+          this.t.controls[1]['controls'].tlfMovil.setValue(aseguradoS.tlfMovil);
+          this.t.controls[1]['controls'].direccion.setValue(aseguradoS.direccion);
+
+        } else {
+
+          this.t.controls[1]['controls'].codParentesco.setValue('');
+          this.t.controls[1]['controls'].tipDocum.setValue('');
+          this.t.controls[1]['controls'].codDocum.setValue('');
+          this.t.controls[1]['controls'].nombre.setValue('');
+          this.t.controls[1]['controls'].apePaterno.setValue('');
+          this.t.controls[1]['controls'].apeMaterno.setValue('');
+          this.t.controls[1]['controls'].fecNacimiento.setValue('');
+          this.t.controls[1]['controls'].mcaSexo.setValue('');
+          this.t.controls[1]['controls'].estadoCivil.setValue('');
+          this.t.controls[1]['controls'].tlfMovil.setValue('');
+          this.t.controls[1]['controls'].direccion.setValue('');
+        }
+
 
       } else {
 
@@ -354,52 +344,6 @@ export class AseguradoComponent implements OnInit {
 
       }
     }
-  }
-
-  get c() { return this.cuestionarioForm.controls; }
-  get p() { return this.c.preguntas as FormArray; }
-
-  addPreguntas() {
-    if (this.p.length < this.cuestionarioData.length) {
-      for (let i = this.p.length; i < this.cuestionarioData.length; i++) {
-        this.p.push(this.formBuilder.group({
-          codPregunta: [parseInt(this.cuestionarioData[i].CodigoPregunta), [Validators.required]],
-          desPregunta: [{ value: this.cuestionarioData[i].DescripcionPregunta, disabled: true }],
-          codRespuesta: ['N', [Validators.required]],
-          descRespuesta: [null]
-        }));
-      }
-    }
-  }
-
-  setCuestionario(values) {
-    if (this.cuestionarioForm.invalid) {
-      this.cuestionarioForm.markAllAsTouched();
-    } else {
-      // values.preguntas.forEach(function(v){ delete v.desPregunta });
-      console.log(values);
-    }
-    // console.log(values.preguntas);
-    // values.preguntas.forEach(function(v){ delete v.desPregunta });
-    // console.log(values.preguntas);
-  }
-
-  validateQuizIfPositive(ev:any, values) {
-    var responses: any[] = values.preguntas;
-    var checker = responses.some(e => e.codRespuesta == 'S');
-    if(checker == true){
-      this.util.observacionFormObserver.next(true);
-    } else {
-      this.util.observacionFormObserver.next(false);
-    }
-  }
-
-  back($event: any) {
-    this.backButton.emit($event);
-  }
-
-  next($event: any) {
-    this.nextButton.emit($event);
   }
 
   setFechaNacimiento(ev: any, index) {
@@ -420,13 +364,34 @@ export class AseguradoComponent implements OnInit {
       .then(resp => {
         this.util.dpsObserver.next(true);
         var data = resp.Resultado;
-        if (data == 'N') this.util.dpsChecker.next(false)
-        else this.util.dpsChecker.next(true)
+        if (data == 'N') this.util.dpsChecker.next(false);
+        else this.util.dpsChecker.next(true);
         this.util.hideSpinner();
       }).catch(err => {
         console.log(err);
         this.util.hideSpinner();
+        this.util.dpsChecker.next(false);
       })
+  }
+
+  getCuestionarioData(ev: any, i) {
+    setTimeout(() => {
+      this.t.controls[i]['controls'].cuestionario.setValue(ev);
+    });
+  }
+
+  getDireccionData(ev:any, i){
+    setTimeout(() => {
+      this.t.controls[i]['controls'].direccion.setValue(ev);
+    });
+  }
+
+  back($event: any) {
+    this.backButton.emit($event);
+  }
+
+  next($event: any) {
+    this.nextButton.emit($event);
   }
 
 }

@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { FormularioComponent } from './modules/layout/formulario/formulario.component';
+import { MantenimientoComponent } from './modules/layout/mantenimiento/mantenimiento.component';
 
 const routes: Routes = [
   {
@@ -15,11 +16,22 @@ const routes: Routes = [
       {
         path: 'form',
         loadChildren: () => import('./modules/pages/form/form.module').then(module => module.FormModule)
+      }
+    ]
+  },
+  {
+    path: '',
+    component: MantenimientoComponent,
+    children: [
+      {
+        path: '',
+        redirectTo: 'mantenimiento',
+        pathMatch: 'full'
       },
       {
-        path: 'maintance',
-        loadChildren: () => import('./modules/pages/maintance/maintance.module').then(module => module.MaintanceModule)
-      },
+        path: 'mantenimiento',
+        loadChildren: () => import('./modules/pages/mantenimiento/mantenimiento.module').then(module => module.MantenimientoModule)
+      }
     ]
   }
 ];

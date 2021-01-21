@@ -59,8 +59,8 @@
                                 </div>
                                 <div class="col-sm-12 col-md-6 col-lg-4 col-xl-2">
                                     <label for="fec_nac">Fecha Nacimiento (*):</label>
-                                    <input type="date" id="fec_nac" class="form-control"
-                                        formControlName="fecNacimiento" (change)="setFechaNacimiento($event, i)">
+                                    <input type="date" id="fec_nac" class="form-control" formControlName="fecNacimiento"
+                                        (change)="setFechaNacimiento($event, i)">
                                     <div class="col-12 form-group error-container p-0">
                                         <ng-container *ngFor="let validation of validations.fecNacimiento">
                                             <div class="error-message"
@@ -75,7 +75,8 @@
                                     <label for="est_civ">Estado Civil (*):</label>
                                     <select id="est_civ" class="form-control" formControlName="estadoCivil">
                                         <option value="">Seleccione</option>
-                                        <option *ngFor="let d of estadoCivilList" [value]="d.codigo">{{d.texto}}</option>
+                                        <option *ngFor="let d of estadoCivilList" [value]="d.codigo">{{d.texto}}
+                                        </option>
                                     </select>
                                     <div class="col-12 form-group error-container p-0">
                                         <ng-container *ngFor="let validation of validations.estadoCivil">
@@ -161,8 +162,11 @@
                                     </div>
                                 </div>
 
-                                <app-dynamic-direccion [direccionData]="asegurado.get('direccion').value"
-                                    style="width: 100% !important;"></app-dynamic-direccion>
+                                <!-- Inicio Direccion del Asegurado -->
+                                <app-dynamic-direccion [index]="i" [direccionData]="asegurado.get('direccion').value"
+                                    (dataGetter)="getDireccionData($event, i)" style="width: 100% !important;">
+                                </app-dynamic-direccion>
+                                <!-- Fin Direccion del Asegurado -->
 
                                 <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
                                     <label for="mail">Email (*):</label>
@@ -243,16 +247,9 @@
                                 </div>
                                 <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
                                     <label for="ocup">Ocupación (*):</label>
-                                    <ng-select 
-                                        [items]="profesionesList" 
-                                        bindLabel="texto" 
-                                        bindValue="codigo"
-                                        [searchable]="true" 
-                                        labelForId="ocup" 
-                                        formControlName="codOcupacion"
-                                        
-                                        [loading]="profIsLoading"
-                                        loadingText="Cargando Profesiones..." 
+                                    <ng-select [items]="profesionesList" bindLabel="texto" bindValue="codigo"
+                                        [searchable]="true" labelForId="ocup" formControlName="codOcupacion"
+                                        [loading]="profIsLoading" loadingText="Cargando Profesiones..."
                                         placeholder="Seleccione Ocupación">
                                     </ng-select>
                                     <!-- (change)="onChangeOcupation($event, i)"  -->
@@ -284,15 +281,16 @@
                         </div>
                     </div>
                 </div>
-                <div *ngIf="dpsValidator" class="card-footer text-muted">
-                    <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3 p-0">
-                        <button type="button" class="btn mapfre-color text-white" data-toogle="modal"
-                            (click)="dpsModal.show()"> <i class="fa fa-times"></i> Registrar DPS</button>
-                    </div>
-                </div>
+
+                <app-dynamic-pregunta 
+                    [aseguradoIndex]="i" 
+                    (dataGetter)="getCuestionarioData($event, i)">
+                </app-dynamic-pregunta>
+
             </div>
         </div>
     </div>
+
     <div class="row m-2">
         <div class="col-12 text-right">
             <button type="button" class="btn mapfre-color text-white ml-1" (click)="back($event)">Volver</button>
@@ -301,59 +299,3 @@
         </div>
     </div>
 </form>
-
-<app-ui-modal modalID="dpsModal" #dpsModal dialogClass="modal-dialog modal-lg" [containerClick]="false"
-    hideFooter="true">
-    <div class="app-modal-header">
-        <h5 class="text-light font-weight-light">DECLARACIÓN DE SALUD PERSONAL</h5>
-        <button type="button" class="close basic-close" data-dismiss="modal" aria-label="Close"
-            (click)="dpsModal.hide()"><i class="fa fa-times text-light"></i></button>
-    </div>
-    <div class="app-modal-body">
-        <div class="row text-center">
-            <div class="col-1">
-                Nro
-            </div>
-            <div class="col-8">
-                Pregunta
-            </div>
-            <div class="col-3 text-center">
-                Selección
-            </div>
-        </div>
-        <div class="divider"></div>
-        <form [formGroup]="cuestionarioForm" (ngSubmit)="setCuestionario(cuestionarioForm.value)">
-            <div class="col-12 m-2" *ngFor="let pregunta of p.controls; let k = index">
-                <div [formGroup]="pregunta" class="row">
-                    <div class="col-1 p-0">
-                        <input type="number" class="form-control white-all" formControlName="codPregunta" readonly>
-                    </div>
-                    <div class="col-8 p-0">
-                        <textarea type="text" class="form-control-plaintext" formControlName="desPregunta"
-                            autosize></textarea>
-                    </div>
-                    <div class="col-3 p-0 text-center">
-                        <div style="display: inline-flex;">
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" value="S" formControlName="codRespuesta" (change)="validateQuizIfPositive($event, cuestionarioForm.value)">
-                                <label class="form-check-label" for="rdButtonS">Si</label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" value="N" formControlName="codRespuesta" (change)="validateQuizIfPositive($event, cuestionarioForm.value)">
-                                <label class="form-check-label" for="rdButtonN">No</label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="divider"></div>
-            <div class="col-12 p-0">
-                <app-dynamic-observacion></app-dynamic-observacion>
-            </div>
-            <div class="col-12 p-0 text-right">
-                <button type="submit" class="btn btn-danger text-light ml-1">Confirmar</button>
-            </div>
-        </form>
-    </div>
-    <div class="app-modal-footer"></div>
-</app-ui-modal>

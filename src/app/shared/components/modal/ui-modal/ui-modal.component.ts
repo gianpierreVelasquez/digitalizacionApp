@@ -15,7 +15,7 @@ export class UiModalComponent implements OnInit, OnDestroy {
   @Input() containerClick = true;
   @Input() modalID: string;
   private element: any;
-  
+
   @Input() btnActionText: string;
   @Output() btnAction: EventEmitter<string> = new EventEmitter<string>();
 
@@ -28,8 +28,8 @@ export class UiModalComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     if (!this.modalID) {
-        console.error('El modal debe tener un ID');
-        return;
+      console.error('El modal debe tener un ID');
+      return;
     }
     document.body.appendChild(this.element);
     this.util.agregarComp(this);
@@ -40,7 +40,7 @@ export class UiModalComponent implements OnInit, OnDestroy {
     this.element.remove();
   }
 
-  action( $event?:any ){
+  action($event?: any) {
     this.btnAction.emit($event);
   }
 
