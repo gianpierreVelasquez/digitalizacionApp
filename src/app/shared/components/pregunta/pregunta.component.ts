@@ -124,4 +124,8 @@ export class PreguntaComponent implements OnInit {
     }
   }
 
+  getRespuestaData(ev: any) {
+    console.log(ev);
+  }
+
 }
