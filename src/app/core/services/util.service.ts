@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { UiModalService } from 'src/app/shared/components/modal/ui-modal/ui-modal.service';
-import { Desgravamen } from 'src/app/shared/models/Desgravamen';
 
 import Swal from 'sweetalert2';
 
@@ -24,28 +23,12 @@ export class UtilService {
 
   desgravamenData = new BehaviorSubject<any>(null);
 
+  callServices = new BehaviorSubject<boolean>(false);
+
   entidadFormObserver = new BehaviorSubject<boolean>(false);
   entidadFormChecker = new BehaviorSubject<boolean>(false);
 
-  //Operadores Solicitud
-  conformacionData = new BehaviorSubject<any>('');
-  monedaData = new BehaviorSubject<any>('');
-  solicitudData = new BehaviorSubject<any>('');
-  prestamoData = new BehaviorSubject<any>('');
-  polizaGrupoData = new BehaviorSubject<any>('');
-
-  planSeguroData = new BehaviorSubject<any>('');
-  // Identifier to verify if there's a current plan
   isPlanActivated = new BehaviorSubject<any>(false);
-
-  //Operadores Asegurado
-  parentescoData = new BehaviorSubject<any>('');
-  tipoDocData = new BehaviorSubject<any>('');
-  tipoEstCiv = new BehaviorSubject<any>('');
-  generoData = new BehaviorSubject<any>('');
-  estCivilData = new BehaviorSubject<any>('');
-  departamentoData = new BehaviorSubject<any>('');
-  profesionesData = new BehaviorSubject<any>('');
 
   direccionFormObserver = new BehaviorSubject<boolean>(false);
   direccionFormChecker = new BehaviorSubject<boolean>(false);
@@ -64,7 +47,7 @@ export class UtilService {
   dpsObserver = new BehaviorSubject<boolean>(false);
   cuestionarioIsSubmitted = new BehaviorSubject<boolean>(false);
 
-  constructor(private spinner: NgxSpinnerService, private uimodalServ: UiModalService, private router: Router) { }
+  constructor(private spinner: NgxSpinnerService, private uimodalServ: UiModalService, private router: Router, private formBuilder: FormBuilder) { }
 
   // Spinner
   showSpinner() {
@@ -210,9 +193,25 @@ export class UtilService {
   //FormChecker
   disabledFields(group: FormGroup) {
     Object.keys(group.controls).forEach(key => {
-      if (group.controls[key].value != undefined) {
+      if (group.controls[key].value != undefined && group.controls[key].value != "") {
         group.controls[key].disable();
       }
     });
   }
+
+  convertToFormGroup(object) {
+    const newObj = {};
+    Object.keys(object).map(key => {
+      if (Array.isArray(object[key])) {
+        newObj[key] = this.formBuilder.array([]);
+        for(const value of object[key]) {
+          newObj[key].push(this.formBuilder.group(value));
+        }
+      } else {
+        newObj[key] = object[key];
+      }
+    });
+    return this.formBuilder.group(newObj);
+  }
+
 }

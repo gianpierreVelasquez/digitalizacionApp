@@ -1,9 +1,10 @@
-import { Location } from '@angular/common';
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { CombosService } from 'src/app/core/services/combos.service';
-import { SPINNER_TEXT, UtilService } from 'src/app/core/services/util.service';
+import { SessionService } from 'src/app/core/services/session.service';
+import { UtilService } from 'src/app/core/services/util.service';
 import { ValidatorsService } from 'src/app/core/services/validators.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-dynamic-beneficiario',
@@ -72,14 +73,20 @@ export class BeneficiarioComponent implements OnInit {
     ]
   };
 
-  constructor(private formBuilder: FormBuilder, private loc: Location, private validator: ValidatorsService, private util: UtilService, private combosServ: CombosService) {
+  constructor(private formBuilder: FormBuilder, private session: SessionService, private validator: ValidatorsService, private util: UtilService, private combosServ: CombosService) {
     this.beneficiarioForm = this.formBuilder.group({
       beneficiarios: new FormArray([])
     });
   }
 
   ngOnInit() {
-    this.init();
+    
+    this.util.callServices.subscribe(resp => {
+      if(resp == true){
+        this.init();
+      }
+    });
+
     this.addExtraBeneficiario();
   }
 
@@ -165,7 +172,7 @@ export class BeneficiarioComponent implements OnInit {
       const objPart = this.t.controls[i]['controls'].porcParticipacion.value;
       totalParticipation += objPart;
     }
-    
+
     if (totalParticipation != 100) {
       this.util.warningAlert('Advertencia', 'El total de participación debe sumar 100%.')
       return false
@@ -178,9 +185,9 @@ export class BeneficiarioComponent implements OnInit {
     if (this.beneficiarioForm.invalid) {
       this.beneficiarioForm.markAllAsTouched();
     } else {
-      if(this.checkParticipacion() == true){
+      if (this.checkParticipacion() == true) {
         console.log(values);
-      } 
+      }
     }
   }
 

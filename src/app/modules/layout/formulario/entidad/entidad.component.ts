@@ -5,6 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 import { AuthenticationService } from 'src/app/core/auth/authentication.service';
 import { CombosService } from 'src/app/core/services/combos.service';
 import { DigitalService } from 'src/app/core/services/digital.service';
+import { LoginService } from 'src/app/core/services/login.service';
 import { SessionService } from 'src/app/core/services/session.service';
 import { SPINNER_TEXT, UtilService } from 'src/app/core/services/util.service';
 import { ValidatorsService } from 'src/app/core/services/validators.service';
@@ -28,7 +29,8 @@ export class EntidadComponent implements OnInit {
   conformacionList: any;
   monedaList: any;
 
-  parameterId: string = '';
+  parameterId: string;
+  codApp: string;
 
   validations = {
     'nroSolicitudCaja': [
@@ -56,7 +58,7 @@ export class EntidadComponent implements OnInit {
   };
 
   constructor(private session: SessionService, private util: UtilService, private combosServ: CombosService, private digitalServ: DigitalService, private fb: FormBuilder, private validator: ValidatorsService,
-    private auth: AuthenticationService, private route: ActivatedRoute) {
+    private auth: AuthenticationService, private route: ActivatedRoute, private loginServ: LoginService) {
     this.entidadForm = this.fb.group({
       nroSolicitudCaja: ['', [Validators.required]],
       codTipoConformacion: ['', [Validators.required, this.validator.notNull]],
@@ -69,12 +71,16 @@ export class EntidadComponent implements OnInit {
 
     this.route.queryParams.subscribe(params => {
       var obj = JSON.parse(JSON.stringify(params));
-      this.parameterId = obj['id_parameter'];
+      this.parameterId = obj['idParam'];
+      this.codApp = obj['codApp'];
+      this.session.setSession(environment.KEYS.URL_PARAM, this.parameterId);
+      this.session.setSession(environment.KEYS.CODE_APP, this.codApp);
     });
   }
 
   ngOnInit() {
-    this.init();
+
+    this.getToken();
 
     this.util.entidadFormChecker.subscribe(resp => {
       this.setEntidad(this.entidadForm.value)
@@ -88,8 +94,20 @@ export class EntidadComponent implements OnInit {
     })
   }
 
-  async init() {
+  async getToken() {
+    this.util.showSpinner();
+    this.loginServ.getCredencials().then(resp => {
+      this.util.callServices.next(true);
+      this.session.setSession(environment.KEYS.TOKEN, resp.token);
+      setTimeout(() => {
+        this.init();
+      }, 1000)
+    }).catch(err => {
+      this.util.callServices.next(false)
+    })
+  }
 
+  async init() {
     this.util.showSpinner();
     Promise.all([
       this.obtenerTipoConformación(),
@@ -99,7 +117,6 @@ export class EntidadComponent implements OnInit {
     }).catch(reason => {
       console.log(reason)
     });
-
   }
 
   async obtenerParametros() {
@@ -147,6 +164,7 @@ export class EntidadComponent implements OnInit {
       this.entidadForm.markAllAsTouched();
       this.util.entidadFormObserver.next(false)
     } else {
+      console.log(values);
       this.util.entidadFormObserver.next(true);
       this.session.setSession(environment.KEYS.ENTITY, values);
     }

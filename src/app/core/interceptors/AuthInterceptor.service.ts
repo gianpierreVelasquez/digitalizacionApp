@@ -16,16 +16,13 @@ export class AuthInterceptor implements HttpInterceptor {
   constructor(private session: SessionService, private util: UtilService) { }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    const token: string = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhcGkucHJlLm1hcGZyZS5jb20ucGUiLCJpYXQiOjE2MDkyODE3MTMsImV4cCI6MTY0MDgxNzcxMywiYXVkIjoiTG9naW4iLCJzdWIiOiJhcGljanBpdXJhcHJlIiwidG9rZW5fc2VnIjoiODE0MDE3ZmZjNGNmZmE0OTNiNzNhMGE5MDQwMDQ1Yjk4MjhmMmM1NzNmM2UxNjE2YjkyNDhmZDJkZmRhNmQ4YWEzNGNhZjc1NjA5NmFjZjE5MTJjY2U0NjI3YmFiNjBiNDNjMWQ1YTJmNDQzYzdkOTdiN2VjZjkzNmI1Y2RjN2QwMWJmN2QwMGYxYTQ0ODVjZmM0YjgyMmQwNTc2NTNhNTNhZmM0NWI0YjZkZDViZDc5ODE2ZWNlOGUwNTcxYWQ1MWI0YThjYTBlMTM3NGU5ZWNlNTdkYWQ2YWQ2ZmE4YjhhMGQ4YjBhN2Y3ZTU3ZTNmYTY5YTkzNjJhYTAwMzZlMWVkZGM1ZTA0ZTI2MTk1OTRjYThmMTRkYjNlNzk2ZmQ0NjA4YTU4M2IxNTQ0MDAwNzc0YmYzYzczZTliZjRkODY1N2Y3NmIxMDk0NGUyMWEzY2MwMTk0YTQ1ZjkzZDEzOWY5NDMzZjFiM2YyZTViNmVmNWQ4ODU4OThlMjk0ZDViMTMwYWQwYzA2ZmU1YTE2Y2Y2MTVjODg1OWM5NjM5YmRjOGU1OWUxNDhlMDE3ZTJhMjUzYmVjNzc1ZTFhYWE0OWM0YjE1NzM2ZDBiMDQ1NjYwYzBjZDU5OTZiNWVlMDVhMDU3ZjQyMTYxZDM4NGNlMTVlZDFlOGVmMzJlZjhiYjJhZmY4YjhkNTRjYzJlN2I4NzI5NDhjNTk4MTlmZGY0YzcyOTA3N2Q3ZjYwZTM0YmVkMDY1MmJjNzdmYjgzMGIwYzA3NTkxYTBjMzE1NTNkNTViYWU3ODMwMTkxZGYzYTgwZDVkZmQ2ZTJhMTAzNWZhZjM3YjFlNjIyZWY5YjhkNTg5NDVkYmRjMWYyMWQ4OTgyMzllNWJkOTQwMDk5ODM0ZDI4MTNmNzkyZTY5In0.zK0Etug3e1VDu2eKpvtFeY9zIa5Y6it1xV2FzcOyt3Q'
+    const token = 'eyJhbGciOiJIUzI1NiJ9.ew0KICAiaXNzIjogImFwaS5wcmUubWFwZnJlLmNvbS5wZSIsDQogICJpYXQiOiAxNjA1NzIyNzM5LA0KICAiZXhwIjogMTYwNTcyMjczOSwNCiAgImF1ZCI6ICJMb2dpbiIsDQogICJzdWIiOiAiYXBpY2pwaXVyYXByZSIsDQogICJqdGkiOiAiMDlmMGNjZjEtMWM4YS00YWVkLWJiMGYtNjg2ZTU4OTg1ZDlhIiwNCiAgInNjb3BlIjogIltHZXN0aW9uUG9saXphc19FeHRlcm5vIEdlc3Rpb25hclN1c2NyaXBjaW9uX0V4dGVybm8gR2VuZXJhckRvY3VtZW50b0V4dGVybmFsIENvbnN1bHRhRGF0b3NQZXJzb25hbGVzRXh0ZXJuYWwgQ29uc3VsdGFBdXRvc1BsYWNhRXh0ZXJuYWxdIiwNCiAgInRva2VuX3NlZyI6ICJleUpoYkdjaU9pSklVelV4TWlKOS5leUpxZEdraU9pSTFaR0l4TkRsbVppMDRaVGswTFRRMVl6VXRZVEV5TkMxbE1XUm1Oamd3WmpZeU9Ea2lMQ0p6ZFdJaU9pSmhjR2xqYW5CcGRYSmhjSEpsSWl3aWRYTjFZVjlwYm5SbFozSmhZMmx2YmlJNkltRndhV05xY0dsMWNtRndjbVVpTENKaGNHeHBZMTlwWkNJNk1Td2lhV0YwSWpveE5qRXhOamM0T1RZekxDSmxlSEFpT2pFMk1UUXpNRGczTVROOS42VUE0TkV3Q2hqb1ZNS2JBYk1HcWxOM000RjRTd2RlQUdrcnhaY1NKQ214ejB0R0Vtc0lybXhSQmxzdnlCX295VmlKWGVZeWkyRWwxb0Jqc3BTMzVpQSINCn0.kEni0tzrOteQLosxI_qIf8qyJoFSnAL5oGobNTyWANQ'
     let request = req;
     if (token) {
       request = req.clone({
         headers: req.headers
           .set('Content-Type', 'application/json')
-          // .set('Authorization', `Bearer ${token}`)
-          // .set('token_seg', `${token}`)
-          .set('aplic_id', `1`)
-          .set('usua_id', `apicjpiurapre`)
+          .set('token_seg', `${token}`)
       });
     }
 

@@ -82,7 +82,7 @@
                                     <div class="input-group-prepend">
                                         <span class="input-group-text" id="basic-addon1" autocomplete="off">{{amountSign}}</span>
                                     </div>
-                                    <input type="number" id="imp_cumulo" class="form-control" formControlName="impCumulo" min="0">
+                                    <input type="number" id="imp_cumulo" class="form-control" formControlName="impCumulo" min="0" autocomplete="off">
                                 </div>
                                 <div class="col-12 form-group error-container p-0">
                                     <ng-container *ngFor="let validation of validations.impCumulo">
@@ -96,7 +96,7 @@
                             </div>
                             <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
                                 <label for="desc">Descripción:</label>
-                                <textarea id="desc" cols="30" rows="3" class="form-control" formControlName="comentarios" maxlength="200"></textarea>
+                                <textarea id="desc" cols="30" rows="3" class="form-control" formControlName="comentarios" maxlength="200" autocomplete="off"></textarea>
                                 <span style="font-size: 0.8em;" class="text-muted">Máximo 200 caracteres</span>
                                 <div class="col-12 form-group error-container p-0">
                                     <ng-container *ngFor="let validation of validations.comentarios">

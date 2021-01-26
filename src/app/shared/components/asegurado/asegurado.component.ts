@@ -136,17 +136,10 @@ export class AseguradoComponent implements OnInit {
 
   async ngOnInit() {
 
-    Promise.all([
-      this.obtenerTipoParentesco(),
-      this.obtenerTipoDocumento(),
-      this.obtenerTipoEstadoCivil(),
-      this.obtenerGenero(),
-      this.obtenerTipoProfesiones()
-    ]).then((value) => {
-      // nothing
-    }).catch(reason => {
-      console.log(reason)
-      this.util.hideSpinner();
+    this.util.callServices.subscribe(resp => {
+      if(resp == true){
+        this.init();
+      }
     });
 
     this.util.conformacionVar.subscribe((value) => {
@@ -159,6 +152,29 @@ export class AseguradoComponent implements OnInit {
       this.hasPlan = resp;
     })
 
+    this.aseguradoForm.statusChanges.subscribe(val => {
+      console.log(val);
+      if (val == 'VALID') {
+        this.util.disabledFields(this.t.controls[0]['controls'] as FormGroup);
+        this.setAsegurado(this.aseguradoForm.value)
+      }
+    })
+
+  }
+
+  init() {
+    Promise.all([
+      this.obtenerTipoParentesco(),
+      this.obtenerTipoDocumento(),
+      this.obtenerTipoEstadoCivil(),
+      this.obtenerGenero(),
+      this.obtenerTipoProfesiones()
+    ]).then((value) => {
+      // nothing
+    }).catch(reason => {
+      console.log(reason)
+      this.util.hideSpinner();
+    });
   }
 
   async obtenerTipoParentesco() {
@@ -261,8 +277,8 @@ export class AseguradoComponent implements OnInit {
           console.log(values);
           this.next(null);
         } else {
-          console.log(values);
-        } 
+          console.log(this.aseguradoForm.getRawValue());
+        }
       } else {
         this.util.warningAlert('Advertencia', 'Necesita rellenar la Declaración Personal de Salud del(los) asegurado(s).')
       }
@@ -298,7 +314,9 @@ export class AseguradoComponent implements OnInit {
         this.t.controls[0]['controls'].tlfMovil.setValue(aseguradoP.tlfMovil);
         this.t.controls[0]['controls'].direccion.setValue(aseguradoP.direccion);
 
-        if(aseguradoS != undefined) {
+        this.util.disabledFields(this.t.controls[0] as FormGroup);
+
+        if (aseguradoS != undefined) {
 
           this.t.controls[1]['controls'].codParentesco.setValue(this.util.propChecker(aseguradoS.codParentesco, this.parentescoList));
           this.t.controls[1]['controls'].tipDocum.setValue(this.util.propChecker(aseguradoS.tipDocum, this.documentoList));
@@ -311,6 +329,8 @@ export class AseguradoComponent implements OnInit {
           this.t.controls[1]['controls'].estadoCivil.setValue(this.util.propChecker(aseguradoS.estadoCivil, this.estadoCivilList));
           this.t.controls[1]['controls'].tlfMovil.setValue(aseguradoS.tlfMovil);
           this.t.controls[1]['controls'].direccion.setValue(aseguradoS.direccion);
+
+          this.util.disabledFields(this.t.controls[1] as FormGroup);
 
         } else {
 
@@ -342,6 +362,7 @@ export class AseguradoComponent implements OnInit {
         this.t.controls[0]['controls'].tlfMovil.setValue(aseguradoP.tlfMovil);
         this.t.controls[0]['controls'].direccion.setValue(aseguradoP.direccion);
 
+        this.util.disabledFields(this.t.controls[0] as FormGroup);
       }
     }
   }
@@ -364,8 +385,13 @@ export class AseguradoComponent implements OnInit {
       .then(resp => {
         this.util.dpsObserver.next(true);
         var data = resp.Resultado;
-        if (data == 'N') this.util.dpsChecker.next(false);
-        else this.util.dpsChecker.next(true);
+        if (data == 'N') {
+          this.util.dpsChecker.next(false);
+          this.util.cuestionarioIsSubmitted.next(true);
+        } else {
+          this.util.dpsChecker.next(true);
+          this.util.cuestionarioIsSubmitted.next(false);
+        }
         this.util.hideSpinner();
       }).catch(err => {
         console.log(err);
@@ -380,9 +406,9 @@ export class AseguradoComponent implements OnInit {
     });
   }
 
-  getDireccionData(ev:any, i){
+  getDireccionData(ev: any, i) {
     setTimeout(() => {
-      this.t.controls[i]['controls'].direccion.setValue(ev);
+      this.t.controls[i]['controls'].direccion.setValue(ev.direccion);
     });
   }
 

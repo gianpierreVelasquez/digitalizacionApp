@@ -84,16 +84,12 @@ export class PreguntaComponent implements OnInit {
       this.cuestionarioForm.markAllAsTouched();
       this.util.cuestionarioIsSubmitted.next(false);
     } else {
-      console.log('Hola');
-      console.log(this.util.respuestaFormObserver.value);
-      console.log(this.util.observacionFormObserver.value);
       if (this.util.observacionFormObserver.value == true && this.util.respuestaFormObserver.value == true) {
         this.util.cuestionarioIsSubmitted.next(true);
         values.preguntas.forEach(function(v){ delete v.flag });
         this.dataGetter.emit(values);
         this.util.hideModal('dpsModal');
       } else {
-        console.log('que fue');
         this.util.observacionFormChecker.next(true);
         this.util.respuestaFormChecker.next(true);
       }

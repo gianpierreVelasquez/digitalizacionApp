@@ -8,7 +8,7 @@ import { environment } from 'src/environments/environment';
 export class AuthenticationService {
 
   //private pubKey = env.default.pubk;
-  private privatekey = environment.RPRK;
+  private privatekey = '';
 
   constructor() { }
 

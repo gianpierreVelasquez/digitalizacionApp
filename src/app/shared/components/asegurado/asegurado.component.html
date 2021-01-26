@@ -60,7 +60,7 @@
                                 <div class="col-sm-12 col-md-6 col-lg-4 col-xl-2">
                                     <label for="fec_nac">Fecha Nacimiento (*):</label>
                                     <input type="date" id="fec_nac" class="form-control" formControlName="fecNacimiento"
-                                        (change)="setFechaNacimiento($event, i)">
+                                        (change)="setFechaNacimiento($event, i)" autocomplete="off">
                                     <div class="col-12 form-group error-container p-0">
                                         <ng-container *ngFor="let validation of validations.fecNacimiento">
                                             <div class="error-message"
@@ -170,7 +170,8 @@
 
                                 <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
                                     <label for="mail">Email (*):</label>
-                                    <input type="text" id="mail" class="form-control" formControlName="email">
+                                    <input type="text" id="mail" class="form-control" formControlName="email"
+                                        autocomplete="off">
                                     <div class="col-12 form-group error-container p-0">
                                         <ng-container *ngFor="let validation of validations.email">
                                             <div class="error-message"
@@ -183,7 +184,8 @@
                                 </div>
                                 <div class="col-sm-12 col-md-6 col-lg-4 col-xl-2">
                                     <label for="nro_tel">Nro Telefono (*):</label>
-                                    <input type="text" id="nro_tel" class="form-control" formControlName="tlfNumero">
+                                    <input type="text" id="nro_tel" class="form-control" formControlName="tlfNumero"
+                                        autocomplete="off">
                                     <div class="col-12 form-group error-container p-0">
                                         <ng-container *ngFor="let validation of validations.tlfNumero">
                                             <div class="error-message"
@@ -196,7 +198,8 @@
                                 </div>
                                 <div class="col-sm-12 col-md-6 col-lg-4 col-xl-2">
                                     <label for="nro_mov">Nro Movil (*):</label>
-                                    <input type="text" id="nro_mov" class="form-control" formControlName="tlfMovil">
+                                    <input type="text" id="nro_mov" class="form-control" formControlName="tlfMovil"
+                                        autocomplete="off">
                                     <div class="col-12 form-group error-container p-0">
                                         <ng-container *ngFor="let validation of validations.tlfMovil">
                                             <div class="error-message"
@@ -211,7 +214,7 @@
                                     <label for="talla">Talla (*):</label>
                                     <div class="input-group">
                                         <input type="number" id="talla" class="form-control" formControlName="talla"
-                                            min="0">
+                                            min="0" autocomplete="off">
                                         <div class="input-group-append">
                                             <span class="input-group-text" id="basic-addon2">mts.</span>
                                         </div>
@@ -230,7 +233,7 @@
                                     <label for="peso">Peso (*):</label>
                                     <div class="input-group">
                                         <input type="number" id="peso" class="form-control" formControlName="peso"
-                                            min="0">
+                                            min="0" autocomplete="off">
                                         <div class="input-group-append">
                                             <span class="input-group-text" id="basic-addon3">kg.</span>
                                         </div>
@@ -282,9 +285,7 @@
                     </div>
                 </div>
 
-                <app-dynamic-pregunta 
-                    [aseguradoIndex]="i" 
-                    (dataGetter)="getCuestionarioData($event, i)">
+                <app-dynamic-pregunta [aseguradoIndex]="i" (dataGetter)="getCuestionarioData($event, i)">
                 </app-dynamic-pregunta>
 
             </div>

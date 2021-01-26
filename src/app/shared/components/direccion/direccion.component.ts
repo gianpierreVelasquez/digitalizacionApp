@@ -140,7 +140,7 @@ export class DireccionComponent implements OnInit {
     if (this.direccionForm.invalid) {
       this.direccionForm.markAllAsTouched();
     } else {
-      this.dataGetter.emit(values.direccion);
+      this.dataGetter.emit(this.direccionForm.getRawValue());
     }
   }
 
@@ -152,6 +152,9 @@ export class DireccionComponent implements OnInit {
       this.obtenerDistrito({codigo:this.direccionData[0].codProvincia.toString()},0);
       this.u.controls[0]['controls'].codDistrito.setValue(this.direccionData[0].codDistrito.toString());
       this.u.controls[0]['controls'].nomDomicilio.setValue(this.direccionData[0].nomDomicilio);
+
+      this.util.disabledFields(this.u.controls[0] as FormGroup);
+
     } else {
       this.u.controls[0]['controls'].codDepartamento.setValue(null);
     }

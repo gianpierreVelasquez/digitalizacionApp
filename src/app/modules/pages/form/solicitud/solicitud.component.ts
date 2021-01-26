@@ -80,6 +80,24 @@ export class SolicitudComponent implements OnInit {
   }
 
   async ngOnInit() {
+    this.util.callServices.subscribe(resp => {
+      if(resp == true){
+        this.init();
+      }
+    });
+    
+    this.util.monedaChecker.subscribe(resp => {
+      this.solicitudForm.controls.codMonedaCumulo.setValue(resp);
+      this.setCoinType({ target: { value: resp } })
+    })
+
+    this.util.entidadFormObserver.subscribe(resp => {
+      this.entidadFormObserverHelper = resp;
+    })
+
+  }
+
+  init() {
     this.util.showSpinner();
     Promise.all([
       this.obtenerTipoSolicitud(),
@@ -92,16 +110,6 @@ export class SolicitudComponent implements OnInit {
       console.log(reason)
       this.util.hideSpinner();
     });
-
-    this.util.monedaChecker.subscribe(resp => {
-      this.solicitudForm.controls.codMonedaCumulo.setValue(resp);
-      this.setCoinType({ target: { value: resp } })
-    })
-
-    this.util.entidadFormObserver.subscribe(resp => {
-      this.entidadFormObserverHelper = resp;
-    })
-
   }
 
   async obtenerTipoMoneda() {
