@@ -100,7 +100,7 @@ export class UtilService {
       allowOutsideClick: false
     }).then((result) => {
       if (result.value) {
-        this.router.navigate(['/mantenimiento/error']);
+        this.router.navigate(['/mantenimiento/error'], {skipLocationChange: true});
       }
     })
   }

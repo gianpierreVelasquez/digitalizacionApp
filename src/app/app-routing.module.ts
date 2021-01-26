@@ -11,11 +11,11 @@ const routes: Routes = [
       {
         path: '',
         redirectTo: 'form/solicitud',
-        pathMatch: 'full'
+        pathMatch: 'full',
       },
       {
         path: 'form',
-        loadChildren: () => import('./modules/pages/form/form.module').then(module => module.FormModule)
+        loadChildren: () => import('./modules/pages/form/form.module').then(module => module.FormModule),
       }
     ]
   },

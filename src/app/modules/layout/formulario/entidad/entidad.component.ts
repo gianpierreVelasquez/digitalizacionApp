@@ -1,7 +1,6 @@
-import { ThrowStmt } from '@angular/compiler';
+
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthenticationService } from 'src/app/core/auth/authentication.service';
 import { CombosService } from 'src/app/core/services/combos.service';
 import { DigitalService } from 'src/app/core/services/digital.service';
@@ -29,9 +28,6 @@ export class EntidadComponent implements OnInit {
   conformacionList: any;
   monedaList: any;
 
-  parameterId: string;
-  codApp: string;
-
   validations = {
     'nroSolicitudCaja': [
       { type: 'required', message: 'El nro de solicitud es requerido.' },
@@ -58,7 +54,7 @@ export class EntidadComponent implements OnInit {
   };
 
   constructor(private session: SessionService, private util: UtilService, private combosServ: CombosService, private digitalServ: DigitalService, private fb: FormBuilder, private validator: ValidatorsService,
-    private auth: AuthenticationService, private route: ActivatedRoute, private loginServ: LoginService) {
+    private loginServ: LoginService) {
     this.entidadForm = this.fb.group({
       nroSolicitudCaja: ['', [Validators.required]],
       codTipoConformacion: ['', [Validators.required, this.validator.notNull]],
@@ -68,14 +64,6 @@ export class EntidadComponent implements OnInit {
       codCanal: [''],
       codigoUsuario: ['', [Validators.required]]
     }, { updateOn: 'blur' });
-
-    this.route.queryParams.subscribe(params => {
-      var obj = JSON.parse(JSON.stringify(params));
-      this.parameterId = obj['idParam'];
-      this.codApp = obj['codApp'];
-      this.session.setSession(environment.KEYS.URL_PARAM, this.parameterId);
-      this.session.setSession(environment.KEYS.CODE_APP, this.codApp);
-    });
   }
 
   ngOnInit() {
@@ -120,10 +108,10 @@ export class EntidadComponent implements OnInit {
   }
 
   async obtenerParametros() {
-    if (this.parameterId != '') {
+    if (this.session.getSession(environment.KEYS.URL_PARAM) != '') {
       this.util.showSpinner()
       this.util.setSpinnerTextValue(SPINNER_TEXT.PARAMETERS);
-      this.digitalServ.obtenerParametros(this.parameterId)
+      this.digitalServ.obtenerParametros(this.session.getSession(environment.KEYS.URL_PARAM))
         .then(resp => {
           var data = resp;
           this.util.desgravamenData.next(data);
