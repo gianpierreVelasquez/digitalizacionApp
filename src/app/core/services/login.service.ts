@@ -5,6 +5,7 @@ import { ROOT_BASES } from '../enum/bases.enum';
 import { SessionService } from './session.service';
 
 import * as Djson from '../../../assets/digitalizacionAppConfig.json';
+import { UtilService } from './util.service';
 
 const URI = environment.BASE_API_URL;
 
@@ -16,21 +17,31 @@ export class LoginService {
   private apps: any = (Djson as any).default;
   private baseEntity = ROOT_BASES;
 
-  constructor(private http: HttpClient, private session: SessionService) {}
+  constructor(private http: HttpClient, private session: SessionService, private util: UtilService) { }
 
-  getCredencials(){
+  getCredencials() {
     let headers = new HttpHeaders();
-    var appsJson:any[] = this.apps;
-    var data;
+    var appsJson: any[] = this.apps;
+    var data; var codApp;
 
-    var codApp = this.session.getSession(environment.KEYS.CODE_APP);
-    data = appsJson.find(x => x.id == codApp);
-    data.authdata = window.btoa(data.username + ':' + data.password);
-
-    headers = headers.append('Authorization', `Basic ${data.authdata}`);
+    codApp = this.session.getSession(environment.KEYS.CODE_APP);
     
-    return this.http.post<any>(`${URI + this.baseEntity.LOGIN}`, {}, {headers: headers}).toPromise();
+    if(codApp != undefined && codApp != ''){
+      data = appsJson.find(x => x.id == codApp);
 
+      if(data){
+        data.authdata = window.btoa(data.username + ':' + data.password);
+        headers = headers.append('Authorization', `Basic ${data.authdata}`);
+        return this.http.post<any>(`${URI + this.baseEntity.LOGIN}`, {}, { headers: headers }).toPromise();
+      } else {
+        headers = headers.append('Authorization', ``);
+        return this.http.post<any>(`${URI + this.baseEntity.LOGIN}`, {}, { headers: headers }).toPromise();
+      }
+
+    } else {
+      headers = headers.append('Authorization', ``);
+      return this.http.post<any>(`${URI + this.baseEntity.LOGIN}`, {}, { headers: headers }).toPromise();
+    }
   }
 
 }

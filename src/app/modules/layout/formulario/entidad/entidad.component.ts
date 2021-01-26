@@ -94,8 +94,7 @@ export class EntidadComponent implements OnInit {
     })
   }
 
-  async getToken() {
-    this.util.showSpinner();
+  getToken() {
     this.loginServ.getCredencials().then(resp => {
       this.util.callServices.next(true);
       this.session.setSession(environment.KEYS.TOKEN, resp.token);
@@ -103,6 +102,7 @@ export class EntidadComponent implements OnInit {
         this.init();
       }, 1000)
     }).catch(err => {
+      console.log(err);
       this.util.callServices.next(false)
     })
   }
