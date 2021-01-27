@@ -48,18 +48,21 @@ export class PreguntaComponent implements OnInit {
   }
 
   async recuperarCuestionario() {
-    this.util.showSpinner()
-    this.util.setSpinnerTextValue(SPINNER_TEXT.QUIZ);
-    this.digitalServ.recuperarCuestionario(this.session.getSession(environment.KEYS.PARAMS).solicitud.codCanal)
-      .then(resp => {
-        var data = resp['Resultado'];
-        this.cuestionarioData = data;
-        this.addPreguntas();
-        this.util.hideSpinner();
-      }).catch(err => {
-        console.log(err);
-        this.util.hideSpinner();
-      })
+    var checker = this.util.checkTokenValidation();
+    if (checker == true) {
+      this.util.showSpinner()
+      this.util.setSpinnerTextValue(SPINNER_TEXT.QUIZ);
+      this.digitalServ.recuperarCuestionario(this.session.getSession(environment.KEYS.PARAMS).solicitud.codCanal)
+        .then(resp => {
+          var data = resp['Resultado'];
+          this.cuestionarioData = data;
+          this.addPreguntas();
+          this.util.hideSpinner();
+        }).catch(err => {
+          console.log(err);
+          this.util.hideSpinner();
+        })
+    }
   }
 
   get c() { return this.cuestionarioForm.controls; }
@@ -86,7 +89,7 @@ export class PreguntaComponent implements OnInit {
     } else {
       if (this.util.observacionFormObserver.value == true && this.util.respuestaFormObserver.value == true) {
         this.util.cuestionarioIsSubmitted.next(true);
-        values.preguntas.forEach(function(v){ delete v.flag });
+        values.preguntas.forEach(function (v) { delete v.flag });
         this.dataGetter.emit(values);
         this.util.hideModal('dpsModal');
       } else {
@@ -105,7 +108,7 @@ export class PreguntaComponent implements OnInit {
     } else {
       this.needObservation = false;
     }
-    
+
   }
 
   getObservacionData(ev: any) {

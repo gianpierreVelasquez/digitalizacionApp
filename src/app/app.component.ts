@@ -21,7 +21,7 @@ export class AppComponent implements OnInit {
     this.router.events.subscribe(routerEvent => {
       if (routerEvent instanceof NavigationStart) {
           if (routerEvent.url == "/") {
-              this.router.navigate(["form/solicitud"], { queryParamsHandling: 'merge', skipLocationChange: true});
+              this.router.navigate(["form/solicitud"]);
           }
       }
     });

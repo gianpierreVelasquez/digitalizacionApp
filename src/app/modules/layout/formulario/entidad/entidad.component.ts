@@ -1,7 +1,6 @@
 
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { AuthenticationService } from 'src/app/core/auth/authentication.service';
 import { CombosService } from 'src/app/core/services/combos.service';
 import { DigitalService } from 'src/app/core/services/digital.service';
 import { LoginService } from 'src/app/core/services/login.service';
@@ -59,7 +58,7 @@ export class EntidadComponent implements OnInit {
       nroSolicitudCaja: ['', [Validators.required]],
       codTipoConformacion: ['', [Validators.required, this.validator.notNull]],
       codMonedaPrestamo: ['', [Validators.required, this.validator.notNull]],
-      plazoPrestamo: ['', [Validators.required, Validators.pattern("^[0-9]+$"), this.validator.notZero]],
+      plazoPrestamo: ['1050', [Validators.required, Validators.pattern("^[0-9]+$"), this.validator.notZero]],
       impPrestamo: ['', [Validators.required]],
       codCanal: [''],
       codigoUsuario: ['', [Validators.required]]
@@ -74,6 +73,12 @@ export class EntidadComponent implements OnInit {
       this.setEntidad(this.entidadForm.value)
     })
 
+    this.util.callServices.subscribe(resp => {
+      if(resp == true){
+        this.init();
+      }
+    });
+
     this.entidadForm.statusChanges.subscribe(val => {
       if (val == 'VALID') {
         this.util.disabledFields(this.entidadForm);
@@ -84,11 +89,8 @@ export class EntidadComponent implements OnInit {
 
   getToken() {
     this.loginServ.getCredencials().then(resp => {
+      this.session.setSession(environment.KEYS.TOKEN, resp);
       this.util.callServices.next(true);
-      this.session.setSession(environment.KEYS.TOKEN, resp.token);
-      setTimeout(() => {
-        this.init();
-      }, 1000)
     }).catch(err => {
       console.log(err);
       this.util.callServices.next(false)
@@ -123,7 +125,7 @@ export class EntidadComponent implements OnInit {
           this.util.hideSpinner();
         })
     } else {
-      this.util.warningAlert('Advertencia', 'El parámetro principal {id_parameter} en la URL no esta asignado')
+      this.util.warningAlert('Advertencia', 'Verifique los parametros de la URL')
     }
   }
 
@@ -152,7 +154,6 @@ export class EntidadComponent implements OnInit {
       this.entidadForm.markAllAsTouched();
       this.util.entidadFormObserver.next(false)
     } else {
-      console.log(values);
       this.util.entidadFormObserver.next(true);
       this.session.setSession(environment.KEYS.ENTITY, values);
     }
@@ -189,7 +190,7 @@ export class EntidadComponent implements OnInit {
     this.util.monedaChecker.next(this.session.getSession(environment.KEYS.PARAMS).riesgoDesgravamen.codMonedaPrestamo);
     this.util.conformacionVar.next(this.session.getSession(environment.KEYS.PARAMS).riesgoDesgravamen.codTipoConformacion);
 
-    this.util.disabledFields(this.entidadForm);
+    // this.util.disabledFields(this.entidadForm);
   }
 
 }

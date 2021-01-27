@@ -153,7 +153,6 @@ export class AseguradoComponent implements OnInit {
     })
 
     this.aseguradoForm.statusChanges.subscribe(val => {
-      console.log(val);
       if (val == 'VALID') {
         this.util.disabledFields(this.t.controls[0]['controls'] as FormGroup);
         this.setAsegurado(this.aseguradoForm.value)
@@ -379,25 +378,28 @@ export class AseguradoComponent implements OnInit {
   }
 
   verifyDPS(numPolizaGrupo: any, data: any) {
-    this.util.showSpinner();
-    this.util.setSpinnerTextValue(SPINNER_TEXT.DEFAULT);
-    this.digitalServ.requiereDPS(numPolizaGrupo, data)
-      .then(resp => {
-        this.util.dpsObserver.next(true);
-        var data = resp.Resultado;
-        if (data == 'N') {
+    var checker = this.util.checkTokenValidation();
+    if (checker == true) {
+      this.util.showSpinner();
+      this.util.setSpinnerTextValue(SPINNER_TEXT.DEFAULT);
+      this.digitalServ.requiereDPS(numPolizaGrupo, data)
+        .then(resp => {
+          this.util.dpsObserver.next(true);
+          var data = resp.Resultado;
+          if (data == 'N') {
+            this.util.dpsChecker.next(false);
+            this.util.cuestionarioIsSubmitted.next(true);
+          } else {
+            this.util.dpsChecker.next(true);
+            this.util.cuestionarioIsSubmitted.next(false);
+          }
+          this.util.hideSpinner();
+        }).catch(err => {
+          console.log(err);
+          this.util.hideSpinner();
           this.util.dpsChecker.next(false);
-          this.util.cuestionarioIsSubmitted.next(true);
-        } else {
-          this.util.dpsChecker.next(true);
-          this.util.cuestionarioIsSubmitted.next(false);
-        }
-        this.util.hideSpinner();
-      }).catch(err => {
-        console.log(err);
-        this.util.hideSpinner();
-        this.util.dpsChecker.next(false);
-      })
+        })
+    }
   }
 
   getCuestionarioData(ev: any, i) {

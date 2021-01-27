@@ -5,9 +5,9 @@ import { ROOT_BASES } from '../enum/bases.enum';
 import { SessionService } from './session.service';
 
 import * as Djson from '../../../assets/digitalizacionAppConfig.json';
-import { UtilService } from './util.service';
 
-const URI = environment.BASE_API_URL;
+const URI = 'https://api.pre.mapfre.com.pe/app/core/api/v1.0';
+// const URI = environment.BASE_API_URL;
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +17,7 @@ export class LoginService {
   private apps: any = (Djson as any).default;
   private baseEntity = ROOT_BASES;
 
-  constructor(private http: HttpClient, private session: SessionService, private util: UtilService) { }
+  constructor(private http: HttpClient, private session: SessionService) { }
 
   getCredencials() {
     let headers = new HttpHeaders();

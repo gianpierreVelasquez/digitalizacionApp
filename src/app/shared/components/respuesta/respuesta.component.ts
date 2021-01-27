@@ -92,7 +92,6 @@ export class RespuestaComponent implements OnInit {
   }
 
   setRespuesta(values){
-    console.log(values);
     if (this.respuestaForm.invalid) {
       this.util.respuestaFormObserver.next(false);
       this.respuestaForm.markAllAsTouched();

@@ -18,7 +18,6 @@ export class UiModalService {
   }
 
   open(modalID: string) {
-    console.log(this.modals);
     const modal = this.modals.find(x => x.modalID == modalID);
     modal.show();
   }

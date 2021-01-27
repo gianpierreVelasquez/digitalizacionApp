@@ -81,11 +81,11 @@ export class SolicitudComponent implements OnInit {
 
   async ngOnInit() {
     this.util.callServices.subscribe(resp => {
-      if(resp == true){
+      if (resp == true) {
         this.init();
       }
     });
-    
+
     this.util.monedaChecker.subscribe(resp => {
       this.solicitudForm.controls.codMonedaCumulo.setValue(resp);
       this.setCoinType({ target: { value: resp } })
@@ -153,17 +153,20 @@ export class SolicitudComponent implements OnInit {
   }
 
   async obtenerPlanSeguroVida() {
-    this.util.showSpinner();
-    this.util.setSpinnerTextValue(SPINNER_TEXT.PLANS);
-    return this.digitalServ.obtenerPlanSeguroVida()
-      .then(resp => {
-        var data = resp.data;
-        this.planSeguroList = data;
-        this.util.hideSpinner();
-      }).catch(err => {
-        console.log(err);
-        this.util.hideSpinner();
-      })
+    var checker = this.util.checkTokenValidation();
+    if (checker == true) {
+      this.util.showSpinner();
+      this.util.setSpinnerTextValue(SPINNER_TEXT.PLANS);
+      return this.digitalServ.obtenerPlanSeguroVida()
+        .then(resp => {
+          var data = resp.data;
+          this.planSeguroList = data;
+          this.util.hideSpinner();
+        }).catch(err => {
+          console.log(err);
+          this.util.hideSpinner();
+        })
+    }
   }
 
   async setPolizaGrupo(ev: any) {
@@ -223,29 +226,31 @@ export class SolicitudComponent implements OnInit {
   }
 
   verifyDPS() {
+    var checker = this.util.checkTokenValidation();
+    if (checker == true) {
 
-    var fecNac = this.session.getSession(environment.KEYS.PARAMS).asegurados[0].fecNacimiento;
-    var impCum = this.solicitudForm.controls.impCumulo.value;
+      var fecNac = this.session.getSession(environment.KEYS.PARAMS).asegurados[0].fecNacimiento;
+      var impCum = this.solicitudForm.controls.impCumulo.value;
 
-    if (fecNac != undefined && impCum != undefined) {
-      var data = {
-        'Fecha_Nacimiento': fecNac,
-        'Importe_Cumulo': impCum
+      if (fecNac != undefined && impCum != undefined) {
+        var data = {
+          'Fecha_Nacimiento': fecNac,
+          'Importe_Cumulo': impCum
+        }
+
+        this.digitalServ.requiereDPS(this.solicitudForm.controls.numPolizaGrupo.value, data)
+          .then(resp => {
+            this.util.dpsObserver.next(true);
+            var data = resp.Resultado;
+            if (data == 'N') this.util.dpsChecker.next(false)
+            else this.util.dpsChecker.next(true)
+          }).catch(err => {
+            console.log(err);
+          })
+      } else {
+        this.util.dpsObserver.next(false);
       }
-
-      this.digitalServ.requiereDPS(this.solicitudForm.controls.numPolizaGrupo.value, data)
-        .then(resp => {
-          this.util.dpsObserver.next(true);
-          var data = resp.Resultado;
-          if (data == 'N') this.util.dpsChecker.next(false)
-          else this.util.dpsChecker.next(true)
-        }).catch(err => {
-          console.log(err);
-        })
-    } else {
-      this.util.dpsObserver.next(false);
     }
-
   }
 
   setSolicitud(values) {

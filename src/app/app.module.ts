@@ -19,7 +19,7 @@ import { SharedModule } from './shared/shared.module';
 import { httpInterceptorProvider } from './core/interceptors';
 
 import { NgbButtonsModule, NgbDropdownModule, NgbTabsetModule, NgbTooltipModule, NgbDatepickerModule, NgbTimepickerModule } from '@ng-bootstrap/ng-bootstrap';
-
+import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -43,7 +43,8 @@ import { NgbButtonsModule, NgbDropdownModule, NgbTabsetModule, NgbTooltipModule,
     NgbTabsetModule
   ],
   providers: [
-    httpInterceptorProvider
+    httpInterceptorProvider,
+    {provide: LocationStrategy, useClass: HashLocationStrategy}
   ],
   bootstrap: [AppComponent]
 })
