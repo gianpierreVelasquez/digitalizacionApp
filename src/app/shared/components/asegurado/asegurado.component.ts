@@ -137,7 +137,7 @@ export class AseguradoComponent implements OnInit {
   async ngOnInit() {
 
     this.util.callServices.subscribe(resp => {
-      if(resp == true){
+      if (resp == true) {
         this.init();
       }
     });
@@ -151,14 +151,6 @@ export class AseguradoComponent implements OnInit {
     this.util.isPlanActivated.subscribe(resp => {
       this.hasPlan = resp;
     })
-
-    this.aseguradoForm.statusChanges.subscribe(val => {
-      if (val == 'VALID') {
-        this.util.disabledFields(this.t.controls[0]['controls'] as FormGroup);
-        this.setAsegurado(this.aseguradoForm.value)
-      }
-    })
-
   }
 
   init() {
@@ -361,6 +353,7 @@ export class AseguradoComponent implements OnInit {
         this.t.controls[0]['controls'].tlfMovil.setValue(aseguradoP.tlfMovil);
         this.t.controls[0]['controls'].direccion.setValue(aseguradoP.direccion);
 
+
         this.util.disabledFields(this.t.controls[0] as FormGroup);
       }
     }
@@ -379,6 +372,7 @@ export class AseguradoComponent implements OnInit {
 
   verifyDPS(numPolizaGrupo: any, data: any) {
     var checker = this.util.checkTokenValidation();
+    console.log(checker);
     if (checker == true) {
       this.util.showSpinner();
       this.util.setSpinnerTextValue(SPINNER_TEXT.DEFAULT);

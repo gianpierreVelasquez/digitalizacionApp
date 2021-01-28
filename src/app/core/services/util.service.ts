@@ -26,8 +26,8 @@ export class UtilService {
 
   desgravamenData = new BehaviorSubject<any>(null);
 
-  callServices = new BehaviorSubject<boolean>(false);
-  // callServices = new BehaviorSubject<boolean>(true);
+  // callServices = new BehaviorSubject<boolean>(false);
+  callServices = new BehaviorSubject<boolean>(true);
 
   entidadFormObserver = new BehaviorSubject<boolean>(false);
   entidadFormChecker = new BehaviorSubject<boolean>(false);
@@ -221,36 +221,37 @@ export class UtilService {
 
   //Token Authentication
   checkTokenValidation() {
-    const nowDate = new Date()
-    var token = this.session.getSession(environment.KEYS.TOKEN);
-    if (token.length > 0) {
-      var timestamp = token.exp;
-      const date = new Date(timestamp * 1000)
-      // var formatDate = date.toLocaleString() //2019-12-9 10:30:15
-      if (nowDate >= date) {
-        Swal.fire({
-          icon: 'warning',
-          title: 'Sesion Expirada',
-          text: 'Refrescar sesión',
-          showCancelButton: false,
-          confirmButtonColor: '#28a745',
-          confirmButtonText: 'Refrescar',
-          allowOutsideClick: false
-        }).then((result) => {
-          if (result.value) {
-            this.loginServ.getCredencials()
-              .then(resp => {
-                this.session.setSession(environment.KEYS.TOKEN, resp);
-              }).catch(err => {
-                console.log(err);
-              })
-          }
-        })
-        return true;
-      } else {
-        return false;
-      }
-    }
+    return true;
+    // const nowDate = new Date()
+    // var token = this.session.getSession(environment.KEYS.TOKEN);
+    // if (token.length > 0) {
+    //   var timestamp = token.exp;
+    //   const date = new Date(timestamp * 1000)
+    //   // var formatDate = date.toLocaleString() //2019-12-9 10:30:15
+    //   if (nowDate >= date) {
+    //     Swal.fire({
+    //       icon: 'warning',
+    //       title: 'Sesion Expirada',
+    //       text: 'Refrescar sesión',
+    //       showCancelButton: false,
+    //       confirmButtonColor: '#28a745',
+    //       confirmButtonText: 'Refrescar',
+    //       allowOutsideClick: false
+    //     }).then((result) => {
+    //       if (result.value) {
+    //         this.loginServ.getCredencials()
+    //           .then(resp => {
+    //             this.session.setSession(environment.KEYS.TOKEN, resp);
+    //           }).catch(err => {
+    //             console.log(err);
+    //           })
+    //       }
+    //     })
+    //     return true;
+    //   } else {
+    //     return false;
+    //   }
+    // }
   }
 
 }

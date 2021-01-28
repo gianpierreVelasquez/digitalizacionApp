@@ -185,7 +185,7 @@
                                 <div class="col-sm-12 col-md-6 col-lg-4 col-xl-2">
                                     <label for="nro_tel">Nro Telefono (*):</label>
                                     <input type="text" id="nro_tel" class="form-control" formControlName="tlfNumero"
-                                        autocomplete="off">
+                                        autocomplete="off" minlength="7" max="10">
                                     <div class="col-12 form-group error-container p-0">
                                         <ng-container *ngFor="let validation of validations.tlfNumero">
                                             <div class="error-message"
@@ -199,7 +199,7 @@
                                 <div class="col-sm-12 col-md-6 col-lg-4 col-xl-2">
                                     <label for="nro_mov">Nro Movil (*):</label>
                                     <input type="text" id="nro_mov" class="form-control" formControlName="tlfMovil"
-                                        autocomplete="off">
+                                        autocomplete="off" minlength="9" maxlength="12">
                                     <div class="col-12 form-group error-container p-0">
                                         <ng-container *ngFor="let validation of validations.tlfMovil">
                                             <div class="error-message"

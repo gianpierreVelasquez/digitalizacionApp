@@ -58,7 +58,7 @@ export class EntidadComponent implements OnInit {
       nroSolicitudCaja: ['', [Validators.required]],
       codTipoConformacion: ['', [Validators.required, this.validator.notNull]],
       codMonedaPrestamo: ['', [Validators.required, this.validator.notNull]],
-      plazoPrestamo: ['1050', [Validators.required, Validators.pattern("^[0-9]+$"), this.validator.notZero]],
+      plazoPrestamo: ['', [Validators.required, Validators.pattern("^[0-9]+$"), this.validator.notZero]],
       impPrestamo: ['', [Validators.required]],
       codCanal: [''],
       codigoUsuario: ['', [Validators.required]]
@@ -88,13 +88,13 @@ export class EntidadComponent implements OnInit {
   }
 
   getToken() {
-    this.loginServ.getCredencials().then(resp => {
-      this.session.setSession(environment.KEYS.TOKEN, resp);
-      this.util.callServices.next(true);
-    }).catch(err => {
-      console.log(err);
-      this.util.callServices.next(false)
-    })
+    // this.loginServ.getCredencials().then(resp => {
+    //   this.session.setSession(environment.KEYS.TOKEN, resp);
+    //   this.util.callServices.next(true);
+    // }).catch(err => {
+    //   console.log(err);
+    //   this.util.callServices.next(false)
+    // })
   }
 
   async init() {
@@ -190,7 +190,7 @@ export class EntidadComponent implements OnInit {
     this.util.monedaChecker.next(this.session.getSession(environment.KEYS.PARAMS).riesgoDesgravamen.codMonedaPrestamo);
     this.util.conformacionVar.next(this.session.getSession(environment.KEYS.PARAMS).riesgoDesgravamen.codTipoConformacion);
 
-    // this.util.disabledFields(this.entidadForm);
+    this.util.disabledFields(this.entidadForm);
   }
 
 }
