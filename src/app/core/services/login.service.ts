@@ -10,7 +10,7 @@ import { Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { UtilService } from './util.service';
 
-const URI = 'https://api.pre.mapfre.com.pe/app/core/api/v1.0'
+const URI = "https://api.pre.mapfre.com.pe/app/api/core/v1.0";
 
 @Injectable({
   providedIn: 'root'

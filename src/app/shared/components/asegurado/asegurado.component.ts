@@ -355,7 +355,6 @@ export class AseguradoComponent implements OnInit {
           this.t.controls[1]['controls'].direccion.setValue('');
         }
 
-
       } else {
 
         this.t.controls[0]['controls'].codParentesco.setValue(this.util.propChecker(aseguradoP.codParentesco, this.parentescoList));
@@ -369,7 +368,6 @@ export class AseguradoComponent implements OnInit {
         this.t.controls[0]['controls'].estadoCivil.setValue(this.util.propChecker(aseguradoP.estadoCivil, this.estadoCivilList));
         this.t.controls[0]['controls'].tlfMovil.setValue(aseguradoP.tlfMovil);
         this.t.controls[0]['controls'].direccion.setValue(aseguradoP.direccion);
-
 
         this.util.disabledFields(this.t.controls[0] as FormGroup);
       }

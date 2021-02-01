@@ -90,8 +90,8 @@ export class RespuestaComponent implements OnInit {
   addRespuesta() {
     if (this.r.length < this.maxRespuestas) {
       this.r.push(this.formBuilder.group({
-        frecuencia: ['', [Validators.required]],
-        cantidad: ['', [Validators.required, Validators.pattern("^[0-9]+$"), this.validator.notZero]],
+        frecuencia: [''],
+        cantidad: [''],
       }, { updateOn: 'blur'}));
     }
   }
