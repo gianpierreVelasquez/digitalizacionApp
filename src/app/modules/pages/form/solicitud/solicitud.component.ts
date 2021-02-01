@@ -113,7 +113,7 @@ export class SolicitudComponent implements OnInit {
     ]).then((value) => {
       this.util.hideSpinner();
     }).catch(reason => {
-      console.log(reason)
+      console.error(reason)
       this.util.hideSpinner();
     });
   }
@@ -124,7 +124,7 @@ export class SolicitudComponent implements OnInit {
         var data = resp.data;
         this.monedaList = data;
       }).catch(err => {
-        console.log(err);
+        console.error(err);
       })
   }
 
@@ -134,7 +134,7 @@ export class SolicitudComponent implements OnInit {
         var data = resp.data;
         this.prestamoList = data;
       }).catch(err => {
-        console.log(err);
+        console.error(err);
       })
   }
 
@@ -144,7 +144,7 @@ export class SolicitudComponent implements OnInit {
         var data = resp.data;
         this.solicitudList = data;
       }).catch(err => {
-        console.log(err);
+        console.error(err);
       })
   }
 
@@ -154,7 +154,7 @@ export class SolicitudComponent implements OnInit {
         var data = resp.data;
         this.polizaGrupoList = data;
       }).catch(err => {
-        console.log(err);
+        console.error(err);
       })
   }
 
@@ -184,7 +184,7 @@ export class SolicitudComponent implements OnInit {
         this.planSeguroList = data;
         this.util.hideSpinner();
       }).catch(err => {
-        console.log(err);
+        console.error(err);
         this.util.hideSpinner();
       })
   }
@@ -245,20 +245,39 @@ export class SolicitudComponent implements OnInit {
     this.showPlanes = false;
   }
 
+
+  setSolicitud(values) {
+    if (this.solicitudForm.invalid) {
+      this.solicitudForm.markAllAsTouched();
+    } else {
+      if(this.session.getSession(environment.KEYS.PARAMS) !== null){
+        if (this.util.entidadFormObserver.getValue() == true) {
+          if (this.showPlanes == true) {
+            this.util.warningAlert('Advertencia', 'Debe seleccionar un plan antes de continuar.')
+          } else {
+            this.session.setSession(environment.KEYS.REQUEST, values);
+            if (this.util.dpsObserver.getValue() === false) {
+              this.verifyDPS();
+            }
+            this.selectTab(1);
+          }
+        } else {
+          this.util.entidadFormChecker.next(true)
+        }
+      } else {
+        this.util.notAllowAlert('Error', 'No puede continuar con el formulario, ya que no cuenta con los parametros requeridos.')
+      }
+    }
+  }
+
   verifyDPS() {
 
     if (this.util.dpsObserver.getValue() === false) {
-      var fecNac: string;
-
+      
       var asegurados: any[] = this.session.getSession(environment.KEYS.PARAMS).asegurados;
-      asegurados.forEach(x => {
-        if (x.codParentesco === 1) {
-          return fecNac = x.fecNacimiento;
-        } else {
-          return fecNac = undefined
-        }
-      })
+      var aseguradoP = asegurados.find(x => x.codParentesco === 1);
 
+      var fecNac = aseguradoP.fecNacimiento;
       var impCum = this.solicitudForm.controls.impCumulo.value;
 
       if (fecNac != undefined && impCum != undefined) {
@@ -294,6 +313,7 @@ export class SolicitudComponent implements OnInit {
               })
           } else {
             this.util.showSpinner();
+            this.util.setSpinnerTextValue(SPINNER_TEXT.CHECK_DPS)
             this.digitalServ.requiereDPS(this.solicitudForm.controls.numPolizaGrupo.value, data)
               .then(resp => {
                 this.util.dpsObserver.next(true);
@@ -313,26 +333,6 @@ export class SolicitudComponent implements OnInit {
         });
       } else {
         this.util.dpsObserver.next(false);
-      }
-    }
-  }
-
-  setSolicitud(values) {
-    if (this.solicitudForm.invalid) {
-      this.solicitudForm.markAllAsTouched();
-    } else {
-      if (this.util.entidadFormObserver.getValue() == true) {
-        if (this.showPlanes == true) {
-          this.util.warningAlert('Advertencia', 'Debe seleccionar un plan antes de continuar.')
-        } else {
-          this.session.setSession(environment.KEYS.REQUEST, values);
-          if (this.util.dpsObserver.getValue() === false) {
-            this.verifyDPS();
-          }
-          this.selectTab(1);
-        }
-      } else {
-        this.util.entidadFormChecker.next(true)
       }
     }
   }

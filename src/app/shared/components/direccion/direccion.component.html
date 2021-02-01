@@ -20,7 +20,7 @@
                     </div>
                 </div> -->
                 <div class="col-sm-12 col-md-6 col-lg-4 col-xl-2">
-                    <label for="dep"> (*):</label>
+                    <label for="dep">Departamento (*):</label>
                     <select id="parent" class="form-control" formControlName="codDepartamento" (change)="obtenerProvincia($event, i)">
                         <option *ngFor="let d of departamentoList" [value]="d.codigo">{{d.texto}}</option>
                     </select>

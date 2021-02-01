@@ -1,7 +1,7 @@
 export const environment = {
   production: true,
   // APIGATEWAY
-  BASE_API_URL: 'https://api.pre.mapfre.com.pe/app/api/core/v1.0',
+  BASE_API_URL: 'https://api.pre.mapfre.com.pe/app/core/api/v1.0',
   // PRE 
   // BASE_API_URL: 'https://api.pre.mapfreperu.com/internal',
   KEYS: {

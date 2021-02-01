@@ -96,7 +96,11 @@ export class EntidadComponent implements OnInit {
     this.loginServ.getCredencials()
       .then(resp => {
         this.session.setSession(environment.KEYS.TOKEN, resp);
-        this.obtenerParametros();
+        if (this.session.getSession(environment.KEYS.URL_PARAM) == null) {
+          this.util.notAllowAlert('Advertencia', ERROR_MESSAGES.MISS_ID_PARAMETER);
+        } else {
+          this.util.callServices.next(true);
+        }
       }).catch(err => {
         this.util.hideSpinner();
         console.error(err);
@@ -110,31 +114,27 @@ export class EntidadComponent implements OnInit {
       this.obtenerTipoConformación(),
       this.obtenerTipoMoneda(),
     ]).then((value) => {
-      // nothing
+      this.obtenerParametros()
     }).catch(reason => {
       console.log(reason)
     });
   }
 
   async obtenerParametros() {
-    if (this.session.getSession(environment.KEYS.URL_PARAM) != null) {
-      this.util.showSpinner()
-      this.util.setSpinnerTextValue(SPINNER_TEXT.PARAMETERS);
-      this.digitalServ.obtenerParametros(this.session.getSession(environment.KEYS.URL_PARAM))
-        .then(resp => {
-          var data = resp;
-          this.session.setSession(environment.KEYS.PARAMS, data);
-          this.displayParamsEntidad();
-          this.util.hideSpinner();
-          this.util.callServices.next(true);
-        }).catch(err => {
-          console.log(err);
-          this.util.hideSpinner();
-          this.util.callServices.next(false);
-        })
-    } else {
-      this.util.notAllowAlert('Advertencia', ERROR_MESSAGES.MISS_ID_PARAMETER);
-    }
+    this.util.showSpinner()
+    this.util.setSpinnerTextValue(SPINNER_TEXT.PARAMETERS);
+    this.digitalServ.obtenerParametros(this.session.getSession(environment.KEYS.URL_PARAM))
+      .then(resp => {
+        var data = resp;
+        this.session.setSession(environment.KEYS.PARAMS, data);
+        this.displayParamsEntidad();
+        this.util.hideSpinner();
+        // this.util.callServices.next(true);
+      }).catch(err => {
+        console.log(err);
+        this.util.hideSpinner();
+        this.util.callServices.next(false);
+      })
   }
 
   async obtenerTipoConformación() {

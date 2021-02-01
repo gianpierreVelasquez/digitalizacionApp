@@ -13,6 +13,7 @@ export enum SPINNER_TEXT {
   PARAMETERS = 'Obteniendo Parametros...',
   PLANS = 'Cargando planes disponibles...',
   QUIZ = 'Cargando preguntas...',
+  CHECK_DPS = 'Verificando asegurados...'
 }
 
 @Injectable({
