@@ -53,4 +53,8 @@ export class DigitalService {
     return this.http.get<Response>(`${URI + this.baseEntity.DESGRAVAMEN + this.rootEntity.OBTENER_PARAMETROS}/${id}`).toPromise();
   }
 
+  async suscribirDesgravamen(data) {
+    return this.http.post<any>(`${URI + this.baseEntity.DESGRAVAMEN + this.rootEntity.SUSCRIBIR_DESGRAVAMEN}`, data).toPromise()
+  }
+
 }

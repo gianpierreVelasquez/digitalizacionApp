@@ -8,6 +8,7 @@ import { AppComponent } from './app.component';
 
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { FormularioComponent } from './modules/layout/formulario/formulario.component';
+import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { MantenimientoComponent } from './modules/layout/mantenimiento/mantenimiento.component';
 import { NavBarComponent } from './modules/layout/formulario/nav-bar/nav-bar.component';
 import { EntidadComponent } from './modules/layout/formulario/entidad/entidad.component';
@@ -19,7 +20,6 @@ import { SharedModule } from './shared/shared.module';
 import { httpInterceptorProvider } from './core/interceptors';
 
 import { NgbButtonsModule, NgbDropdownModule, NgbTabsetModule, NgbTooltipModule, NgbDatepickerModule, NgbTimepickerModule } from '@ng-bootstrap/ng-bootstrap';
-import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 
 @NgModule({
   declarations: [

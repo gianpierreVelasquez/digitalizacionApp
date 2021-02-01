@@ -85,7 +85,7 @@
                                     autocomplete="off">{{amountSign}}</span>
                             </div>
                             <input type="number" id="impPrestamo" class="form-control" formControlName="impPrestamo"
-                                autocomplete="off">
+                                autocomplete="off" decimalValidator>
                         </div>
                         <div class="col-12 form-group error-container p-0">
                             <ng-container *ngFor="let validation of validations.impPrestamo">

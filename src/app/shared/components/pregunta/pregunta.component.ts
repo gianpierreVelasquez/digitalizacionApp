@@ -54,8 +54,12 @@ export class PreguntaComponent implements OnInit {
     this._authServ.checkTokenValidation();
     this.util.tokenNeedsUpdate.subscribe(async (resp) => {
       if (resp == true) {
-        this.loginServ.getCredencials();
-        this.recuperarCuestionario();
+        this.loginServ.getCredencials().then(() => {
+          this.recuperarCuestionario();
+        })
+          .catch(err => {
+            console.error(err)
+          });
       } else {
         this.recuperarCuestionario();
       }
@@ -138,13 +142,13 @@ export class PreguntaComponent implements OnInit {
   getRespuestaData(ev: any) {
     //to get smokeQuiz index
     console.log(this.p.controls);
-    
+
     var sqIndex = Object.keys(this.p.controls).forEach(e => console.log(e));
     // console.log(sqIndex);
 
     if (ev != undefined) {
       setTimeout(() => {
-        
+
       });
     } else {
       setTimeout(() => {

@@ -75,8 +75,11 @@ export class EntidadComponent implements OnInit {
     })
 
     this.util.callServices.subscribe(resp => {
-      if (resp == true) {
+      // this.obtenerParametros()
+      if (resp == true && this.session.getSession(environment.KEYS.URL_PARAM) != null) {
         this.init();
+      } else {
+        this.util.hideSpinner();
       }
     });
 
@@ -93,7 +96,7 @@ export class EntidadComponent implements OnInit {
     this.loginServ.getCredencials()
       .then(resp => {
         this.session.setSession(environment.KEYS.TOKEN, resp);
-        this.util.callServices.next(true);
+        this.obtenerParametros();
       }).catch(err => {
         this.util.hideSpinner();
         console.error(err);
@@ -107,26 +110,27 @@ export class EntidadComponent implements OnInit {
       this.obtenerTipoConformación(),
       this.obtenerTipoMoneda(),
     ]).then((value) => {
-      this.obtenerParametros();
+      // nothing
     }).catch(reason => {
       console.log(reason)
     });
   }
 
   async obtenerParametros() {
-    if (this.session.getSession(environment.KEYS.URL_PARAM) != null && this.session.getSession(environment.KEYS.CODE_APP) != null) {
+    if (this.session.getSession(environment.KEYS.URL_PARAM) != null) {
       this.util.showSpinner()
       this.util.setSpinnerTextValue(SPINNER_TEXT.PARAMETERS);
       this.digitalServ.obtenerParametros(this.session.getSession(environment.KEYS.URL_PARAM))
         .then(resp => {
           var data = resp;
-          this.util.desgravamenData.next(data);
           this.session.setSession(environment.KEYS.PARAMS, data);
           this.displayParamsEntidad();
           this.util.hideSpinner();
+          this.util.callServices.next(true);
         }).catch(err => {
           console.log(err);
           this.util.hideSpinner();
+          this.util.callServices.next(false);
         })
     } else {
       this.util.notAllowAlert('Advertencia', ERROR_MESSAGES.MISS_ID_PARAMETER);

@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { BehaviorSubject } from 'rxjs';
 import { UiModalService } from 'src/app/shared/components/modal/ui-modal/ui-modal.service';
+import { Desgravamen } from 'src/app/shared/models/Desgravamen';
 
 import Swal from 'sweetalert2';
 
@@ -21,7 +22,7 @@ export class UtilService {
 
   public spinnerTextValue = new BehaviorSubject<string>(SPINNER_TEXT.DEFAULT);
 
-  desgravamenData = new BehaviorSubject<any>(null);
+  desgravamenData = new BehaviorSubject<Desgravamen>(null);
 
   callServices = new BehaviorSubject<boolean>(false);
 

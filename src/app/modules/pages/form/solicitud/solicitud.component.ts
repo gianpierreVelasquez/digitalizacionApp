@@ -84,8 +84,10 @@ export class SolicitudComponent implements OnInit {
 
   async ngOnInit() {
     this.util.callServices.subscribe(resp => {
-      if (resp == true) {
+      if (resp == true && this.session.getSession(environment.KEYS.URL_PARAM) != null) {
         this.init();
+      } else {
+        this.util.hideSpinner();
       }
     });
 
@@ -370,8 +372,9 @@ export class SolicitudComponent implements OnInit {
         impCumulo: this.solicitudForm.controls.impCumulo.value,
         plazoPrestamo: this.session.getSession(environment.KEYS.ENTITY).plazoPrestamo
       }
-
     }
+    
+    this.util.desgravamenData.next(desgravamen);
   }
 
 }

@@ -1,7 +1,9 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NgSelectConfig } from '@ng-select/ng-select';
+import { AuthenticationService } from 'src/app/core/auth/authentication.service';
 import { CombosService } from 'src/app/core/services/combos.service';
+import { LoginService } from 'src/app/core/services/login.service';
 import { UtilService } from 'src/app/core/services/util.service';
 
 @Component({
@@ -42,7 +44,8 @@ export class DireccionComponent implements OnInit {
     ]
   };
 
-  constructor(private formBuilder: FormBuilder, private util: UtilService, private combosServ: CombosService, private config: NgSelectConfig) {
+  constructor(private formBuilder: FormBuilder, private util: UtilService, private combosServ: CombosService, private config: NgSelectConfig, 
+    private _authServ: AuthenticationService, private loginServ: LoginService) {
 
     this.direccionForm = this.formBuilder.group({
       direccion: new FormArray([])
@@ -68,8 +71,8 @@ export class DireccionComponent implements OnInit {
       this.u.push(this.formBuilder.group({
         codPais: ['PE', [Validators.required]],
         codDepartamento: [null, [Validators.required]],
-        codProvincia: [{value: null, disabled:true}, [Validators.required]],
-        codDistrito: [{value: null, disabled:true}, [Validators.required]],
+        codProvincia: [{ value: null, disabled: true }, [Validators.required]],
+        codDistrito: [{ value: null, disabled: true }, [Validators.required]],
         nomDomicilio: ['', [Validators.required]],
         refDireccion: ['']
       }));
@@ -79,9 +82,6 @@ export class DireccionComponent implements OnInit {
   }
 
   async obtenerDepartamento() {
-
-    this.depaIsLoading = true;
-
     await this.combosServ.obtenerDepartamento()
       .then(resp => {
         var arr = resp.data;
@@ -94,49 +94,102 @@ export class DireccionComponent implements OnInit {
   }
 
   async obtenerProvincia(ev: any, i) {
-    var codDepartamento = ev.target.value;
 
-    this.provIsLoading = true;
+    this._authServ.checkTokenValidation();
+    this.util.tokenNeedsUpdate.subscribe(async (resp) => {
+      if (resp == true) {
+        this.loginServ.getCredencials().then(() => {
+          var codDepartamento = ev.target.value;
 
-    this.u.controls[i]['controls'].codProvincia.setValue(null);
-    this.u.controls[i]['controls'].codProvincia.disable();
+          this.u.controls[i]['controls'].codProvincia.setValue(null);
+          this.u.controls[i]['controls'].codProvincia.disable();
 
-    this.u.controls[i]['controls'].codDistrito.setValue(null);
-    this.u.controls[i]['controls'].codDistrito.disable();
+          this.u.controls[i]['controls'].codDistrito.setValue(null);
+          this.u.controls[i]['controls'].codDistrito.disable();
 
-    this.u.controls[i]['controls'].codProvincia.enable();
+          this.u.controls[i]['controls'].codProvincia.enable();
 
-    await this.combosServ.obtenerProvincia(codDepartamento)
-      .then(resp => {
-        this.provinciaList = resp.data;
-        this.provIsLoading = false;
-      }).catch(err => {
-        console.error(err);
-        this.provIsLoading = false;
-      })
+          this.combosServ.obtenerProvincia(codDepartamento)
+            .then(resp => {
+              this.provinciaList = resp.data;
+              this.provIsLoading = false;
+            }).catch(err => {
+              console.error(err);
+              this.provIsLoading = false;
+            })
+        })
+          .catch(err => {
+            console.error(err)
+          });
+      } else {
+        var codDepartamento = ev.target.value;
+
+        this.u.controls[i]['controls'].codProvincia.setValue(null);
+        this.u.controls[i]['controls'].codProvincia.disable();
+
+        this.u.controls[i]['controls'].codDistrito.setValue(null);
+        this.u.controls[i]['controls'].codDistrito.disable();
+
+        this.u.controls[i]['controls'].codProvincia.enable();
+
+        this.combosServ.obtenerProvincia(codDepartamento)
+          .then(resp => {
+            this.provinciaList = resp.data;
+            this.provIsLoading = false;
+          }).catch(err => {
+            console.error(err);
+            this.provIsLoading = false;
+          })
+      }
+    })
+
+
   }
 
   async obtenerDistrito(ev: any, i) {
     var codProvincia = ev.target.value;
 
-    this.distIsLoading = true;
-
-    this.u.controls[i]['controls'].codDistrito.setValue(null);
-    this.u.controls[i]['controls'].codDistrito.disable();
-
-    this.u.controls[i]['controls'].codDistrito.enable();
-
-    await this.combosServ.obtenerDistrito(codProvincia)
-      .then(resp => {
-        this.distritoList = resp.data;
-        this.distIsLoading = false;
-      }).catch(err => {
-        console.error(err);
-        this.distIsLoading = false;
-      })
+    this._authServ.checkTokenValidation();
+    this.util.tokenNeedsUpdate.subscribe(async (resp) => {
+      if (resp == true) {
+        this.loginServ.getCredencials()
+          .then(() => {
+            this.u.controls[i]['controls'].codDistrito.setValue(null);
+            this.u.controls[i]['controls'].codDistrito.disable();
+        
+            this.u.controls[i]['controls'].codDistrito.enable();
+        
+            this.combosServ.obtenerDistrito(codProvincia)
+              .then(resp => {
+                this.distritoList = resp.data;
+                this.distIsLoading = false;
+              }).catch(err => {
+                console.error(err);
+                this.distIsLoading = false;
+              })
+        })
+          .catch((err) => {
+            console.error(err);
+          })
+      } else {
+        this.u.controls[i]['controls'].codDistrito.setValue(null);
+        this.u.controls[i]['controls'].codDistrito.disable();
+    
+        this.u.controls[i]['controls'].codDistrito.enable();
+    
+        this.combosServ.obtenerDistrito(codProvincia)
+          .then(resp => {
+            this.distritoList = resp.data;
+            this.distIsLoading = false;
+          }).catch(err => {
+            console.error(err);
+            this.distIsLoading = false;
+          })
+      }
+    })
   }
 
-  setDireccion(values){
+  setDireccion(values) {
     if (this.direccionForm.invalid) {
       this.direccionForm.markAllAsTouched();
     } else {
@@ -144,12 +197,12 @@ export class DireccionComponent implements OnInit {
     }
   }
 
-  displayDireccion(){
-    if (this.direccionData[0] != undefined){
+  displayDireccion() {
+    if (this.direccionData[0] != undefined) {
       this.u.controls[0]['controls'].codDepartamento.setValue(this.direccionData[0].codDepartamento.toString());
-      this.obtenerProvincia({target:{value:this.direccionData[0].codDepartamento.toString()}},0);
+      this.obtenerProvincia({ target: { value: this.direccionData[0].codDepartamento.toString() } }, 0);
       this.u.controls[0]['controls'].codProvincia.setValue(this.direccionData[0].codProvincia.toString());
-      this.obtenerDistrito({target:{value:this.direccionData[0].codProvincia.toString()}},0);
+      this.obtenerDistrito({ target: { value: this.direccionData[0].codProvincia.toString() } }, 0);
       this.u.controls[0]['controls'].codDistrito.setValue(this.direccionData[0].codDistrito.toString());
       this.u.controls[0]['controls'].nomDomicilio.setValue(this.direccionData[0].nomDomicilio);
 

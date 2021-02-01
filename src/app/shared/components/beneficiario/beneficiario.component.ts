@@ -1,10 +1,14 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
+import { AuthenticationService } from 'src/app/core/auth/authentication.service';
 import { CombosService } from 'src/app/core/services/combos.service';
+import { DigitalService } from 'src/app/core/services/digital.service';
+import { LoginService } from 'src/app/core/services/login.service';
 import { SessionService } from 'src/app/core/services/session.service';
 import { UtilService } from 'src/app/core/services/util.service';
 import { ValidatorsService } from 'src/app/core/services/validators.service';
 import { environment } from 'src/environments/environment';
+import { Desgravamen } from '../../models/Desgravamen';
 
 @Component({
   selector: 'app-dynamic-beneficiario',
@@ -73,17 +77,20 @@ export class BeneficiarioComponent implements OnInit {
     ]
   };
 
-  constructor(private formBuilder: FormBuilder, private session: SessionService, private validator: ValidatorsService, private util: UtilService, private combosServ: CombosService) {
+  constructor(private formBuilder: FormBuilder, private session: SessionService, private validator: ValidatorsService, private util: UtilService, 
+    private combosServ: CombosService, private digitalServ: DigitalService, private _authServ: AuthenticationService, private loginServ: LoginService) {
     this.beneficiarioForm = this.formBuilder.group({
       beneficiarios: new FormArray([])
     });
   }
 
   ngOnInit() {
-    
+
     this.util.callServices.subscribe(resp => {
-      if(resp == true){
+      if (resp == true && this.session.getSession(environment.KEYS.URL_PARAM) != null) {
         this.init();
+      } else {
+        this.util.hideSpinner();
       }
     });
 
@@ -186,7 +193,20 @@ export class BeneficiarioComponent implements OnInit {
       this.beneficiarioForm.markAllAsTouched();
     } else {
       if (this.checkParticipacion() == true) {
-        console.log(values);
+        this._authServ.checkTokenValidation();
+        this.util.tokenNeedsUpdate.subscribe(async (resp) => {
+          if (resp == true) {
+            this.loginServ.getCredencials()
+              .then(() => {
+                this.suscribirDesgravamen();
+              })
+              .catch(err => {
+                console.error(err)
+              })
+          } else {
+            this.suscribirDesgravamen();
+          }
+        })
       }
     }
   }
@@ -198,6 +218,27 @@ export class BeneficiarioComponent implements OnInit {
 
   back($event: any) {
     this.backButton.emit($event);
+  }
+
+  suscribirDesgravamen(){
+    this.util.showSpinner();
+
+    var desgravamen: Desgravamen = {
+      cabecera: this.util.desgravamenData.getValue().cabecera,
+      solicitud: this.util.desgravamenData.getValue().solicitud,
+      producto: this.util.desgravamenData.getValue().producto,
+      riesgoDesgravamen: this.util.desgravamenData.getValue().riesgoDesgravamen,
+      asegurados: this.session.getSession(environment.KEYS.INSURED),
+      beneficiarios: this.beneficiarioForm.value
+    }
+
+    this.digitalServ.suscribirDesgravamen(desgravamen)
+    .then(resp => {
+      this.util.correctAlert('Correcto', 'El formulario fue enviado exitosamente.')
+    })
+    .catch(err => {
+      console.error(err);
+    })
   }
 
 }
