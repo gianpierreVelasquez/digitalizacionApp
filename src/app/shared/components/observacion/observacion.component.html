@@ -18,7 +18,7 @@
                 <div class="row">
                     <div class="col-sm-12">
                         <label for="enfer">Enfermedades padecidas o tratamientos recomendados:</label>
-                        <input type="text" id="enfer" class="form-control" formControlName="enfermedad">
+                        <input type="text" id="enfer" class="form-control" formControlName="enfermedad" autocomplete="off">
                         <div class="col-12 form-group error-container p-0">
                             <ng-container *ngFor="let validation of validations.enfermedad">
                                 <div class="error-message" *ngIf="observacion.get('enfermedad').hasError(validation.type) &&
@@ -44,7 +44,7 @@
 
                     <div class="col-sm-6">
                         <label for="dura">Duración</label>
-                        <input type="number" id="dura" class="form-control" formControlName="duracion" min="0">
+                        <input type="number" id="dura" class="form-control" formControlName="duracion" min="1" autocomplete="off" integerValidator>
                         <div class="col-12 form-group error-container p-0">
                             <ng-container *ngFor="let validation of validations.duracion">
                                 <div class="error-message" *ngIf="observacion.get('duracion').hasError(validation.type) &&
@@ -57,7 +57,7 @@
 
                     <div class="col-sm-6">
                         <label for="clini">Nombre de la clinica o medico tratante:</label>
-                        <input type="text" id="clini" class="form-control" formControlName="clinica">
+                        <input type="text" id="clini" class="form-control" formControlName="clinica" autocomplete="off">
                         <div class="col-12 form-group error-container p-0">
                             <ng-container *ngFor="let validation of validations.clinica">
                                 <div class="error-message" *ngIf="observacion.get('clinica').hasError(validation.type) &&
@@ -70,7 +70,7 @@
 
                     <div class="col-sm-6">
                         <label for="est_act">Estado actual:</label>
-                        <input type="text" id="est_act" class="form-control" formControlName="estado_actual">
+                        <input type="text" id="est_act" class="form-control" formControlName="estado_actual" autocomplete="off">
                         <div class="col-12 form-group error-container p-0">
                             <ng-container *ngFor="let validation of validations.estado_actual">
                                 <div class="error-message"

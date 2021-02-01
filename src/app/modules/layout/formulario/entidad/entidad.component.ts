@@ -1,6 +1,7 @@
 
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ERROR_MESSAGES } from 'src/app/core/enum/errors.enum';
 import { CombosService } from 'src/app/core/services/combos.service';
 import { DigitalService } from 'src/app/core/services/digital.service';
 import { LoginService } from 'src/app/core/services/login.service';
@@ -74,7 +75,7 @@ export class EntidadComponent implements OnInit {
     })
 
     this.util.callServices.subscribe(resp => {
-      if(resp == true){
+      if (resp == true) {
         this.init();
       }
     });
@@ -88,13 +89,16 @@ export class EntidadComponent implements OnInit {
   }
 
   getToken() {
-    // this.loginServ.getCredencials().then(resp => {
-    //   this.session.setSession(environment.KEYS.TOKEN, resp);
-    //   this.util.callServices.next(true);
-    // }).catch(err => {
-    //   console.log(err);
-    //   this.util.callServices.next(false)
-    // })
+    this.util.showSpinner();
+    this.loginServ.getCredencials()
+      .then(resp => {
+        this.session.setSession(environment.KEYS.TOKEN, resp);
+        this.util.callServices.next(true);
+      }).catch(err => {
+        this.util.hideSpinner();
+        console.error(err);
+        this.util.callServices.next(false)
+      })
   }
 
   async init() {
@@ -110,7 +114,7 @@ export class EntidadComponent implements OnInit {
   }
 
   async obtenerParametros() {
-    if (this.session.getSession(environment.KEYS.URL_PARAM) != '') {
+    if (this.session.getSession(environment.KEYS.URL_PARAM) != null && this.session.getSession(environment.KEYS.CODE_APP) != null) {
       this.util.showSpinner()
       this.util.setSpinnerTextValue(SPINNER_TEXT.PARAMETERS);
       this.digitalServ.obtenerParametros(this.session.getSession(environment.KEYS.URL_PARAM))
@@ -125,7 +129,7 @@ export class EntidadComponent implements OnInit {
           this.util.hideSpinner();
         })
     } else {
-      this.util.warningAlert('Advertencia', 'Verifique los parametros de la URL')
+      this.util.notAllowAlert('Advertencia', ERROR_MESSAGES.MISS_ID_PARAMETER);
     }
   }
 

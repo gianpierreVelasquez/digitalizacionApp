@@ -6,6 +6,7 @@ import { SessionService } from '../services/session.service';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { UtilService } from '../services/util.service';
+import { ERROR_MESSAGES } from '../enum/errors.enum';
 
 @Injectable({
   providedIn: 'root'
@@ -33,9 +34,8 @@ export class AuthInterceptor implements HttpInterceptor {
         if (err instanceof HttpErrorResponse) {
 
           if (err.status != 200) {
-            this.util.notAllowAlert('Advertencia', err.error.message)
+            this.util.notAllowAlert('Advertencia', err.error.message);
           }
-
         }
       }));
   }

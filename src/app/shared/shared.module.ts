@@ -5,6 +5,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SpinnerModule, AseguradoModule, BeneficiarioModule, ModalModule } from './components';
 import { UiModalService } from './components/modal/ui-modal/ui-modal.service';
 import { NgbTabsetModule } from '@ng-bootstrap/ng-bootstrap';
+import { ComponentsModule } from './components/components.module';
 
 @NgModule({
   imports: [
@@ -15,7 +16,8 @@ import { NgbTabsetModule } from '@ng-bootstrap/ng-bootstrap';
     AseguradoModule,
     BeneficiarioModule,
     ModalModule,
-    NgbTabsetModule
+    NgbTabsetModule,
+    ComponentsModule
   ],
   exports: [
     CommonModule,
@@ -26,6 +28,7 @@ import { NgbTabsetModule } from '@ng-bootstrap/ng-bootstrap';
     BeneficiarioModule,
     ModalModule,
     NgbTabsetModule,
+    ComponentsModule
   ],
   declarations: [],
   providers: [

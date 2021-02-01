@@ -67,7 +67,6 @@ export class RespuestaComponent implements OnInit {
   ngOnInit() {
 
     this.util.respuestaFormChecker.subscribe(resp => {
-      console.log(resp);
       this.setRespuesta(this.respuestaForm.value);
     })
 
@@ -77,6 +76,12 @@ export class RespuestaComponent implements OnInit {
         this.addRespuesta();
       }
     });
+
+    this.respuestaForm.statusChanges.subscribe(val => {
+      if (val == 'VALID') {
+        this.setRespuesta(this.respuestaForm.value)
+      }
+    })
   }
 
   get p() { return this.respuestaForm.controls; }
@@ -87,7 +92,7 @@ export class RespuestaComponent implements OnInit {
       this.r.push(this.formBuilder.group({
         frecuencia: ['', [Validators.required]],
         cantidad: ['', [Validators.required, Validators.pattern("^[0-9]+$"), this.validator.notZero]],
-      }));
+      }, { updateOn: 'blur'}));
     }
   }
 
@@ -97,7 +102,7 @@ export class RespuestaComponent implements OnInit {
       this.respuestaForm.markAllAsTouched();
     } else {
       this.util.respuestaFormObserver.next(true);
-      this.dataGetter.emit(values);
+      this.dataGetter.emit(values.respuesta[0]);
     }
   }
 

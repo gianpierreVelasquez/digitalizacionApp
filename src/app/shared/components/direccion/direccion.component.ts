@@ -88,13 +88,13 @@ export class DireccionComponent implements OnInit {
         this.departamentoList = arr;
         this.depaIsLoading = false;
       }).catch(err => {
-        console.log(err);
+        console.error(err);
         this.depaIsLoading = false;
       })
   }
 
   async obtenerProvincia(ev: any, i) {
-    var codDepartamento = ev.codigo;
+    var codDepartamento = ev.target.value;
 
     this.provIsLoading = true;
 
@@ -111,13 +111,13 @@ export class DireccionComponent implements OnInit {
         this.provinciaList = resp.data;
         this.provIsLoading = false;
       }).catch(err => {
-        console.log(err);
+        console.error(err);
         this.provIsLoading = false;
       })
   }
 
   async obtenerDistrito(ev: any, i) {
-    var codProvincia = ev.codigo;
+    var codProvincia = ev.target.value;
 
     this.distIsLoading = true;
 
@@ -131,7 +131,7 @@ export class DireccionComponent implements OnInit {
         this.distritoList = resp.data;
         this.distIsLoading = false;
       }).catch(err => {
-        console.log(err);
+        console.error(err);
         this.distIsLoading = false;
       })
   }
@@ -145,11 +145,11 @@ export class DireccionComponent implements OnInit {
   }
 
   displayDireccion(){
-    if (this.direccionData[0].codDepartamento != undefined){
+    if (this.direccionData[0] != undefined){
       this.u.controls[0]['controls'].codDepartamento.setValue(this.direccionData[0].codDepartamento.toString());
-      this.obtenerProvincia({codigo:this.direccionData[0].codDepartamento.toString()},0);
+      this.obtenerProvincia({target:{value:this.direccionData[0].codDepartamento.toString()}},0);
       this.u.controls[0]['controls'].codProvincia.setValue(this.direccionData[0].codProvincia.toString());
-      this.obtenerDistrito({codigo:this.direccionData[0].codProvincia.toString()},0);
+      this.obtenerDistrito({target:{value:this.direccionData[0].codProvincia.toString()}},0);
       this.u.controls[0]['controls'].codDistrito.setValue(this.direccionData[0].codDistrito.toString());
       this.u.controls[0]['controls'].nomDomicilio.setValue(this.direccionData[0].nomDomicilio);
 

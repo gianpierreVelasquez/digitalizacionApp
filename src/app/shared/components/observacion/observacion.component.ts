@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
 import { UtilService } from 'src/app/core/services/util.service';
+import { ValidatorsService } from 'src/app/core/services/validators.service';
 
 @Component({
   selector: 'app-dynamic-observacion',
@@ -38,22 +39,27 @@ export class ObservacionComponent implements OnInit {
   validations = {
     'enfermedad': [
       { type: 'required', message: 'Este campo es requerido.' },
+      { type: 'whitespace', message: 'Este campo no puede recibir caracteres vacíos.' }
     ],
     'fecha': [
       { type: 'required', message: 'Este campo es requerido.' },
+      { type: 'whitespace', message: 'Este campo no puede recibir caracteres vacíos.' }
     ],
     'duracion': [
       { type: 'required', message: 'Este campo es requerido.' },
+      { type: 'whitespace', message: 'Este campo no puede recibir caracteres vacíos.' }
     ],
     'clinica': [
       { type: 'required', message: 'Este campo es requerido.' },
+      { type: 'whitespace', message: 'Este campo no puede recibir caracteres vacíos.' }
     ],
     'estado_actual': [
       { type: 'required', message: 'Este campo es requerido.' },
+      { type: 'whitespace', message: 'Este campo no puede recibir caracteres vacíos.' }
     ]
   };
 
-  constructor(private formBuilder: FormBuilder, private util: UtilService) {
+  constructor(private formBuilder: FormBuilder, private util: UtilService, private validator: ValidatorsService) {
     this.observacionForm = this.formBuilder.group({
       observacion: new FormArray([])
     });
@@ -81,11 +87,11 @@ export class ObservacionComponent implements OnInit {
     this.util.observacionFormObserver.next(false);
     if (this.t.length < this.maxObservations) {
       this.t.push(this.formBuilder.group({
-        enfermedad: ['', [Validators.required]],
+        enfermedad: ['', [Validators.required, this.validator.noWhitespaceValidatorForString]],
         fecha: ['', [Validators.required]],
-        duracion: ['', [Validators.required]],
-        clinica: ['', [Validators.required]],
-        estado_actual: ['', [Validators.required]]
+        duracion: ['', [Validators.required, this.validator.noWhitespaceValidatorForNumber]],
+        clinica: ['', [Validators.required, this.validator.noWhitespaceValidatorForString]],
+        estado_actual: ['', [Validators.required, this.validator.noWhitespaceValidatorForString]]
       }));
     }
   }

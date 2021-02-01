@@ -4,6 +4,7 @@ import { environment } from 'src/environments/environment';
 import { ROOT_DIGITAL } from '../enum/digital.enum';
 import { Response } from '../../shared/models/Response';
 import { ROOT_BASES } from '../enum/bases.enum';
+import * as Djson from '../../../assets/digitalizacionAppConfig.json';
 
 const URI = environment.BASE_API_URL;
 
@@ -12,6 +13,7 @@ const URI = environment.BASE_API_URL;
 })
 export class DigitalService {
 
+  private configVar: any = (Djson as any).default;
   private baseEntity = ROOT_BASES;
   private rootEntity = ROOT_DIGITAL;
 
@@ -34,11 +36,16 @@ export class DigitalService {
   }
 
   async obtenerPlanSeguroVida() {
+
+    var configVars = this.configVar[0];
+    console.log(configVars);
+    
     var data = {
-      cod_cia: 2,
-      cod_ramo: 616,
-      cod_tabla: 67
+      cod_cia: configVars.cod_cia,
+      cod_ramo: configVars.cod_ramo,
+      cod_tabla: configVars.cod_tabla
     }
+
     return this.http.post<Response>(`${URI + this.baseEntity.DESGRAVAMEN + this.rootEntity.PLAN_SEGURO_VIDA}`, data).toPromise();
   }
 

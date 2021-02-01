@@ -8,7 +8,8 @@ import { ObservacionModule } from '../observacion/observacion.module';
 import { AutosizeModule } from 'ngx-autosize';
 import { DireccionModule } from '../direccion/direccion.module';
 import { PreguntaModule } from '../pregunta/pregunta.module';
-
+import { ComponentsModule } from '../components.module';
+    
 @NgModule({
   imports: [
     CommonModule,
@@ -19,7 +20,8 @@ import { PreguntaModule } from '../pregunta/pregunta.module';
     ObservacionModule,
     AutosizeModule,
     DireccionModule,
-    PreguntaModule
+    PreguntaModule,
+    ComponentsModule
   ],
   declarations: [AseguradoComponent],
   exports: [AseguradoComponent]

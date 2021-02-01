@@ -5,8 +5,8 @@
 export const environment = {
   production: false,
   // BASE_API_URL: 'https://api.pre.mapfre.com.pe/app/core/api/v1.0',
+  // Pruebas
   BASE_API_URL: 'https://api.pre.mapfreperu.com/internal',
-  // BASE_API_URL: 'http://82ccc926b930.ngrok.io',
   KEYS: {
     TOKEN: 'token',
     PARAMS: 'params',

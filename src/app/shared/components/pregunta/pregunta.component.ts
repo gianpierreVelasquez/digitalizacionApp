@@ -1,6 +1,8 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
+import { AuthenticationService } from 'src/app/core/auth/authentication.service';
 import { DigitalService } from 'src/app/core/services/digital.service';
+import { LoginService } from 'src/app/core/services/login.service';
 import { SessionService } from 'src/app/core/services/session.service';
 import { SPINNER_TEXT, UtilService } from 'src/app/core/services/util.service';
 import { environment } from 'src/environments/environment';
@@ -25,7 +27,8 @@ export class PreguntaComponent implements OnInit {
   observacionFormObserverHelper: boolean = false;
   needObservation: boolean = false;
 
-  constructor(private formBuilder: FormBuilder, private util: UtilService, private session: SessionService, private digitalServ: DigitalService) {
+  constructor(private formBuilder: FormBuilder, private util: UtilService, private session: SessionService, private digitalServ: DigitalService,
+    private loginServ: LoginService, private _authServ: AuthenticationService) {
     this.cuestionarioForm = this.formBuilder.group({
       preguntas: new FormArray([]),
       observaciones: []
@@ -47,22 +50,31 @@ export class PreguntaComponent implements OnInit {
 
   }
 
+  verifyToken() {
+    this._authServ.checkTokenValidation();
+    this.util.tokenNeedsUpdate.subscribe(async (resp) => {
+      if (resp == true) {
+        this.loginServ.getCredencials();
+        this.recuperarCuestionario();
+      } else {
+        this.recuperarCuestionario();
+      }
+    })
+  }
+
   async recuperarCuestionario() {
-    var checker = this.util.checkTokenValidation();
-    if (checker == true) {
-      this.util.showSpinner()
-      this.util.setSpinnerTextValue(SPINNER_TEXT.QUIZ);
-      this.digitalServ.recuperarCuestionario(this.session.getSession(environment.KEYS.PARAMS).solicitud.codCanal)
-        .then(resp => {
-          var data = resp['Resultado'];
-          this.cuestionarioData = data;
-          this.addPreguntas();
-          this.util.hideSpinner();
-        }).catch(err => {
-          console.log(err);
-          this.util.hideSpinner();
-        })
-    }
+    this.util.showSpinner()
+    this.util.setSpinnerTextValue(SPINNER_TEXT.QUIZ);
+    this.digitalServ.recuperarCuestionario(this.session.getSession(environment.KEYS.PARAMS).solicitud.codCanal)
+      .then(resp => {
+        var data = resp['Resultado'];
+        this.cuestionarioData = data;
+        this.addPreguntas();
+        this.util.hideSpinner();
+      }).catch(err => {
+        console.log(err);
+        this.util.hideSpinner();
+      })
   }
 
   get c() { return this.cuestionarioForm.controls; }
@@ -124,7 +136,21 @@ export class PreguntaComponent implements OnInit {
   }
 
   getRespuestaData(ev: any) {
-    console.log(ev);
+    //to get smokeQuiz index
+    console.log(this.p.controls);
+    
+    var sqIndex = Object.keys(this.p.controls).forEach(e => console.log(e));
+    // console.log(sqIndex);
+
+    if (ev != undefined) {
+      setTimeout(() => {
+        
+      });
+    } else {
+      setTimeout(() => {
+        this.cuestionarioForm.controls.observaciones.setValue(null);
+      });
+    }
   }
 
 }

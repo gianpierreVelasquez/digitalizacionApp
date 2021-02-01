@@ -1,14 +1,15 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { NgSelectConfig } from '@ng-select/ng-select';
+import { AuthenticationService } from 'src/app/core/auth/authentication.service';
 import { CombosService } from 'src/app/core/services/combos.service';
 import { DigitalService } from 'src/app/core/services/digital.service';
+import { LoginService } from 'src/app/core/services/login.service';
 import { SessionService } from 'src/app/core/services/session.service';
 import { SPINNER_TEXT, UtilService } from 'src/app/core/services/util.service';
 import { ValidatorsService } from 'src/app/core/services/validators.service';
 import { environment } from 'src/environments/environment';
 import { DireccionHelper } from '../../models/Desgravamen';
-import { UiModalService } from '../modal/ui-modal/ui-modal.service';
 
 @Component({
   selector: 'app-dynamic-asegurado',
@@ -126,7 +127,7 @@ export class AseguradoComponent implements OnInit {
   varConformacion: any;
 
   constructor(private formBuilder: FormBuilder, private session: SessionService, private util: UtilService, private config: NgSelectConfig, private digitalServ: DigitalService,
-    private combosServ: CombosService, private validator: ValidatorsService, private modal: UiModalService) {
+    private combosServ: CombosService, private validator: ValidatorsService, private loginServ: LoginService, private _authServ: AuthenticationService) {
     this.aseguradoForm = this.formBuilder.group({
       asegurados: new FormArray([])
     });
@@ -162,8 +163,8 @@ export class AseguradoComponent implements OnInit {
       this.obtenerTipoProfesiones()
     ]).then((value) => {
       // nothing
-    }).catch(reason => {
-      console.log(reason)
+    }).catch(err => {
+      console.error(err)
       this.util.hideSpinner();
     });
   }
@@ -174,7 +175,7 @@ export class AseguradoComponent implements OnInit {
         var data = resp.data;
         this.parentescoList = data;
       }).catch(err => {
-        console.log(err);
+        console.error(err);
       })
   }
 
@@ -184,7 +185,7 @@ export class AseguradoComponent implements OnInit {
         var data = resp.data;
         this.documentoList = data;
       }).catch(err => {
-        console.log(err);
+        console.error(err);
       })
   }
 
@@ -194,7 +195,7 @@ export class AseguradoComponent implements OnInit {
         var data = resp.data;
         this.estadoCivilList = data;
       }).catch(err => {
-        console.log(err);
+        console.error(err);
       })
   }
 
@@ -204,7 +205,7 @@ export class AseguradoComponent implements OnInit {
         var data = resp.data;
         this.generoList = data;
       }).catch(err => {
-        console.log(err);
+        console.error(err);
       })
   }
 
@@ -216,7 +217,7 @@ export class AseguradoComponent implements OnInit {
         this.profesionesList = arr;
         this.profIsLoading = false;
       }).catch(err => {
-        console.log(err);
+        console.error(err);
         this.profIsLoading = false;
       })
   }
@@ -233,7 +234,7 @@ export class AseguradoComponent implements OnInit {
           codDocum: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(12), Validators.pattern("^[0-9]+$")]],
           fecNacimiento: ['', [Validators.required]],
           estadoCivil: [null, [Validators.required, this.validator.notNull]],
-          nombre: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(100)]],
+          nombre: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(100), this.validator.noWhitespaceValidatorForString]],
           apePaterno: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
           apeMaterno: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
           mcaSexo: [null, [Validators.required, this.validator.notNull]],
@@ -265,7 +266,6 @@ export class AseguradoComponent implements OnInit {
     } else {
       if (this.util.cuestionarioIsSubmitted.value == true) {
         if (this.hasPlan == true) {
-          console.log(values);
           this.next(null);
         } else {
           console.log(this.aseguradoForm.getRawValue());
@@ -366,14 +366,29 @@ export class AseguradoComponent implements OnInit {
         'Fecha_Nacimiento': date,
         'Importe_Cumulo': this.session.getSession(environment.KEYS.REQUEST).impCumulo
       }
-      this.verifyDPS(this.session.getSession(environment.KEYS.REQUEST).numPolizaGrupo, data);
+      this.verifyToken(data)
     }
   }
 
-  verifyDPS(numPolizaGrupo: any, data: any) {
-    var checker = this.util.checkTokenValidation();
-    console.log(checker);
-    if (checker == true) {
+  verifyToken(dataDPS) {
+    this._authServ.checkTokenValidation();
+    this.util.tokenNeedsUpdate.subscribe(async (resp) => {
+      if (resp == true) {
+        this.loginServ.getCredencials()
+          .then(() => {
+            this.verifyDPS(this.session.getSession(environment.KEYS.REQUEST).numPolizaGrupo, dataDPS);
+          })
+          .catch(err => {
+            console.error(err)
+          })
+      } else {
+        this.verifyDPS(this.session.getSession(environment.KEYS.REQUEST).numPolizaGrupo, dataDPS);
+      }
+    })
+  }
+
+  async verifyDPS(numPolizaGrupo: any, data: any) {
+    if (this.util.dpsObserver.getValue() === false) {
       this.util.showSpinner();
       this.util.setSpinnerTextValue(SPINNER_TEXT.DEFAULT);
       this.digitalServ.requiereDPS(numPolizaGrupo, data)
@@ -389,12 +404,12 @@ export class AseguradoComponent implements OnInit {
           }
           this.util.hideSpinner();
         }).catch(err => {
-          console.log(err);
+          console.error(err);
           this.util.hideSpinner();
-          this.util.dpsChecker.next(false);
         })
     }
   }
+
 
   getCuestionarioData(ev: any, i) {
     setTimeout(() => {

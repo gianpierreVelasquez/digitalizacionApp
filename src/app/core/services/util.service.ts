@@ -4,11 +4,8 @@ import { Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { BehaviorSubject } from 'rxjs';
 import { UiModalService } from 'src/app/shared/components/modal/ui-modal/ui-modal.service';
-import { environment } from 'src/environments/environment';
 
 import Swal from 'sweetalert2';
-import { LoginService } from './login.service';
-import { SessionService } from './session.service';
 
 export enum SPINNER_TEXT {
   DEFAULT = 'Cargando información...',
@@ -26,8 +23,7 @@ export class UtilService {
 
   desgravamenData = new BehaviorSubject<any>(null);
 
-  // callServices = new BehaviorSubject<boolean>(false);
-  callServices = new BehaviorSubject<boolean>(true);
+  callServices = new BehaviorSubject<boolean>(false);
 
   entidadFormObserver = new BehaviorSubject<boolean>(false);
   entidadFormChecker = new BehaviorSubject<boolean>(false);
@@ -51,8 +47,9 @@ export class UtilService {
   dpsObserver = new BehaviorSubject<boolean>(false);
   cuestionarioIsSubmitted = new BehaviorSubject<boolean>(false);
 
-  constructor(private spinner: NgxSpinnerService, private uimodalServ: UiModalService, private router: Router, private formBuilder: FormBuilder,
-    private session: SessionService, private loginServ: LoginService) { }
+    tokenNeedsUpdate = new BehaviorSubject<boolean>(false);
+
+  constructor(private spinner: NgxSpinnerService, private uimodalServ: UiModalService, private router: Router, private formBuilder: FormBuilder) { }
 
   // Spinner
   showSpinner() {
@@ -218,40 +215,4 @@ export class UtilService {
     });
     return this.formBuilder.group(newObj);
   }
-
-  //Token Authentication
-  checkTokenValidation() {
-    return true;
-    // const nowDate = new Date()
-    // var token = this.session.getSession(environment.KEYS.TOKEN);
-    // if (token.length > 0) {
-    //   var timestamp = token.exp;
-    //   const date = new Date(timestamp * 1000)
-    //   // var formatDate = date.toLocaleString() //2019-12-9 10:30:15
-    //   if (nowDate >= date) {
-    //     Swal.fire({
-    //       icon: 'warning',
-    //       title: 'Sesion Expirada',
-    //       text: 'Refrescar sesión',
-    //       showCancelButton: false,
-    //       confirmButtonColor: '#28a745',
-    //       confirmButtonText: 'Refrescar',
-    //       allowOutsideClick: false
-    //     }).then((result) => {
-    //       if (result.value) {
-    //         this.loginServ.getCredencials()
-    //           .then(resp => {
-    //             this.session.setSession(environment.KEYS.TOKEN, resp);
-    //           }).catch(err => {
-    //             console.log(err);
-    //           })
-    //       }
-    //     })
-    //     return true;
-    //   } else {
-    //     return false;
-    //   }
-    // }
-  }
-
 }

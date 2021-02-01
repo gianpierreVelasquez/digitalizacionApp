@@ -9,6 +9,8 @@ import { Desgravamen, Producto } from 'src/app/shared/models/Desgravamen';
 import { SessionService } from 'src/app/core/services/session.service';
 import { environment } from 'src/environments/environment';
 import { ValidatorsService } from 'src/app/core/services/validators.service';
+import { LoginService } from 'src/app/core/services/login.service';
+import { AuthenticationService } from 'src/app/core/auth/authentication.service';
 
 @Component({
   selector: 'app-solicitud',
@@ -59,7 +61,8 @@ export class SolicitudComponent implements OnInit {
     ],
     'impCumulo': [
       { type: 'required', message: 'El importe cúmulo es requerido.' },
-      { type: 'notzero', message: 'El importe ingresado debe ser mayor a 0.' }
+      { type: 'notzero', message: 'El importe ingresado debe ser mayor a 0.' },
+      { type: 'pattern', message: 'El campo solo admite un total de 2 decimales.' }
     ],
     'comentarios': [
       { type: 'required', message: 'El comentario es requerido.' },
@@ -68,13 +71,13 @@ export class SolicitudComponent implements OnInit {
   };
 
   constructor(private formBuilder: FormBuilder, private validator: ValidatorsService, private util: UtilService, private session: SessionService,
-    private combosServ: CombosService, private digitalServ: DigitalService) {
+    private combosServ: CombosService, private digitalServ: DigitalService, private loginServ: LoginService, private _authServ: AuthenticationService) {
     this.solicitudForm = this.formBuilder.group({
       tipSolicitud: ['', [Validators.required]],
       codTipoPrestamo: ['', [Validators.required]],
       numPolizaGrupo: ['', [Validators.required]],
       codMonedaCumulo: ['', [Validators.required]],
-      impCumulo: ['', [Validators.required, this.validator.notZero]],
+      impCumulo: ['', [Validators.required, Validators.pattern("^[0-9]{1,12}(\\.\\d{1,2})?$"), this.validator.notZero]],
       comentarios: [''],
     });
   }
@@ -88,7 +91,8 @@ export class SolicitudComponent implements OnInit {
 
     this.util.monedaChecker.subscribe(resp => {
       this.solicitudForm.controls.codMonedaCumulo.setValue(resp);
-      this.setCoinType({ target: { value: resp } })
+      this.setCoinType({ target: { value: resp } });
+      this.util.disabledFields(this.solicitudForm);
     })
 
     this.util.entidadFormObserver.subscribe(resp => {
@@ -152,27 +156,41 @@ export class SolicitudComponent implements OnInit {
       })
   }
 
+  verifyToken() {
+    this._authServ.checkTokenValidation();
+    this.util.tokenNeedsUpdate.subscribe(async (resp) => {
+      if (resp == true) {
+        this.loginServ.getCredencials()
+          .then(() => {
+            this.obtenerPlanSeguroVida();
+          })
+          .catch(err => {
+            console.error(err)
+          })
+      } else {
+        this.obtenerPlanSeguroVida();
+      }
+    })
+  }
+
   async obtenerPlanSeguroVida() {
-    var checker = this.util.checkTokenValidation();
-    if (checker == true) {
-      this.util.showSpinner();
-      this.util.setSpinnerTextValue(SPINNER_TEXT.PLANS);
-      return this.digitalServ.obtenerPlanSeguroVida()
-        .then(resp => {
-          var data = resp.data;
-          this.planSeguroList = data;
-          this.util.hideSpinner();
-        }).catch(err => {
-          console.log(err);
-          this.util.hideSpinner();
-        })
-    }
+    this.util.showSpinner();
+    this.util.setSpinnerTextValue(SPINNER_TEXT.PLANS);
+    return this.digitalServ.obtenerPlanSeguroVida()
+      .then(resp => {
+        var data = resp.data;
+        this.planSeguroList = data;
+        this.util.hideSpinner();
+      }).catch(err => {
+        console.log(err);
+        this.util.hideSpinner();
+      })
   }
 
   async setPolizaGrupo(ev: any) {
     if (ev.target.value == '6110810100262') {
       this.showSeguro = true;
-      await this.obtenerPlanSeguroVida()
+      this.verifyToken();
     } else {
       this.showSeguro = false;
       this.showPlanes = false;
@@ -226,10 +244,19 @@ export class SolicitudComponent implements OnInit {
   }
 
   verifyDPS() {
-    var checker = this.util.checkTokenValidation();
-    if (checker == true) {
 
-      var fecNac = this.session.getSession(environment.KEYS.PARAMS).asegurados[0].fecNacimiento;
+    if (this.util.dpsObserver.getValue() === false) {
+      var fecNac: string;
+
+      var asegurados: any[] = this.session.getSession(environment.KEYS.PARAMS).asegurados;
+      asegurados.forEach(x => {
+        if (x.codParentesco === 1) {
+          return fecNac = x.fecNacimiento;
+        } else {
+          return fecNac = undefined
+        }
+      })
+
       var impCum = this.solicitudForm.controls.impCumulo.value;
 
       if (fecNac != undefined && impCum != undefined) {
@@ -238,15 +265,50 @@ export class SolicitudComponent implements OnInit {
           'Importe_Cumulo': impCum
         }
 
-        this.digitalServ.requiereDPS(this.solicitudForm.controls.numPolizaGrupo.value, data)
-          .then(resp => {
-            this.util.dpsObserver.next(true);
-            var data = resp.Resultado;
-            if (data == 'N') this.util.dpsChecker.next(false)
-            else this.util.dpsChecker.next(true)
-          }).catch(err => {
-            console.log(err);
-          })
+        this._authServ.checkTokenValidation();
+        this.util.tokenNeedsUpdate.subscribe(async (resp) => {
+          if (resp == true) {
+            this.util.showSpinner()
+            this.loginServ.getCredencials()
+              .then(() => {
+                this.digitalServ.requiereDPS(this.solicitudForm.controls.numPolizaGrupo.value, data)
+                  .then(resp => {
+                    this.util.dpsObserver.next(true);
+                    var data = resp.Resultado;
+                    if (data === 'N') {
+                      this.util.dpsChecker.next(false);
+                    }
+                    else {
+                      this.util.dpsChecker.next(true);
+                    }
+                    this.util.hideSpinner();
+                  }).catch(err => {
+                    console.error(err);
+                    this.util.hideSpinner();
+                  })
+              })
+              .catch(err => {
+                console.error(err);
+              })
+          } else {
+            this.util.showSpinner();
+            this.digitalServ.requiereDPS(this.solicitudForm.controls.numPolizaGrupo.value, data)
+              .then(resp => {
+                this.util.dpsObserver.next(true);
+                var data = resp.Resultado;
+                if (data === 'N') {
+                  this.util.dpsChecker.next(false);
+                }
+                else {
+                  this.util.dpsChecker.next(true);
+                }
+                this.util.hideSpinner();
+              }).catch(err => {
+                console.error(err);
+                this.util.hideSpinner();
+              })
+          }
+        });
       } else {
         this.util.dpsObserver.next(false);
       }
@@ -262,7 +324,7 @@ export class SolicitudComponent implements OnInit {
           this.util.warningAlert('Advertencia', 'Debe seleccionar un plan antes de continuar.')
         } else {
           this.session.setSession(environment.KEYS.REQUEST, values);
-          if (this.util.dpsObserver.getValue() == true) {
+          if (this.util.dpsObserver.getValue() === false) {
             this.verifyDPS();
           }
           this.selectTab(1);

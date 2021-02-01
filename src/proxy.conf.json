@@ -1,0 +1,8 @@
+{
+    "/app/*": {
+        "target": "https://api.pre.mapfre.com.pe",
+        "secure": false,
+        "logLevel": "debug",
+        "changeOrigin": false
+    }
+}
