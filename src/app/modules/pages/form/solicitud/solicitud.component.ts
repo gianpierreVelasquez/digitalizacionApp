@@ -250,6 +250,7 @@ export class SolicitudComponent implements OnInit {
     if (this.solicitudForm.invalid) {
       this.solicitudForm.markAllAsTouched();
     } else {
+      this.desgravamenFormat();
       if(this.session.getSession(environment.KEYS.PARAMS) !== null){
         if (this.util.entidadFormObserver.getValue() == true) {
           if (this.showPlanes == true) {
@@ -298,6 +299,7 @@ export class SolicitudComponent implements OnInit {
                     var data = resp.Resultado;
                     if (data === 'N') {
                       this.util.dpsChecker.next(false);
+                      this.util.cuestionarioIsSubmitted.next(true);
                     }
                     else {
                       this.util.dpsChecker.next(true);
@@ -320,6 +322,7 @@ export class SolicitudComponent implements OnInit {
                 var data = resp.Resultado;
                 if (data === 'N') {
                   this.util.dpsChecker.next(false);
+                  this.util.cuestionarioIsSubmitted.next(true);
                 }
                 else {
                   this.util.dpsChecker.next(true);
@@ -352,29 +355,34 @@ export class SolicitudComponent implements OnInit {
   }
 
   desgravamenFormat() {
+
+    var solicitud = this.solicitudForm.getRawValue();
+
     var desgravamen: Desgravamen = {
       cabecera: this.session.getSession(environment.KEYS.PARAMS).cabecera,
       solicitud: {
         codCanal: this.session.getSession(environment.KEYS.ENTITY).codCanal,
-        nroSolicitudCaja: parseInt(this.session.getSession(environment.KEYS.ENTITY).solicitud.nroSolicitudCaja),
-        tipSolicitud: this.solicitudForm.controls.tipSolicitud.value,
+        nroSolicitudCaja: parseInt(this.session.getSession(environment.KEYS.ENTITY).nroSolicitudCaja),
+        tipSolicitud: solicitud.tipSolicitud,
         fecSolicitud: this.session.getSession(environment.KEYS.PARAMS).solicitud.fecSolicitud,
-        comentarios: this.solicitudForm.controls.comentarios.value,
+        comentarios: solicitud.comentarios,
       },
       producto: this.session.getSession(environment.KEYS.PRODUCT),
       riesgoDesgravamen: {
         codTipoConformacion: this.session.getSession(environment.KEYS.ENTITY).codTipoConformacion,
-        codTipoPrestamo: this.solicitudForm.controls.codTipoPrestamo.value,
-        codMonedaPrestamo: this.solicitudForm.controls.codMonedaPrestamo.value,
+        codTipoPrestamo: parseInt(solicitud.codTipoPrestamo),
+        codMonedaPrestamo: parseInt(this.session.getSession(environment.KEYS.ENTITY).codMonedaPrestamo),
         impPrestamo: this.session.getSession(environment.KEYS.ENTITY).impPrestamo,
         numPrestamo: 0,
-        codMonedaCumulo: this.solicitudForm.controls.codMonedaCumulo.value,
-        impCumulo: this.solicitudForm.controls.impCumulo.value,
+        codMonedaCumulo: solicitud.codMonedaCumulo,
+        impCumulo: solicitud.impCumulo,
         plazoPrestamo: this.session.getSession(environment.KEYS.ENTITY).plazoPrestamo
       }
     }
     
     this.util.desgravamenData.next(desgravamen);
+    console.log(this.util.desgravamenData.getValue());
+    
   }
 
 }

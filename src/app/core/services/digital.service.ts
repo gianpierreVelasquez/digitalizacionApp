@@ -38,8 +38,7 @@ export class DigitalService {
   async obtenerPlanSeguroVida() {
 
     var configVars = this.configVar[0];
-    console.log(configVars);
-    
+
     var data = {
       cod_cia: configVars.cod_cia,
       cod_ramo: configVars.cod_ramo,

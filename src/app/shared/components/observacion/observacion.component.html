@@ -44,7 +44,7 @@
 
                     <div class="col-sm-6">
                         <label for="dura">Duración</label>
-                        <input type="number" id="dura" class="form-control" formControlName="duracion" min="1" autocomplete="off" integerValidator>
+                        <input type="number" id="dura" class="form-control" formControlName="duracion" min="1" autocomplete="off">
                         <div class="col-12 form-group error-container p-0">
                             <ng-container *ngFor="let validation of validations.duracion">
                                 <div class="error-message" *ngIf="observacion.get('duracion').hasError(validation.type) &&

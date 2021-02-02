@@ -99,11 +99,15 @@ export class PreguntaComponent implements OnInit {
   }
 
   setCuestionario(values) {
+    this.util.respuestaFormObserver.next(true);
     if (this.cuestionarioForm.invalid) {
       this.cuestionarioForm.markAllAsTouched();
       this.util.cuestionarioIsSubmitted.next(false);
     } else {
-      if (this.util.observacionFormObserver.value == true && this.util.respuestaFormObserver.value == true) {
+      console.log(this.util.observacionFormObserver.value);
+      console.log(this.util.respuestaFormObserver.value);
+      
+      if (this.util.observacionFormObserver.value === true && this.util.respuestaFormObserver.value === true) {
         this.util.cuestionarioIsSubmitted.next(true);
         values.preguntas.forEach(function (v) { delete v.flag });
         this.dataGetter.emit(values);
@@ -155,6 +159,11 @@ export class PreguntaComponent implements OnInit {
         this.cuestionarioForm.controls.observaciones.setValue(null);
       });
     }
+  }
+
+  openDps(){
+    this.util.showModal('dpsModal');
+    this.util.cuestionarioIsSubmitted.next(true);
   }
 
 }

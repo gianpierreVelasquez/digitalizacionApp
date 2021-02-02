@@ -267,7 +267,7 @@ export class AseguradoComponent implements OnInit {
     if (this.aseguradoForm.invalid) {
       this.aseguradoForm.markAllAsTouched();
     } else {
-      if (this.util.cuestionarioIsSubmitted.value == true) {
+      if (this.util.cuestionarioIsSubmitted.value === true) {
         if (this.hasPlan == true) {
           this.next(null);
           this.session.setSession(environment.KEYS.INSURED, this.aseguradoForm.getRawValue());
@@ -454,7 +454,7 @@ export class AseguradoComponent implements OnInit {
       solicitud: this.util.desgravamenData.getValue().solicitud,
       producto: this.util.desgravamenData.getValue().producto,
       riesgoDesgravamen: this.util.desgravamenData.getValue().riesgoDesgravamen,
-      asegurados: this.aseguradoForm.getRawValue(),
+      asegurados: this.aseguradoForm.getRawValue().asegurados,
       beneficiarios: null
     }
 

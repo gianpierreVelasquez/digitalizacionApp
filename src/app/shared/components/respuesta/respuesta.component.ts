@@ -71,7 +71,6 @@ export class RespuestaComponent implements OnInit {
     })
 
     this.needRespuestaObserver.subscribe(resp => {
-      console.log(resp);
       if (resp == 'S') {
         this.addRespuesta();
       }

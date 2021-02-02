@@ -71,12 +71,19 @@ export class ObservacionComponent implements OnInit {
       if (resp == true) {
         this.addObservation();
       } else {
+        this.util.observacionFormObserver.next(true);
         this.t.clear();
       }
     });
 
     this.util.observacionFormChecker.subscribe(resp => {
-      this.setObservacion(this.observacionForm.value);
+      this.observacionForm.statusChanges.subscribe(resp => {
+        if(resp === 'VALID'){
+          this.setObservacion(this.observacionForm.controls.observacion.value)
+        } else {
+          this.observacionForm.markAllAsTouched();
+        }
+      })
     })
   }
 
