@@ -158,7 +158,7 @@ export class UtilService {
         d = date[2]
       }
 
-      var newDate = d + '-' + m + '-' + a;
+      var newDate = d + '/' + m + '/' + a;
 
       return newDate;
     } else {

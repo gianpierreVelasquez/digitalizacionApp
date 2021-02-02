@@ -270,7 +270,8 @@ export class AseguradoComponent implements OnInit {
       if (this.util.cuestionarioIsSubmitted.value === true) {
         if (this.hasPlan == true) {
           this.next(null);
-          this.session.setSession(environment.KEYS.INSURED, this.aseguradoForm.getRawValue());
+          var asegurados = this.aseguradoForm.getRawValue().asegurados;
+          this.session.setSession(environment.KEYS.INSURED, asegurados.map(e => ({ ...e, fecNacimiento: this.util.dateConverterToServer(e.fecNacimiento) })));  
         } else {
           this._authServ.checkTokenValidation();
           this.util.tokenNeedsUpdate.subscribe(async (resp) => {
@@ -449,12 +450,13 @@ export class AseguradoComponent implements OnInit {
   suscribirDesgravamen() {
     this.util.showSpinner();
 
+    var asegurados = this.aseguradoForm.getRawValue().asegurados;
     var desgravamen: Desgravamen = {
       cabecera: this.util.desgravamenData.getValue().cabecera,
       solicitud: this.util.desgravamenData.getValue().solicitud,
       producto: this.util.desgravamenData.getValue().producto,
       riesgoDesgravamen: this.util.desgravamenData.getValue().riesgoDesgravamen,
-      asegurados: this.aseguradoForm.getRawValue().asegurados,
+      asegurados: asegurados.map(e => ({ ...e, fecNacimiento: this.util.dateConverterToServer(e.fecNacimiento)})),
       beneficiarios: null
     }
 
@@ -466,6 +468,5 @@ export class AseguradoComponent implements OnInit {
         console.error(err);
       })
   }
-
 }
 

@@ -223,15 +223,14 @@ export class BeneficiarioComponent implements OnInit {
   suscribirDesgravamen(){
     this.util.showSpinner();
 
-    console.log(this.util.desgravamenData.value);
-
+    var beneficiarios = this.beneficiarioForm.value.beneficiarios;
     var desgravamen: Desgravamen = {
       cabecera: this.util.desgravamenData.getValue().cabecera,
       solicitud: this.util.desgravamenData.getValue().solicitud,
       producto: this.util.desgravamenData.getValue().producto,
       riesgoDesgravamen: this.util.desgravamenData.getValue().riesgoDesgravamen,
       asegurados: this.session.getSession(environment.KEYS.INSURED),
-      beneficiarios: this.beneficiarioForm.value.beneficiarios
+      beneficiarios: beneficiarios.map(e => ({ ...e, fecNacimiento: this.util.dateConverterToServer(e.fecNacimiento)}))
     }
 
     this.digitalServ.suscribirDesgravamen(desgravamen)

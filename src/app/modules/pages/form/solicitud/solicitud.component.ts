@@ -11,6 +11,7 @@ import { environment } from 'src/environments/environment';
 import { ValidatorsService } from 'src/app/core/services/validators.service';
 import { LoginService } from 'src/app/core/services/login.service';
 import { AuthenticationService } from 'src/app/core/auth/authentication.service';
+import * as Djson from '../../../../../assets/digitalizacionAppConfig.json';
 
 @Component({
   selector: 'app-solicitud',
@@ -69,6 +70,8 @@ export class SolicitudComponent implements OnInit {
       { type: 'whitespace', message: 'Este campo no puede recibir caracteres vacíos.' }
     ]
   };
+
+  private configVar: any = (Djson as any).default;
 
   constructor(private formBuilder: FormBuilder, private validator: ValidatorsService, private util: UtilService, private session: SessionService,
     private combosServ: CombosService, private digitalServ: DigitalService, private loginServ: LoginService, private _authServ: AuthenticationService) {
@@ -222,11 +225,17 @@ export class SolicitudComponent implements OnInit {
     this.showPlanes = false;
     this.cabezera = "Plan Seleccionado: " + this.planData.text;
 
+    this.setProducto()
+  }
+
+  setProducto(){
+    var configVars = this.configVar[0];
+
     var producto: Producto = {
-      codCia: 1,
-      codRamo: 611,
+      codCia: configVars.cod_cia,
+      codRamo: configVars.cod_ramo,
       numPolizaGrupo: parseInt(this.solicitudForm.controls.numPolizaGrupo.value),
-      codPlan: parseInt(this.planData.id)
+      codPlan: parseInt(this.planData.id) || 0
     }
 
     this.session.setSession(environment.KEYS.PRODUCT, producto);
@@ -250,6 +259,7 @@ export class SolicitudComponent implements OnInit {
     if (this.solicitudForm.invalid) {
       this.solicitudForm.markAllAsTouched();
     } else {
+      this.setProducto();
       this.desgravamenFormat();
       if(this.session.getSession(environment.KEYS.PARAMS) !== null){
         if (this.util.entidadFormObserver.getValue() == true) {
@@ -363,7 +373,7 @@ export class SolicitudComponent implements OnInit {
       solicitud: {
         codCanal: this.session.getSession(environment.KEYS.ENTITY).codCanal,
         nroSolicitudCaja: parseInt(this.session.getSession(environment.KEYS.ENTITY).nroSolicitudCaja),
-        tipSolicitud: solicitud.tipSolicitud,
+        tipSolicitud: parseInt(solicitud.tipSolicitud),
         fecSolicitud: this.session.getSession(environment.KEYS.PARAMS).solicitud.fecSolicitud,
         comentarios: solicitud.comentarios,
       },
