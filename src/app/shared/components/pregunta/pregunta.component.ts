@@ -104,14 +104,11 @@ export class PreguntaComponent implements OnInit {
       this.cuestionarioForm.markAllAsTouched();
       this.util.cuestionarioIsSubmitted.next(false);
     } else {
-      console.log(this.util.observacionFormObserver.value);
-      console.log(this.util.respuestaFormObserver.value);
-      
       if (this.util.observacionFormObserver.value === true && this.util.respuestaFormObserver.value === true) {
         this.util.cuestionarioIsSubmitted.next(true);
         values.preguntas.forEach(function (v) { delete v.flag });
         this.dataGetter.emit(values);
-        this.util.hideModal('dpsModal');
+        this.util.hideModal('dpsModal_'+this.aseguradoIndex);
       } else {
         this.util.observacionFormChecker.next(true);
         this.util.respuestaFormChecker.next(true);
@@ -145,7 +142,6 @@ export class PreguntaComponent implements OnInit {
 
   getRespuestaData(ev: any) {
     //to get smokeQuiz index
-    console.log(this.p.controls);
 
     var sqIndex = Object.keys(this.p.controls).forEach(e => console.log(e));
     // console.log(sqIndex);
@@ -161,8 +157,8 @@ export class PreguntaComponent implements OnInit {
     }
   }
 
-  openDps(){
-    this.util.showModal('dpsModal');
+  openDps(i){
+    this.util.showModal('dpsModal_'+i);
     this.util.cuestionarioIsSubmitted.next(true);
   }
 

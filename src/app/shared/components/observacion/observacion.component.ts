@@ -108,10 +108,11 @@ export class ObservacionComponent implements OnInit {
       this.util.observacionFormObserver.next(false);
       this.observacionForm.markAllAsTouched();
     } else {
+      var observaciones:any[] = values;
       // this.util.correctAlert('Correcto', 'Se adjuntaron las observaciones correctamente.');
       this.submitted = true;
       this.util.observacionFormObserver.next(true);
-      this.dataGetter.emit(values.observacion);
+      this.dataGetter.emit(observaciones.map(e => ({...e, fecha: this.util.dateConverterToServer(e.fecha)})));
     }
   }
 

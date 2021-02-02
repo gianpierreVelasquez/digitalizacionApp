@@ -9,6 +9,7 @@ import { ERROR_MESSAGES } from '../enum/errors.enum';
 import { Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { UtilService } from './util.service';
+import { AuthenticationService } from '../auth/authentication.service';
 
 const URI = "https://api.pre.mapfre.com.pe/app/api/core/v1.0";
 
@@ -20,7 +21,8 @@ export class LoginService {
   private configVar: any = (Djson as any).default;
   private baseEntity = ROOT_BASES;
 
-  constructor(private http: HttpClient, private session: SessionService, private router: Router, private spinner: NgxSpinnerService, private util: UtilService) { }
+  constructor(private http: HttpClient, private session: SessionService, private router: Router, private spinner: NgxSpinnerService, 
+    private util: UtilService, private _auth: AuthenticationService) { }
 
   getCredencials() {
     let headers = new HttpHeaders();
@@ -33,8 +35,8 @@ export class LoginService {
     if(codApp != null){
       data = appsJson.find(x => x.id == codApp);
 
-      if(data){
-        data.authdata = window.btoa(data.username + ':' + data.password);
+      if(data){  
+        data.authdata = window.btoa(this._auth.decrypt(data.username) + ':' + this._auth.decrypt(data.password));
 
         headers = headers.append('Authorization', `Basic ${data.authdata}`);
         headers = headers.append('usua_integracion', `${configVars['usua_integracion']}`);

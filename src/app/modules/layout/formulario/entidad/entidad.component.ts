@@ -1,6 +1,7 @@
 
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AuthenticationService } from 'src/app/core/auth/authentication.service';
 import { ERROR_MESSAGES } from 'src/app/core/enum/errors.enum';
 import { CombosService } from 'src/app/core/services/combos.service';
 import { DigitalService } from 'src/app/core/services/digital.service';
@@ -54,7 +55,7 @@ export class EntidadComponent implements OnInit {
   };
 
   constructor(private session: SessionService, private util: UtilService, private combosServ: CombosService, private digitalServ: DigitalService, private fb: FormBuilder, private validator: ValidatorsService,
-    private loginServ: LoginService) {
+    private loginServ: LoginService, private auth: AuthenticationService) {
     this.entidadForm = this.fb.group({
       nroSolicitudCaja: ['', [Validators.required]],
       codTipoConformacion: ['', [Validators.required, this.validator.notNull]],
@@ -89,6 +90,11 @@ export class EntidadComponent implements OnInit {
         this.setEntidad(this.entidadForm.value)
       }
     })
+
+    // Para convertir a base 64
+    // console.log(this.auth.encrypt('apicjpiurapre'));
+    // console.log(this.auth.encrypt('Lima2019$'));
+    
   }
 
   getToken() {

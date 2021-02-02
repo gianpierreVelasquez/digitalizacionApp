@@ -391,8 +391,6 @@ export class SolicitudComponent implements OnInit {
     }
     
     this.util.desgravamenData.next(desgravamen);
-    console.log(this.util.desgravamenData.getValue());
-    
   }
 
 }

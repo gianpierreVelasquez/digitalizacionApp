@@ -2,7 +2,7 @@
     <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3 p-0">
         <button type="button" class="btn text-white"
             [ngClass]="cuestionarioIsSubmitted ? 'btn-success' : 'mapfre-color' " data-toogle="modal"
-            (click)="openDps()"> <i class="fa" [ngClass]="cuestionarioIsSubmitted ? 'fa-check' : 'fa-times' "></i>
+            (click)="openDps(aseguradoIndex)"> <i class="fa" [ngClass]="cuestionarioIsSubmitted ? 'fa-check' : 'fa-times' "></i>
             Registrar
             DPS</button>
         <!-- <button type="button" class="btn text-white mapfre-color" data-toogle="modal"
@@ -11,7 +11,7 @@
     </div>
 </div>
 
-<app-ui-modal modalID="dpsModal" #dpsModal dialogClass="modal-dialog modal-lg" [containerClick]="false"
+<app-ui-modal modalID="dpsModal_{{aseguradoIndex}}" #dpsModal dialogClass="modal-dialog modal-lg" [containerClick]="false"
     hideFooter="true">
     <div class="app-modal-header">
         <h5 class="text-light font-weight-light">DECLARACIÓN DE SALUD PERSONAL</h5>
