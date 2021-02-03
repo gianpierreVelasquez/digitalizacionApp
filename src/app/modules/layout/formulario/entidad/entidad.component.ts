@@ -11,6 +11,8 @@ import { SPINNER_TEXT, UtilService } from 'src/app/core/services/util.service';
 import { ValidatorsService } from 'src/app/core/services/validators.service';
 import { environment } from 'src/environments/environment';
 
+import * as Djson from '../../../../../assets/digitalizacionAppConfig.json';
+
 @Component({
   selector: 'app-entidad',
   templateUrl: './entidad.component.html',
@@ -18,6 +20,9 @@ import { environment } from 'src/environments/environment';
 })
 export class EntidadComponent implements OnInit {
 
+  private configVar: any = (Djson as any).default;
+  
+  
   entidadForm: FormGroup;
 
   //Operadores
@@ -68,8 +73,13 @@ export class EntidadComponent implements OnInit {
   }
 
   ngOnInit() {
+    var configVars = this.configVar[0];
 
     this.getToken();
+
+    setInterval(() => {
+      this.getTokenAuth()
+    }, configVars.token_timer_min * 60 * 1000);
 
     this.util.entidadFormChecker.subscribe(resp => {
       this.setEntidad(this.entidadForm.value)
@@ -111,6 +121,15 @@ export class EntidadComponent implements OnInit {
         this.util.hideSpinner();
         console.error(err);
         this.util.callServices.next(false)
+      })
+  }
+
+  getTokenAuth() {
+    this.loginServ.getCredencials()
+      .then(resp => {
+        this.session.setSession(environment.KEYS.TOKEN, resp);
+      }).catch(err => {
+        console.error(err);
       })
   }
 

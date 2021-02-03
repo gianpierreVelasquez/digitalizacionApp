@@ -43,7 +43,7 @@ export class LoginService {
         headers = headers.append('usua_id', `${configVars['usua_id']}`);
         headers = headers.append('aplic_id', `${configVars['aplic_id']}`);
 
-        this.util.tokenNeedsUpdate.next(false);
+        // this.util.tokenNeedsUpdate.next(false);
         return this.http.post<any>(`${URI + this.baseEntity.LOGIN}`, {}, { headers: headers }).toPromise();
       } else {
         this.notAllowAlert('Advertencia', ERROR_MESSAGES.BOTH_CODES);

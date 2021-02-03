@@ -6,7 +6,6 @@ import { SessionService } from '../services/session.service';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { UtilService } from '../services/util.service';
-import { ERROR_MESSAGES } from '../enum/errors.enum';
 
 @Injectable({
   providedIn: 'root'
@@ -21,7 +20,7 @@ export class AuthInterceptor implements HttpInterceptor {
   
     let request = req;
     
-    if (token != undefined) {
+    if (token != undefined && req.url != 'https://api.pre.mapfre.com.pe/app/api/core/v1.0/login' ) {
       request = req.clone({
         headers: req.headers
           .set('Content-Type', 'application/json')

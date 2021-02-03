@@ -5,7 +5,8 @@
         "cod_tabla":67,
         "usua_id":"apicjpiurapre",
         "usua_integracion":"apicjpiurapre",
-        "aplic_id": 1
+        "aplic_id": 1,
+        "token_timer_min": 14
     },
     {
         "id": 1,

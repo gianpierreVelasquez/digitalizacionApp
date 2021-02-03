@@ -273,20 +273,7 @@ export class AseguradoComponent implements OnInit {
           var asegurados = this.aseguradoForm.getRawValue().asegurados;
           this.session.setSession(environment.KEYS.INSURED, asegurados.map(e => ({ ...e, fecNacimiento: this.util.dateConverterToServer(e.fecNacimiento) })));  
         } else {
-          this._authServ.checkTokenValidation();
-          this.util.tokenNeedsUpdate.subscribe(async (resp) => {
-            if (resp == true) {
-              this.loginServ.getCredencials()
-                .then(() => {
-                  this.suscribirDesgravamen();
-                })
-                .catch(err => {
-                  console.error(err)
-                })
-            } else {
-              this.suscribirDesgravamen();
-            }
-          })
+          this.suscribirDesgravamen();
         }
       } else {
         this.util.warningAlert('Advertencia', 'Necesita rellenar la Declaración Personal de Salud del(los) asegurado(s).')
@@ -382,25 +369,8 @@ export class AseguradoComponent implements OnInit {
         'Fecha_Nacimiento': date,
         'Importe_Cumulo': this.session.getSession(environment.KEYS.REQUEST).impCumulo
       }
-      this.verifyToken(data)
+      this.verifyDPS(this.session.getSession(environment.KEYS.REQUEST).numPolizaGrupo, data);
     }
-  }
-
-  verifyToken(dataDPS) {
-    this._authServ.checkTokenValidation();
-    this.util.tokenNeedsUpdate.subscribe(async (resp) => {
-      if (resp == true) {
-        this.loginServ.getCredencials()
-          .then(() => {
-            this.verifyDPS(this.session.getSession(environment.KEYS.REQUEST).numPolizaGrupo, dataDPS);
-          })
-          .catch(err => {
-            console.error(err)
-          })
-      } else {
-        this.verifyDPS(this.session.getSession(environment.KEYS.REQUEST).numPolizaGrupo, dataDPS);
-      }
-    })
   }
 
   async verifyDPS(numPolizaGrupo: any, data: any) {
@@ -463,9 +433,11 @@ export class AseguradoComponent implements OnInit {
     this.digitalServ.suscribirDesgravamen(desgravamen)
       .then(resp => {
         this.util.correctAlert('Correcto', 'El formulario fue enviado exitosamente.')
+        this.util.hideSpinner()
       })
       .catch(err => {
         console.error(err);
+        this.util.hideSpinner()
       })
   }
 }

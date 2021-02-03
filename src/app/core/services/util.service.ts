@@ -49,7 +49,7 @@ export class UtilService {
   dpsObserver = new BehaviorSubject<boolean>(false);
   cuestionarioIsSubmitted = new BehaviorSubject<boolean>(false);
 
-    tokenNeedsUpdate = new BehaviorSubject<boolean>(false);
+  // tokenNeedsUpdate = new BehaviorSubject<boolean>(false);
 
   constructor(private spinner: NgxSpinnerService, private uimodalServ: UiModalService, private router: Router, private formBuilder: FormBuilder) { }
 

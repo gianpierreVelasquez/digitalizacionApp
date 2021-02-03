@@ -77,7 +77,7 @@ export class BeneficiarioComponent implements OnInit {
     ]
   };
 
-  constructor(private formBuilder: FormBuilder, private session: SessionService, private validator: ValidatorsService, private util: UtilService, 
+  constructor(private formBuilder: FormBuilder, private session: SessionService, private validator: ValidatorsService, private util: UtilService,
     private combosServ: CombosService, private digitalServ: DigitalService, private _authServ: AuthenticationService, private loginServ: LoginService) {
     this.beneficiarioForm = this.formBuilder.group({
       beneficiarios: new FormArray([])
@@ -193,20 +193,8 @@ export class BeneficiarioComponent implements OnInit {
       this.beneficiarioForm.markAllAsTouched();
     } else {
       if (this.checkParticipacion() == true) {
-        this._authServ.checkTokenValidation();
-        this.util.tokenNeedsUpdate.subscribe(async (resp) => {
-          if (resp == true) {
-            this.loginServ.getCredencials()
-              .then(() => {
-                this.suscribirDesgravamen();
-              })
-              .catch(err => {
-                console.error(err)
-              })
-          } else {
-            this.suscribirDesgravamen();
-          }
-        })
+
+        this.suscribirDesgravamen();
       }
     }
   }
@@ -220,7 +208,7 @@ export class BeneficiarioComponent implements OnInit {
     this.backButton.emit($event);
   }
 
-  suscribirDesgravamen(){
+  suscribirDesgravamen() {
     this.util.showSpinner();
 
     var beneficiarios = this.beneficiarioForm.value.beneficiarios;
@@ -230,16 +218,16 @@ export class BeneficiarioComponent implements OnInit {
       producto: this.util.desgravamenData.getValue().producto,
       riesgoDesgravamen: this.util.desgravamenData.getValue().riesgoDesgravamen,
       asegurados: this.session.getSession(environment.KEYS.INSURED),
-      beneficiarios: beneficiarios.map(e => ({ ...e, fecNacimiento: this.util.dateConverterToServer(e.fecNacimiento)}))
+      beneficiarios: beneficiarios.map(e => ({ ...e, fecNacimiento: this.util.dateConverterToServer(e.fecNacimiento) }))
     }
 
     this.digitalServ.suscribirDesgravamen(desgravamen)
-    .then(resp => {
-      this.util.correctAlert('Correcto', 'El formulario fue enviado exitosamente.')
-    })
-    .catch(err => {
-      console.error(err);
-    })
+      .then(resp => {
+        this.util.correctAlert('Correcto', 'El formulario fue enviado exitosamente.')
+      })
+      .catch(err => {
+        console.error(err);
+      })
   }
 
 }

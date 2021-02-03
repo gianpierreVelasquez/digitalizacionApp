@@ -50,22 +50,6 @@ export class PreguntaComponent implements OnInit {
 
   }
 
-  verifyToken() {
-    this._authServ.checkTokenValidation();
-    this.util.tokenNeedsUpdate.subscribe(async (resp) => {
-      if (resp == true) {
-        this.loginServ.getCredencials().then(() => {
-          this.recuperarCuestionario();
-        })
-          .catch(err => {
-            console.error(err)
-          });
-      } else {
-        this.recuperarCuestionario();
-      }
-    })
-  }
-
   async recuperarCuestionario() {
     this.util.showSpinner()
     this.util.setSpinnerTextValue(SPINNER_TEXT.QUIZ);
@@ -108,7 +92,7 @@ export class PreguntaComponent implements OnInit {
         this.util.cuestionarioIsSubmitted.next(true);
         values.preguntas.forEach(function (v) { delete v.flag });
         this.dataGetter.emit(values);
-        this.util.hideModal('dpsModal_'+this.aseguradoIndex);
+        this.util.hideModal('dpsModal_' + this.aseguradoIndex);
       } else {
         this.util.observacionFormChecker.next(true);
         this.util.respuestaFormChecker.next(true);
@@ -157,8 +141,8 @@ export class PreguntaComponent implements OnInit {
     }
   }
 
-  openDps(i){
-    this.util.showModal('dpsModal_'+i);
+  openDps(i) {
+    this.util.showModal('dpsModal_' + i);
     this.util.cuestionarioIsSubmitted.next(true);
   }
 
