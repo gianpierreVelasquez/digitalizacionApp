@@ -41,7 +41,7 @@ export class DigitalService {
 
     var data = {
       cod_cia: configVars.cod_cia,
-      cod_ramo: configVars.cod_ramo,
+      cod_ramo: 616,
       cod_tabla: configVars.cod_tabla
     }
 
