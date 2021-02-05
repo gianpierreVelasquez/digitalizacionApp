@@ -419,6 +419,7 @@ export class AseguradoComponent implements OnInit {
 
   suscribirDesgravamen() {
     this.util.showSpinner();
+    this.util.setSpinnerTextValue(SPINNER_TEXT.DESGRAVAMEN);
 
     var asegurados = this.aseguradoForm.getRawValue().asegurados;
     var desgravamen: Desgravamen = {

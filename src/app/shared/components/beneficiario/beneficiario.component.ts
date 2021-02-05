@@ -5,7 +5,7 @@ import { CombosService } from 'src/app/core/services/combos.service';
 import { DigitalService } from 'src/app/core/services/digital.service';
 import { LoginService } from 'src/app/core/services/login.service';
 import { SessionService } from 'src/app/core/services/session.service';
-import { UtilService } from 'src/app/core/services/util.service';
+import { SPINNER_TEXT, UtilService } from 'src/app/core/services/util.service';
 import { ValidatorsService } from 'src/app/core/services/validators.service';
 import { environment } from 'src/environments/environment';
 import { Desgravamen } from '../../models/Desgravamen';
@@ -193,7 +193,6 @@ export class BeneficiarioComponent implements OnInit {
       this.beneficiarioForm.markAllAsTouched();
     } else {
       if (this.checkParticipacion() == true) {
-
         this.suscribirDesgravamen();
       }
     }
@@ -210,6 +209,7 @@ export class BeneficiarioComponent implements OnInit {
 
   suscribirDesgravamen() {
     this.util.showSpinner();
+    this.util.setSpinnerTextValue(SPINNER_TEXT.DESGRAVAMEN);
 
     var beneficiarios = this.beneficiarioForm.value.beneficiarios;
     var desgravamen: Desgravamen = {
@@ -224,9 +224,11 @@ export class BeneficiarioComponent implements OnInit {
     this.digitalServ.suscribirDesgravamen(desgravamen)
       .then(resp => {
         this.util.correctAlert('Correcto', 'El formulario fue enviado exitosamente.')
+        this.util.hideSpinner();
       })
       .catch(err => {
         console.error(err);
+        this.util.hideSpinner();
       })
   }
 
