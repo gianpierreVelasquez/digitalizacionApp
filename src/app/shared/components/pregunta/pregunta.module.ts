@@ -5,6 +5,7 @@ import { PreguntaComponent } from './pregunta.component';
 import { ObservacionModule } from '../observacion/observacion.module';
 import { ModalModule } from '../modal/modal.module';
 import { RespuestaModule } from '../respuesta/respuesta.module';
+import { AutosizeModule } from 'ngx-autosize';
 
 @NgModule({
   imports: [
@@ -13,7 +14,8 @@ import { RespuestaModule } from '../respuesta/respuesta.module';
     ReactiveFormsModule,
     RespuestaModule,
     ObservacionModule,
-    ModalModule
+    ModalModule,
+    AutosizeModule
   ],
   declarations: [PreguntaComponent],
   exports: [PreguntaComponent]

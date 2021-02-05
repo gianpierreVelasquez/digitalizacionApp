@@ -12,7 +12,6 @@ import { ValidatorsService } from 'src/app/core/services/validators.service';
 export class RespuestaComponent implements OnInit {
 
   @Output() dataGetter = new EventEmitter<any>();
-
   private needRespuestaObserver = new BehaviorSubject<string>('');
 
   @Input() 
@@ -20,6 +19,8 @@ export class RespuestaComponent implements OnInit {
     // set the latest value for neddObservationObserver BehaviorSubject
     this.needRespuestaObserver.next(value);
   };
+
+  @Input() preguntaIndex: number;
 
   get needRespuesta() {
     // get the latest value from neddObservationObserver BehaviorSubject
@@ -79,6 +80,8 @@ export class RespuestaComponent implements OnInit {
     this.respuestaForm.statusChanges.subscribe(val => {
       if (val == 'VALID') {
         this.setRespuesta(this.respuestaForm.value)
+      } else {
+        this.respuestaForm.markAllAsTouched();
       }
     })
   }
@@ -87,10 +90,11 @@ export class RespuestaComponent implements OnInit {
   get r() { return this.p.respuesta as FormArray; }
 
   addRespuesta() {
+    this.util.respuestaFormObserver.next(false);
     if (this.r.length < this.maxRespuestas) {
       this.r.push(this.formBuilder.group({
-        frecuencia: [''],
-        cantidad: [''],
+        frecuencia: ['', [Validators.required]],
+        cantidad: ['', [Validators.required]],
       }, { updateOn: 'blur'}));
     }
   }
@@ -101,7 +105,7 @@ export class RespuestaComponent implements OnInit {
       this.respuestaForm.markAllAsTouched();
     } else {
       this.util.respuestaFormObserver.next(true);
-      this.dataGetter.emit(values.respuesta[0]);
+      this.dataGetter.emit({value: values.respuesta[0], qIndex: this.preguntaIndex});
     }
   }
 

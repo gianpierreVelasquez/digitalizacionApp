@@ -73,17 +73,17 @@ export class PreguntaComponent implements OnInit {
       for (let i = this.p.length; i < this.cuestionarioData.length; i++) {
         this.p.push(this.formBuilder.group({
           codPregunta: [parseInt(this.cuestionarioData[i].CodigoPregunta), [Validators.required]],
-          desPregunta: [{ value: this.cuestionarioData[i].DescripcionPregunta, disabled: true }],
+          desPregunta: [{value: this.cuestionarioData[i].DescripcionPregunta, disabled: true}],
           flag: [this.cuestionarioData[i].Flag],
           codRespuesta: ['N', [Validators.required]],
-          descRespuesta: [null]
+          descRespuesta: [null],
+          //isSmokeQuiz: []
         }));
       }
     }
   }
 
   setCuestionario(values) {
-    this.util.respuestaFormObserver.next(true);
     if (this.cuestionarioForm.invalid) {
       this.cuestionarioForm.markAllAsTouched();
       this.util.cuestionarioIsSubmitted.next(false);
@@ -110,6 +110,12 @@ export class PreguntaComponent implements OnInit {
       this.needObservation = false;
     }
 
+    // var fq = responses.findIndex(e => e.desPregunta.includes('cigarros'));
+    // console.log(this.p.controls[fq]);
+    // if(this.p.controls[fq]['controls'].codRespuesta == 'S'){
+    //   this.p.controls[fq]['controls'].isSmokeQuiz.setValue('S');
+    // }
+    
   }
 
   getObservacionData(ev: any) {
@@ -125,18 +131,13 @@ export class PreguntaComponent implements OnInit {
   }
 
   getRespuestaData(ev: any) {
-    //to get smokeQuiz index
-
-    var sqIndex = Object.keys(this.p.controls).forEach(e => console.log(e));
-    // console.log(sqIndex);
-
     if (ev != undefined) {
       setTimeout(() => {
-
+        this.p.controls[ev.qIndex]['controls'].descRespuesta.setValue(ev.value)
       });
     } else {
       setTimeout(() => {
-        this.cuestionarioForm.controls.observaciones.setValue(null);
+        this.p.controls[ev.qIndex]['controls'].descRespuesta.setValue(null)
       });
     }
   }

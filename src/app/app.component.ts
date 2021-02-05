@@ -59,6 +59,7 @@ export class AppComponent implements OnInit {
     this.session.removeSession(environment.KEYS.PRODUCT);
     this.session.removeSession(environment.KEYS.REQUEST);
     this.session.removeSession(environment.KEYS.TOKEN);
+    this.session.removeSession(environment.KEYS.INSURED);
   }
 
 }

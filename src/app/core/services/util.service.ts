@@ -39,7 +39,7 @@ export class UtilService {
   observacionFormChecker = new BehaviorSubject<boolean>(false);
   validateObservacionFormObserver = new BehaviorSubject<boolean>(false);
 
-  respuestaFormObserver = new BehaviorSubject<boolean>(false);
+  respuestaFormObserver = new BehaviorSubject<boolean>(true);
   respuestaFormChecker = new BehaviorSubject<boolean>(false);
 
   //Variables

@@ -38,8 +38,7 @@
                         <input type="number" class="form-control white-all" formControlName="codPregunta" readonly>
                     </div>
                     <div class="col-8 p-0">
-                        <textarea type="text" class="form-control-plaintext" formControlName="desPregunta"
-                            autosize></textarea>
+                        <textarea type="text" class="form-control-plaintext" formControlName="desPregunta" [minRows]="2" autosize readonly></textarea>
                     </div>
                     <div class="col-3 p-0 text-center">
                         <div style="display: inline-flex;">
@@ -57,7 +56,7 @@
                     </div>
                     <div *ngIf="pregunta.controls.flag.value == 'S' && pregunta.controls.codRespuesta.value == 'S'"
                         formGroupName="descRespuesta" class="card custom-c shadow-sm">
-                        <app-dynamic-respuesta [needRespuesta]="pregunta.controls.codRespuesta.value" (dataGetter)="getRespuestaData($event)"></app-dynamic-respuesta>
+                        <app-dynamic-respuesta [needRespuesta]="pregunta.controls.codRespuesta.value" [preguntaIndex]="k" (dataGetter)="getRespuestaData($event)"></app-dynamic-respuesta>
                     </div>
                 </div>
             </div>

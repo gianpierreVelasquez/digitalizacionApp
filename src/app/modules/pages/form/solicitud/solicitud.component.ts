@@ -282,8 +282,6 @@ export class SolicitudComponent implements OnInit {
   }
 
   verifyDPS() {
-    console.log('Hola');
-
     if (this.util.dpsObserver.getValue() === false) {
 
       var asegurados: any[] = this.session.getSession(environment.KEYS.PARAMS).asegurados;
