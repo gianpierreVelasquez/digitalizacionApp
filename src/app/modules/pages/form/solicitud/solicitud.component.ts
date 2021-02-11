@@ -39,7 +39,7 @@ export class SolicitudComponent implements OnInit {
   public showPlanes: boolean = false;
   public showRadio: boolean = true;
 
-  public planData: PlanData = null;
+  public planData: PlanData = {};
   public selectedPlan: number = -1;
 
   public entidadFormObserverHelper: boolean = false
@@ -202,6 +202,9 @@ export class SolicitudComponent implements OnInit {
       this.seguro = 'N';
       this.selectedPlan = -1;
       this.planData = {};
+      this.cabezera = "¿Desea contratar un seguro de vida?"
+      this.showRadio = true;
+      this.setProducto()
     }
   }
 
@@ -234,9 +237,12 @@ export class SolicitudComponent implements OnInit {
     var producto: Producto = {
       codCia: configVars.cod_cia,
       codRamo: configVars.cod_ramo,
-      numPolizaGrupo: parseInt(this.solicitudForm.controls.numPolizaGrupo.value),
+      numPolizaGrupo: parseInt(this.solicitudForm.controls.numPolizaGrupo.value), 
       codPlan: parseInt(this.planData.id) || 0
     }
+
+    console.log(producto);
+    
 
     this.session.setSession(environment.KEYS.PRODUCT, producto);
   }
