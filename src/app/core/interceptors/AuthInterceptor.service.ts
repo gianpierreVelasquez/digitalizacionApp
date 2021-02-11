@@ -25,7 +25,7 @@ export class AuthInterceptor implements HttpInterceptor {
         headers: req.headers
           .set('Content-Type', 'application/json')
           .set('Authorization', `Bearer ${token.token}`)
-          .set('token_seg', `${token.token}`) 
+          // .set('token_seg', `${token.token}`) 
       });
     }
 
