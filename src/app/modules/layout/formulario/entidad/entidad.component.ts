@@ -140,8 +140,8 @@ export class EntidadComponent implements OnInit {
       this.obtenerTipoMoneda(),
     ]).then((value) => {
       this.obtenerParametros()
-    }).catch(reason => {
-      console.log(reason)
+    }).catch(err => {
+      console.error(err)
     });
   }
 
@@ -156,7 +156,7 @@ export class EntidadComponent implements OnInit {
         this.util.hideSpinner();
         // this.util.callServices.next(true);
       }).catch(err => {
-        console.log(err);
+        console.error(err);
         this.util.hideSpinner();
         this.util.callServices.next(false);
       })
@@ -168,7 +168,7 @@ export class EntidadComponent implements OnInit {
         var data = resp.data;
         this.conformacionList = data;
       }).catch(err => {
-        console.log(err);
+        console.error(err);
       })
   }
 
@@ -178,7 +178,7 @@ export class EntidadComponent implements OnInit {
         var data = resp.data;
         this.monedaList = data;
       }).catch(err => {
-        console.log(err);
+        console.error(err);
       })
   }
 

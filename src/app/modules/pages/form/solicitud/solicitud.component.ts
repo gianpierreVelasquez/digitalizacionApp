@@ -241,9 +241,6 @@ export class SolicitudComponent implements OnInit {
       codPlan: parseInt(this.planData.id) || 0
     }
 
-    console.log(producto);
-    
-
     this.session.setSession(environment.KEYS.PRODUCT, producto);
   }
 

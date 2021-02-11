@@ -105,8 +105,8 @@ export class BeneficiarioComponent implements OnInit {
       this.obtenerGenero()
     ]).then((value) => {
       // nothing
-    }).catch(reason => {
-      console.log(reason)
+    }).catch(err => {
+      console.error(err)
     });
   }
 
@@ -139,7 +139,7 @@ export class BeneficiarioComponent implements OnInit {
         var data = resp.data;
         this.parentescoList = data;
       }).catch(err => {
-        console.log(err);
+        console.error(err);
       })
   }
 
@@ -149,7 +149,7 @@ export class BeneficiarioComponent implements OnInit {
         var data = resp.data;
         this.documentoList = data;
       }).catch(err => {
-        console.log(err);
+        console.error(err);
       })
   }
 
@@ -159,7 +159,7 @@ export class BeneficiarioComponent implements OnInit {
         var data = resp.data;
         this.estadoCivilList = data;
       }).catch(err => {
-        console.log(err);
+        console.error(err);
       })
   }
 
@@ -169,7 +169,7 @@ export class BeneficiarioComponent implements OnInit {
         var data = resp.data;
         this.generoList = data;
       }).catch(err => {
-        console.log(err);
+        console.error(err);
       })
   }
 

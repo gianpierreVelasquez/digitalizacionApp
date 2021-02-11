@@ -60,7 +60,7 @@ export class PreguntaComponent implements OnInit {
         this.addPreguntas();
         this.util.hideSpinner();
       }).catch(err => {
-        console.log(err);
+        console.error(err);
         this.util.hideSpinner();
       })
   }
